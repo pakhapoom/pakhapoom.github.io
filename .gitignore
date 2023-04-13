@@ -22,4 +22,4 @@ package-lock.json
 assets/js/dist
 
 # Post
-*.DS_Store
+.DS_Store
