@@ -46,7 +46,7 @@ The authors delve into the capabilities of six large language models, ranging in
 {: .prompt-info}
 
 ###  Impact of the input-label mapping
-The authors compare their results with and without using additional demonstrations. They label the models as "No demos" and "Demos with gold labels", respectively. Additionally, they experiment with replacing the actual label for each example in the demonstrations with a random text, which they label as "Demos with random labels". 
+The authors compare their results with and without using additional demonstrations. They label the models as "Demos with gold labels" and "No demos", respectively. Additionally, they experiment with replacing the actual label for each example in the demonstrations with a random text, which they label as "Demos with random labels". 
 
 It is important to note that when the authors refer to *random* labels, they still remain within the label space of the task. For example, in a sentiment classification task, the label space might consist of positive, negative, and neutral. In this case, when selecting a random label, the authors would choose one of these three labels at random to pair with the input text.
 
