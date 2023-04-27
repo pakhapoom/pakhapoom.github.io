@@ -23,7 +23,7 @@ As we all know, a chain of thought is an idea to break down a problem into small
 
 A group of researchers [(Wei et al., 2022)](https://arxiv.org/abs/2201.11903) introduces the chain-of-thought (CoT) concept to a prompt as an alternative way to prompting. Rather than a pair of question and its corresponding answer is provided, the authors additionally include a series of reasoning steps before the answer of in-context learning as shown in the text highlighted in blue of Figure 1. 
 
-Large language models may initially struggle to generate a reasonable answer from the limited resources provided in standard in-context learning, as presented in Figure 1 (left). However, the models can perform the necessary mathematical operations and derive the correct answer once some explanations are added to guide the models to think step-by-step, as shown in Figure 1 (right).
+Large language models may initially struggle to generate a reasonable answer from the limited resources provided in standard in-context learning, as presented in Figure 1 (left). However, the models can perform the necessary mathematical operations and derive the correct answer *semantically* once some explanations are added to guide the models to think step-by-step, as shown in Figure 1 (right).
 
 ![meta_learning](jw1.png)
 *Figure 1: Example of standard prompting (left) and chain-of-thought (CoT) prompting (right) for the same task. The text highlighted in blue represents a series of reasoning steps or CoT which is augmented in standard in-context learning. Reprinted from [(Wei et al., 2022)](https://arxiv.org/abs/2201.11903).*
@@ -78,9 +78,9 @@ The solve rate for symbolic tasks still conforms to the previous trends seen in 
 However, it is important to note that large language models are still probabilistic models. They do not perform mathematical calculations on their own, but instead attempt to capture the semantics of the input and predict the most likely next word given the context from the few-shot and the input. 
 
 Using CoT prompting, we can gain a better understanding of how large language models work and why they sometimes fail. The authors manually read 45 errors from PaLM 62B parameters and categorize them into the follow three types of errors (please see Figure 7 for some examples of errors discussed).
-* Semantic understanding: failure to understand a question.
-* One-step missing: failure to calculate correctly.
-* Others: hallucinations or repetition of an answer.
+* **Semantic understanding:** failure to understand a question.
+* **One-step missing:** failure to calculate correctly.
+* **Others:** hallucinations or repetition of an answer.
 
 ![meta_learning](jw10.png)
 *Figure 7: Examples of errors. Reprinted from [(Wei et al., 2022)](https://arxiv.org/abs/2201.11903).*
