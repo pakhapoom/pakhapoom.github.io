@@ -96,4 +96,4 @@ Regarding the various aspects of the experiments tested so far, we may conclude 
 
 The effectiveness of in-context learning is not guaranteed, as the models may fail to recall the underlying implications of the input or label during the training process. This is because the models do not rely on the explicit input-label mapping, but rather learn associations between the input and label. For example, a positive review may be associated with the word "positive". However, this effect can be amplified when the models are trained using the meta-learning paradigm.
 
-However, even assuming that language models can fully capture and exploit the input-label mapping, the models may sitll fail to derive the correct answer in some cases, such as complex reasoning tasks which will be discussed further in the next article.
+However, even assuming that language models can fully capture and exploit the input-label mapping, the models may sitll fail to derive the correct answer in some cases, such as complex reasoning tasks which will be discussed further in [this article](https://pakhapoom.github.io/posts/think-step-by-step-with-a-chain-of-thought/).
