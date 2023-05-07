@@ -105,6 +105,3 @@ It is noted that one may list some files in `.gitignore` to ask `git` not to kee
 * have the lateset version of the project in the master branch, and  the stable version of the project on a separate branch.
 * should not rebase changes that have been pushed to remote repositories.
 * have a good commit message.
-
-![different_prompting](sy1.png)
-*Figure 2: Comparison between (a) stardard, (b) chain-of-thought, (c) act-only, and (d) ReAct prompting. Reprinted from [(Yao et al., 2023)](https://arxiv.org/abs/2210.03629).*
