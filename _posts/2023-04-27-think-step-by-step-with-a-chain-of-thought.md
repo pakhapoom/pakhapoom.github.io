@@ -92,4 +92,4 @@ Regarding the resuls from math word problems or reasoning parts, these errors ca
 
 While scaling up and using CoT prompting are potential solutions to improve the performance of large language models on complex reasoning tasks, it is still a challenge to prevent model hallucinations.
 
-When dealing with critical facts or situations that cannot tolerate any margin of error, we need to take additional steps to control and verify the accuracy of large language models. Stay tuned for the next article where we will discuss some strategies to address this challenge and ensure the reliability of large language models.
+When dealing with critical facts or situations that cannot tolerate any margin of error, we need to take additional steps to control and verify the accuracy of large language models. Please refer to [this article](https://pakhapoom.github.io/posts/combined-synergy-between-reasoning-and-acting-for-large-language-models/) where we will discuss some strategies to address this challenge and ensure the reliability of large language models.
