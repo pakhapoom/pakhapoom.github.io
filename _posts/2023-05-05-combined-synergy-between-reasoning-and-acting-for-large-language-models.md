@@ -1,6 +1,6 @@
 ---
 title: Combined synergy between reasoning and acting for large language models
-date: 2023-05-04 14:50:00 +0700
+date: 2023-05-05 14:50:00 +0700
 categories: [nlp, prompt]
 tags: [large language model, in-context learning, few-shot example, prompt engineering, chain of thought, CoT, ReAct, action]
 math: true
