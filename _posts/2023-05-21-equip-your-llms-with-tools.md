@@ -37,13 +37,13 @@ This process may be summarized into five steps and visualized in Figure 1.
 ![example_of_tools](ts_tab1.png)
 *Table 1: Examples of inputs and outputs for using external tools. Reprinted from [(Schick et al., 2023)](https://arxiv.org/abs/2302.04761).*
 
-The above explanation pertains to the question answering task, but the same concepts can be applied to learning other external tools as well. Table q illustrates the inputs and outputs for all the tasks discussed in the paper, while Figure 2 displays the augmented dataset used for fine-tuning large language models in step 5.
+The above explanation pertains to the question answering task, but the same concepts can be applied to learning other external tools as well. Table 1 illustrates the inputs and outputs for all the tasks discussed in the paper, while Figure 2 displays the augmented dataset used for fine-tuning large language models in step 5.
 
 ![prompt_for_integrating_tools](ts1.png){: width="400"}
 *Figure 2: Examples of the augmented dataset for finetuning the model. Reprinted from [(Schick et al., 2023)](https://arxiv.org/abs/2302.04761).*
 
 ## Does it really work?
-The researchers construct a model from `GPT-J` (Wang and Komatsuzaki, 2021)[https://github.com/kingoflolz/mesh-transformer-jax] using the methodology described in the previous section with zero-shot method. They refer to the resulting model as *Toolformer*. To assess its performance, they evaluate the model on various benchmarks across different tasks, including cloze tests (LAMA), math problems, and question answering (QA), as depicted in Figure 3. It is noted that the model `Toolformer (disabled)` is the toolformer model with API disabled, meaning that the model knows how to use a proper tool, but cannot utilize it.
+The researchers construct a model from `GPT-J` [(Wang and Komatsuzaki, 2021)](https://github.com/kingoflolz/mesh-transformer-jax) using the methodology described in the previous section with zero-shot method. They refer to the resulting model as *Toolformer*. To assess its performance, they evaluate the model on various benchmarks across different tasks, including cloze tests (LAMA), math problems, and question answering (QA), as depicted in Figure 3. It is noted that the model `Toolformer (disabled)` is the toolformer model with API disabled, meaning that the model knows how to use a proper tool, but cannot utilize it.
 
 ![performance_comparison](ts4.png)
 *Figure 3: Model performance comparison between Toolformer, Toolformer (disabled), and GPT-3 on cloze test, math problems, and question answering task. Reprinted from [(Schick et al., 2023)](https://arxiv.org/abs/2302.04761).*
