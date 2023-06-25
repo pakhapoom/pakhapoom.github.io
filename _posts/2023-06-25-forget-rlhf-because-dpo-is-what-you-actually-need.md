@@ -23,7 +23,7 @@ To recap the standard process when adopting the RLHF framework, it is typically 
 3. Optimize the policy using an RL technique, such as proximal policy optimization (PPO).
 
 ![direct_preference_optimization](rr1.png)
-*Figure 1: Comparision between RLHF (left) and direct preference optimization (DPO; right). Reprinted from [(Rafailov et al., 2023)](https://arxiv.org/abs/2305.18290).*
+*Figure 1: Comparison between RLHF (left) and direct preference optimization (DPO; right). Reprinted from [(Rafailov et al., 2023)](https://arxiv.org/abs/2305.18290).*
 
 In the DPO's paper, the authors apply the Bradley and Terry model, which is a preference model in the loss function. Through some algebraic work (provided in the last section), they demonstrate that the second step can be skipped because language models inherently act as reward models themselves. Surprisingly, once the second step is removed, the problem is significantly simplified to an optimization problem with a cross-entropy objective, as shown in Figure 2.
 
@@ -36,7 +36,7 @@ In the DPO's paper, the authors apply the Bradley and Terry model, which is a pr
 The authors claim that the optimal policy obtained from the DPO framework is more efficient than that from PPO because all the points of DPO (yellow) are located higher than those of PPO (orange) on the plot in Figure 3 (left). This plot represents the achieved reward and KL divergence in a sentiment generation task. Additionally, they demonstrate that the win rate in the summarization task of DPO surpasses that of PPO across all temperature variations, as depicted in Figure 3 (right).
 
 ![direct_preference_optimization](rr2.png)
-*Figure 3: Comparision between RLHF (left) and direct preference optimization (DPO; right). Reprinted from [(Rafailov et al., 2023)](https://arxiv.org/abs/2305.18290).*
+*Figure 3: Experimental results from sentimenet generation task in terms of reward and KL divergence value (left), and summarization task in terms of win rate evaluated by GPT-4 (right). Reprinted from [(Rafailov et al., 2023)](https://arxiv.org/abs/2305.18290).*
 
 Figure 4 displays examples of outputs from both DPO and PPO, along with the corresponding assessments provided by GPT-4. The authors observe that the judgements made by GPT-4 align well with those made by humans.
 
@@ -70,7 +70,7 @@ $$
 \min_{\pi}\mathbb{E}_{x\sim\mathcal{D}}\mathbb{E}_{y\sim\pi(y|x)}\left[\log\frac{\pi(y\,|\,x)}{\pi_{\text{ref}}(y\,|\,x)}-\log\exp\left(\frac{1}{\beta}r(x,y)\right)\right].
 $$
 
-Here, the majic comes into play. We both add and substract with $\log Z(x)$, where $Z(x)$ is a certain function$.
+Here, the magic comes into play. We both add and subtract with $\log Z(x)$, where $Z(x)$ is a certain function$.
 
 $$
 \min_{\pi}\mathbb{E}_{x\sim\mathcal{D}}\mathbb{E}_{y\sim\pi(y|x)}\left[\log\frac{\pi(y\,|\,x)}{\pi_{\text{ref}}(y\,|\,x)}-\log\exp\left(\frac{1}{\beta}r(x,y)\right)+\log Z(x)-\log Z(x) \right].
@@ -123,7 +123,7 @@ Now, we can make the reward function the subject, meaning that we may obtain
 $$
 \begin{aligned}
 r(x,y)
-&=\beta\log\left(\frac{Z(x)=\pi^*(y\,|\,x)}{\pi_{\text{ref}}(y\,|\,x)}\right)\\
+&=\beta\log\left(\frac{Z(x)\pi^*(y\,|\,x)}{\pi_{\text{ref}}(y\,|\,x)}\right)\\
 &=\beta\log\frac{\pi^*(y\,|\,x)}{\pi_{\text{ref}}(y\,|\,x)}+\beta\log Z(x).
 \end{aligned}
 $$
