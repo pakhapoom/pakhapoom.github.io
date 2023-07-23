@@ -1,7 +1,7 @@
 ---
 title: Taming LLMs to follow instructions with human feedback
 date: 2023-06-11 19:00:00 +0700
-categories: [nlp, prompt]
+categories: [nlp, fine-tuning]
 tags: [large language model, gptinstruct, gpt, reinforcement learning from human feedbak, rlhf, supervised fine-tune]
 math: true
 mermaid: true
