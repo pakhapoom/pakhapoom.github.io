@@ -1,5 +1,5 @@
 ---
-title: Did you notice, something's changed in ChatGPT?
+title: Thinking fast and slow with tree of thoughts
 date: 2023-08-04 16:20:00 +0700
 categories: [nlp, prompt]
 tags: [large language model, in-context learning, prompt engineering, tree of thoughts, ToT, chain of thoughts, CoT]
