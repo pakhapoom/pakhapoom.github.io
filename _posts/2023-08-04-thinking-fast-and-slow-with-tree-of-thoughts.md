@@ -9,9 +9,9 @@ img_path: /nlp/prompt/
 ---
 
 ## TL;DR 
-* The tree-of-thoughts (ToT) prompting method combines these techniques and involves four steps: thought decomposition, generation, evaluation, and response selection.
-* ToT prompting achieves impressive results in tasks like solving the game of 24, creative writing, and mini crosswords.
-* he ToT approach simulates our thinking processes, but balancing task performance and cost efficiency is necessary when using LLM services.
+* The tree-of-thoughts (ToT) prompting method imitates our thinking processes of System I and System II through a tree-like thought structure.
+* ToT prompting achieves impressive results in tasks such as solving the game of 24, creative writing, and mini crosswords.
+* There are two strategies to derive the best response, depending on the priority of consideration. One is to focus on each possibility at a time (BFS), and the other is to thoroughly determine the possibility for each branch (DFS).
 
 
 ## Cannot-be-finetuned limitation
