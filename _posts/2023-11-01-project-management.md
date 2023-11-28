@@ -127,7 +127,7 @@ This is my note from the course: [Foundations of Project Management](https://www
 ## Organizational culture
 * characteristicss of organization.
 * missions, values, identity, people, processes.
-* can be inferred by the following questions.
+* it can be inferred by the following questions.
     * how does communication happen?
     * how are dicisions made?
     * what kind of rituals are in place when someone new comes to the organization?
