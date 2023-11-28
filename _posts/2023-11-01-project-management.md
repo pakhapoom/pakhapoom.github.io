@@ -11,7 +11,7 @@ render_with_liquid: false
 
 This is my note from the course: [Foundations of Project Management](https://www.coursera.org/learn/project-management-foundations/).
 
-![course](just_learn_it_01.jpeg)
+![course](just_learn_it_01.png)
 
 ## Terminology
 * project manager: the one who drives a project with expected skills to
