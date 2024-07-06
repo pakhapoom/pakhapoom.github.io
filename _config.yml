@@ -11,8 +11,9 @@
 # https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/#installing-the-theme
 
 # theme                    : "minimal-mistakes-jekyll"
-remote_theme           : "mmistakes/minimal-mistakes"
+remote_theme             : "mmistakes/minimal-mistakes"
 minimal_mistakes_skin    : "default" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
+search                   : true
 
 # Site Settings
 locale                   : "en-US"
@@ -104,9 +105,9 @@ social:
 
 # Analytics
 analytics:
-  provider               : false # false (default), "google", "google-universal", "google-gtag", "custom"
+  provider               : google-gtag # false (default), "google", "google-universal", "google-gtag", "custom"
   google:
-    tracking_id          :
+    tracking_id          : G-RDF48B3BKZ
     anonymize_ip         : # true, false (default)
 
 
@@ -145,11 +146,6 @@ author:
     # - label: "Instagram"
     #   icon: "fab fa-fw fa-instagram"
     #   # url: "https://instagram.com/"
-
-image:
-  path: /assets/images/home-banner.jpg
-  width: 1080
-  alt: a banner
 
 # Site Footer
 footer:
@@ -351,3 +347,6 @@ defaults:
       comments: # true
       share: true
       related: true
+
+header:
+  teaser: /assets/images/home-banner.jpg
