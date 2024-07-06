@@ -146,6 +146,11 @@ author:
     #   icon: "fab fa-fw fa-instagram"
     #   # url: "https://instagram.com/"
 
+image:
+  path: /assets/images/home-banner.jpg
+  width: 1080
+  alt: Twitter Logo
+
 # Site Footer
 footer:
   links:
