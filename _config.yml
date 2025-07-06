@@ -139,7 +139,7 @@ author:
       url: https://github.com/pakhapoom
     - label: YouTube
       icon: fab fa-fw fa-youtube
-      url: https://www.youtube.com/@pakapongza01
+      url: http://www.youtube.com/@pakapongza.official
     - label: Linkedin
       icon: fab fa-fw fa-linkedin-in
       url: https://www.linkedin.com/in/pakhapoom-sarapat/
@@ -347,6 +347,8 @@ defaults:
       comments: # true
       share: true
       related: true
+      image:
+        thumbnail: true
 
 header:
   teaser: /assets/images/home-banner.jpg
