@@ -27,10 +27,7 @@ function getSearchableText(paper) {
         paper.title,
         paper.authors.join(' '),
         paper.tags.join(' '),
-        paper.summary.researchQuestions || '',
-        paper.summary.methodology || '',
-        paper.summary.discussion || '',
-        paper.summary.notes || ''
+        paper._markdownContent || ''
     ];
     return parts.join(' ');
 }
@@ -140,10 +137,7 @@ function getFuseInstance(papers) {
             { name: 'title', weight: 3 },
             { name: 'authors', weight: 2 },
             { name: 'tags', weight: 2 },
-            { name: 'summary.researchQuestions', weight: 1 },
-            { name: 'summary.methodology', weight: 1 },
-            { name: 'summary.discussion', weight: 1 },
-            { name: 'summary.notes', weight: 1 }
+            { name: '_markdownContent', weight: 1 }
         ],
         threshold: 0.4,
         includeScore: true,

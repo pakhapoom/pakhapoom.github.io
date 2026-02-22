@@ -1,14 +1,15 @@
 /**
  * data.js — Data loader module
- * Fetches papers.json and provides helper accessors.
+ * Fetches papers.json and markdown summaries, provides helper accessors.
  */
 
 let _papers = null;
+let _markdownCache = new Map();
 
 /**
  * Load all papers from data/papers.json.
- * Caches the result after the first call.
- * @returns {Promise<Array>} Array of paper objects
+ * Also fetches and caches all markdown summaries for search indexing.
+ * @returns {Promise<Array>} Array of paper objects (with _markdownContent attached)
  */
 export async function loadPapers() {
   if (_papers) return _papers;
@@ -17,12 +18,39 @@ export async function loadPapers() {
     const response = await fetch('data/papers.json');
     if (!response.ok) throw new Error(`Failed to load papers: ${response.status}`);
     _papers = await response.json();
+
+    // Fetch all markdown summaries in parallel
+    const mdPromises = _papers.map(async (paper) => {
+      try {
+        const md = await fetchMarkdown(paper.summaryFile);
+        paper._markdownContent = md;
+      } catch {
+        paper._markdownContent = '';
+      }
+    });
+    await Promise.all(mdPromises);
+
     return _papers;
   } catch (err) {
     console.error('Error loading papers:', err);
     _papers = [];
     return _papers;
   }
+}
+
+/**
+ * Fetch a markdown file and cache its content.
+ * @param {string} path - Relative path to the markdown file
+ * @returns {Promise<string>} Raw markdown content
+ */
+async function fetchMarkdown(path) {
+  if (_markdownCache.has(path)) return _markdownCache.get(path);
+
+  const response = await fetch(path);
+  if (!response.ok) throw new Error(`Failed to load ${path}: ${response.status}`);
+  const text = await response.text();
+  _markdownCache.set(path, text);
+  return text;
 }
 
 /**
@@ -33,6 +61,16 @@ export async function loadPapers() {
 export async function getPaperById(id) {
   const papers = await loadPapers();
   return papers.find(p => p.id === id) || null;
+}
+
+/**
+ * Get the markdown content for a paper.
+ * @param {Object} paper - Paper object
+ * @returns {Promise<string>} Raw markdown string
+ */
+export async function getMarkdownForPaper(paper) {
+  if (paper._markdownContent) return paper._markdownContent;
+  return fetchMarkdown(paper.summaryFile);
 }
 
 /**
