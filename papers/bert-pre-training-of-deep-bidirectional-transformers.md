@@ -1,3 +1,12 @@
+---
+title: "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding"
+authors: ["Jacob Devlin", "Ming-Wei Chang", "Kenton Lee", "Kristina Toutanova"]
+year: 2019
+tags: ["bert", "nlp", "pre-training", "transformer", "language-model"]
+url: "https://arxiv.org/abs/1810.04805"
+dateAdded: "2026-01-20"
+---
+
 ## Research Questions
 
 Can deep bidirectional pre-training of language representations improve performance across a wide range of NLP tasks with minimal task-specific architecture modifications?

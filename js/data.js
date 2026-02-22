@@ -1,56 +1,106 @@
 /**
  * data.js — Data loader module
- * Fetches papers.json and markdown summaries, provides helper accessors.
+ * Loads papers from individual markdown files with YAML frontmatter.
+ * No external YAML parser needed — uses a lightweight built-in parser.
  */
 
 let _papers = null;
-let _markdownCache = new Map();
 
 /**
- * Load all papers from data/papers.json.
- * Also fetches and caches all markdown summaries for search indexing.
- * @returns {Promise<Array>} Array of paper objects (with _markdownContent attached)
+ * Parse YAML frontmatter from a markdown string.
+ * Handles: strings, numbers, arrays (JSON-style), and bare values.
+ * @param {string} raw - Full markdown file content
+ * @returns {{ meta: Object, content: string }}
+ */
+function parseFrontmatter(raw) {
+  const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
+  if (!match) return { meta: {}, content: raw };
+
+  const yamlBlock = match[1];
+  const content = match[2].trim();
+  const meta = {};
+
+  for (const line of yamlBlock.split('\n')) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+
+    const colonIdx = trimmed.indexOf(':');
+    if (colonIdx === -1) continue;
+
+    const key = trimmed.substring(0, colonIdx).trim();
+    let value = trimmed.substring(colonIdx + 1).trim();
+
+    // Remove surrounding quotes
+    if ((value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))) {
+      value = value.slice(1, -1);
+    }
+    // Parse JSON-style arrays
+    else if (value.startsWith('[')) {
+      try {
+        value = JSON.parse(value);
+      } catch {
+        // fallback: keep as string
+      }
+    }
+    // Parse numbers
+    else if (/^\d+$/.test(value)) {
+      value = parseInt(value, 10);
+    }
+
+    meta[key] = value;
+  }
+
+  return { meta, content };
+}
+
+/**
+ * Load all papers from individual markdown files listed in papers/index.json.
+ * Parses YAML frontmatter for metadata, keeps markdown body for rendering.
+ * @returns {Promise<Array>} Array of paper objects
  */
 export async function loadPapers() {
   if (_papers) return _papers;
 
   try {
-    const response = await fetch('data/papers.json');
-    if (!response.ok) throw new Error(`Failed to load papers: ${response.status}`);
-    _papers = await response.json();
+    // Fetch the index of paper filenames
+    const indexRes = await fetch('papers/index.json');
+    if (!indexRes.ok) throw new Error(`Failed to load index: ${indexRes.status}`);
+    const filenames = await indexRes.json();
 
-    // Fetch all markdown summaries in parallel
-    const mdPromises = _papers.map(async (paper) => {
-      try {
-        const md = await fetchMarkdown(paper.summaryFile);
-        paper._markdownContent = md;
-      } catch {
-        paper._markdownContent = '';
+    // Fetch all markdown files in parallel
+    const paperPromises = filenames.map(async (filename) => {
+      const res = await fetch(`papers/${filename}`);
+      if (!res.ok) {
+        console.warn(`Failed to load papers/${filename}: ${res.status}`);
+        return null;
       }
-    });
-    await Promise.all(mdPromises);
+      const raw = await res.text();
+      const { meta, content } = parseFrontmatter(raw);
 
+      // Derive ID from filename (strip .md extension)
+      const id = filename.replace(/\.md$/, '');
+
+      return {
+        id,
+        title: meta.title || id,
+        authors: meta.authors || [],
+        year: meta.year || 0,
+        tags: meta.tags || [],
+        url: meta.url || '',
+        dateAdded: meta.dateAdded || '',
+        _markdownContent: content,
+        _filename: filename
+      };
+    });
+
+    _papers = (await Promise.all(paperPromises)).filter(Boolean);
     return _papers;
   } catch (err) {
     console.error('Error loading papers:', err);
     _papers = [];
     return _papers;
   }
-}
-
-/**
- * Fetch a markdown file and cache its content.
- * @param {string} path - Relative path to the markdown file
- * @returns {Promise<string>} Raw markdown content
- */
-async function fetchMarkdown(path) {
-  if (_markdownCache.has(path)) return _markdownCache.get(path);
-
-  const response = await fetch(path);
-  if (!response.ok) throw new Error(`Failed to load ${path}: ${response.status}`);
-  const text = await response.text();
-  _markdownCache.set(path, text);
-  return text;
 }
 
 /**
@@ -65,12 +115,11 @@ export async function getPaperById(id) {
 
 /**
  * Get the markdown content for a paper.
- * @param {Object} paper - Paper object
- * @returns {Promise<string>} Raw markdown string
+ * @param {Object} paper
+ * @returns {string}
  */
-export async function getMarkdownForPaper(paper) {
-  if (paper._markdownContent) return paper._markdownContent;
-  return fetchMarkdown(paper.summaryFile);
+export function getMarkdownForPaper(paper) {
+  return paper._markdownContent || '';
 }
 
 /**

@@ -133,7 +133,7 @@ export async function renderPaperDetail(container, paperId) {
   }
 
   // Get markdown content and render to HTML
-  const markdown = await getMarkdownForPaper(paper);
+  const markdown = getMarkdownForPaper(paper);
   const renderedHtml = marked.parse(markdown);
 
   let html = `

@@ -1,3 +1,12 @@
+---
+title: "Language Models are Few-Shot Learners"
+authors: ["Tom B. Brown", "Benjamin Mann", "Nick Ryder", "Melanie Subbiah"]
+year: 2020
+tags: ["gpt-3", "nlp", "few-shot-learning", "language-model", "transformer", "scaling"]
+url: "https://arxiv.org/abs/2005.14165"
+dateAdded: "2026-02-10"
+---
+
 ## Research Questions
 
 Can scaling up language models dramatically improve few-shot task performance, reducing the need for task-specific fine-tuning? At what scale do emergent abilities appear?

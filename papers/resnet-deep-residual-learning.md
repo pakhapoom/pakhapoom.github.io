@@ -1,3 +1,12 @@
+---
+title: "Deep Residual Learning for Image Recognition"
+authors: ["Kaiming He", "Xiangyu Zhang", "Shaoqing Ren", "Jian Sun"]
+year: 2016
+tags: ["resnet", "computer-vision", "deep-learning", "image-classification", "residual-learning"]
+url: "https://arxiv.org/abs/1512.03385"
+dateAdded: "2026-02-01"
+---
+
 ## Research Questions
 
 How can we train substantially deeper neural networks without suffering from degradation in accuracy? Can reformulating layers as residual functions ease optimization?

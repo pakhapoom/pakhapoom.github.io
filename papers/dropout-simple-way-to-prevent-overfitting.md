@@ -1,3 +1,12 @@
+---
+title: "Dropout: A Simple Way to Prevent Neural Networks from Overfitting"
+authors: ["Nitish Srivastava", "Geoffrey Hinton", "Alex Krizhevsky", "Ilya Sutskever", "Ruslan Salakhutdinov"]
+year: 2014
+tags: ["dropout", "regularization", "deep-learning", "neural-networks"]
+url: "https://jmlr.org/papers/v15/srivastava14a.html"
+dateAdded: "2026-02-15"
+---
+
 ## Research Questions
 
 Can randomly dropping units during training effectively prevent neural networks from overfitting, and how does this compare to other regularization methods?
