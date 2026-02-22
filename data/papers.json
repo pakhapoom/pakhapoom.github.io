@@ -2,76 +2,111 @@
   {
     "id": "attention-is-all-you-need",
     "title": "Attention Is All You Need",
-    "authors": ["Ashish Vaswani", "Noam Shazeer", "Niki Parmar", "Jakob Uszkoreit", "Llion Jones", "Aidan N. Gomez", "Łukasz Kaiser", "Illia Polosukhin"],
+    "authors": [
+      "Ashish Vaswani",
+      "Noam Shazeer",
+      "Niki Parmar",
+      "Jakob Uszkoreit",
+      "Llion Jones",
+      "Aidan N. Gomez",
+      "Łukasz Kaiser",
+      "Illia Polosukhin"
+    ],
     "year": 2017,
-    "tags": ["transformer", "attention", "nlp", "deep-learning", "sequence-to-sequence"],
+    "tags": [
+      "transformer",
+      "attention",
+      "nlp",
+      "deep-learning",
+      "sequence-to-sequence"
+    ],
     "url": "https://arxiv.org/abs/1706.03762",
-    "summary": {
-      "researchQuestions": "Can a model architecture based entirely on attention mechanisms, dispensing with recurrence and convolutions, achieve competitive or superior performance on sequence transduction tasks?",
-      "methodology": "Proposed the Transformer architecture using multi-head self-attention and positional encoding. Evaluated on WMT 2014 English-to-German and English-to-French translation benchmarks. Compared training cost and BLEU scores against existing RNN and CNN-based models.",
-      "discussion": "The Transformer achieves 28.4 BLEU on EN-DE and 41.8 BLEU on EN-FR, establishing new state-of-the-art results. Training is significantly more parallelizable and requires less time than recurrent architectures. Multi-head attention allows the model to attend to information from different representation subspaces.",
-      "notes": "Foundational paper for modern LLMs (GPT, BERT, etc.). The scaled dot-product attention and positional encoding are the key innovations. The paper also introduced the encoder-decoder structure used widely today."
-    },
+    "summaryFile": "papers/attention-is-all-you-need.md",
     "dateAdded": "2026-01-15"
   },
   {
     "id": "bert-pre-training-of-deep-bidirectional-transformers",
     "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
-    "authors": ["Jacob Devlin", "Ming-Wei Chang", "Kenton Lee", "Kristina Toutanova"],
+    "authors": [
+      "Jacob Devlin",
+      "Ming-Wei Chang",
+      "Kenton Lee",
+      "Kristina Toutanova"
+    ],
     "year": 2019,
-    "tags": ["bert", "nlp", "pre-training", "transformer", "language-model"],
+    "tags": [
+      "bert",
+      "nlp",
+      "pre-training",
+      "transformer",
+      "language-model"
+    ],
     "url": "https://arxiv.org/abs/1810.04805",
-    "summary": {
-      "researchQuestions": "Can deep bidirectional pre-training of language representations improve performance across a wide range of NLP tasks with minimal task-specific architecture modifications?",
-      "methodology": "Introduced BERT, which uses masked language modeling (MLM) and next sentence prediction (NSP) for pre-training. Fine-tuned on 11 NLP tasks including GLUE, SQuAD, and SWAG. Compared BERT-base and BERT-large against ELMo, GPT, and task-specific architectures.",
-      "discussion": "BERT achieves state-of-the-art results on all 11 tasks, improving GLUE score to 80.5%, MultiNLI accuracy to 86.7%, and SQuAD v1.1 F1 to 93.2%. The bidirectional approach captures richer contextual representations than left-to-right or concatenated left-right models.",
-      "notes": "BERT democratized transfer learning for NLP. The masked language model objective is conceptually simple but highly effective. Fine-tuning BERT became the de facto approach for many NLP tasks."
-    },
+    "summaryFile": "papers/bert-pre-training-of-deep-bidirectional-transformers.md",
     "dateAdded": "2026-01-20"
   },
   {
     "id": "resnet-deep-residual-learning",
     "title": "Deep Residual Learning for Image Recognition",
-    "authors": ["Kaiming He", "Xiangyu Zhang", "Shaoqing Ren", "Jian Sun"],
+    "authors": [
+      "Kaiming He",
+      "Xiangyu Zhang",
+      "Shaoqing Ren",
+      "Jian Sun"
+    ],
     "year": 2016,
-    "tags": ["resnet", "computer-vision", "deep-learning", "image-classification", "residual-learning"],
+    "tags": [
+      "resnet",
+      "computer-vision",
+      "deep-learning",
+      "image-classification",
+      "residual-learning"
+    ],
     "url": "https://arxiv.org/abs/1512.03385",
-    "summary": {
-      "researchQuestions": "How can we train substantially deeper neural networks without suffering from degradation in accuracy? Can reformulating layers as residual functions ease optimization?",
-      "methodology": "Introduced residual learning with shortcut connections that skip one or more layers. Evaluated on ImageNet classification with networks up to 152 layers deep. Also tested on CIFAR-10 and COCO object detection.",
-      "discussion": "ResNets with 152 layers achieve 3.57% top-5 error on ImageNet, winning 1st place at ILSVRC 2015. The skip connections enable training of much deeper networks by alleviating the vanishing gradient problem. The approach is general and applicable beyond image recognition.",
-      "notes": "Skip connections are now a fundamental building block in deep learning. The idea is elegantly simple — instead of learning H(x), learn F(x) = H(x) - x. This paper has over 100k citations."
-    },
+    "summaryFile": "papers/resnet-deep-residual-learning.md",
     "dateAdded": "2026-02-01"
   },
   {
     "id": "gpt3-language-models-are-few-shot-learners",
     "title": "Language Models are Few-Shot Learners",
-    "authors": ["Tom B. Brown", "Benjamin Mann", "Nick Ryder", "Melanie Subbiah"],
+    "authors": [
+      "Tom B. Brown",
+      "Benjamin Mann",
+      "Nick Ryder",
+      "Melanie Subbiah"
+    ],
     "year": 2020,
-    "tags": ["gpt-3", "nlp", "few-shot-learning", "language-model", "transformer", "scaling"],
+    "tags": [
+      "gpt-3",
+      "nlp",
+      "few-shot-learning",
+      "language-model",
+      "transformer",
+      "scaling"
+    ],
     "url": "https://arxiv.org/abs/2005.14165",
-    "summary": {
-      "researchQuestions": "Can scaling up language models dramatically improve few-shot task performance, reducing the need for task-specific fine-tuning? At what scale do emergent abilities appear?",
-      "methodology": "Trained GPT-3, a 175 billion parameter autoregressive language model, and evaluated in zero-shot, one-shot, and few-shot settings across dozens of NLP benchmarks. No gradient updates or fine-tuning during evaluation — tasks are specified via natural language prompts.",
-      "discussion": "GPT-3 achieves strong few-shot performance on many benchmarks, sometimes matching fine-tuned models. Performance scales smoothly with model size. The model can generate realistic news articles and perform novel tasks like arithmetic and code generation from descriptions.",
-      "notes": "This paper established the scaling laws paradigm and showed that in-context learning emerges at scale. It laid the groundwork for ChatGPT and the modern LLM era. The gap between few-shot and fine-tuned performance narrows with scale."
-    },
+    "summaryFile": "papers/gpt3-language-models-are-few-shot-learners.md",
     "dateAdded": "2026-02-10"
   },
   {
     "id": "dropout-simple-way-to-prevent-overfitting",
     "title": "Dropout: A Simple Way to Prevent Neural Networks from Overfitting",
-    "authors": ["Nitish Srivastava", "Geoffrey Hinton", "Alex Krizhevsky", "Ilya Sutskever", "Ruslan Salakhutdinov"],
+    "authors": [
+      "Nitish Srivastava",
+      "Geoffrey Hinton",
+      "Alex Krizhevsky",
+      "Ilya Sutskever",
+      "Ruslan Salakhutdinov"
+    ],
     "year": 2014,
-    "tags": ["dropout", "regularization", "deep-learning", "neural-networks"],
+    "tags": [
+      "dropout",
+      "regularization",
+      "deep-learning",
+      "neural-networks"
+    ],
     "url": "https://jmlr.org/papers/v15/srivastava14a.html",
-    "summary": {
-      "researchQuestions": "Can randomly dropping units during training effectively prevent neural networks from overfitting, and how does this compare to other regularization methods?",
-      "methodology": "Proposed dropout — randomly setting a fraction of hidden units to zero during each training step. Evaluated on benchmark datasets including MNIST, CIFAR-10, ImageNet, TIMIT, and Reuters. Compared against no-dropout baselines, L2 regularization, and Bayesian approaches.",
-      "discussion": "Dropout consistently improves generalization across tasks and architectures. It can be interpreted as training an ensemble of exponentially many sub-networks. The technique is computationally cheap and easy to implement, requiring only a single hyperparameter (the drop rate).",
-      "notes": "Dropout became a standard component in deep learning. The key insight is that it prevents co-adaptation of features. Typical drop rates are 0.5 for hidden layers and 0.2 for input layers."
-    },
+    "summaryFile": "papers/dropout-simple-way-to-prevent-overfitting.md",
     "dateAdded": "2026-02-15"
   }
 ]
