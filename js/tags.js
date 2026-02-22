@@ -111,16 +111,6 @@ export async function renderTags(container) {
                 </a>`;
   }).join('')}
           </div>
-
-          <h3 class="panel-title" style="margin-top: var(--space-lg);">🔗 Common Pairs</h3>
-          <div class="tag-pairs-list">
-            ${topPairs.length > 0 ? topPairs.map(([pair, count]) => `
-              <div class="tag-pair-item">
-                <span class="tag-pair-name">${pair}</span>
-                <span class="tag-pair-count">${count}×</span>
-              </div>
-            `).join('') : '<div class="tag-pair-item" style="color:var(--color-muted)">Not enough data yet</div>'}
-          </div>
         </div>
       </div>
 
@@ -233,14 +223,6 @@ function renderBarChart(sortedTags) {
   const labels = sortedTags.map(([tag]) => tag);
   const data = sortedTags.map(([, count]) => count);
 
-  // Generate a nice gradient palette
-  const colors = sortedTags.map((_, i) => {
-    const hue = 240 + (i * 17) % 120;
-    const sat = 70 - (i * 2) % 20;
-    const light = 60 + (i * 3) % 15;
-    return `hsl(${hue}, ${sat}%, ${light}%)`;
-  });
-
   const chart = new Chart(canvas, {
     type: 'bar',
     data: {
@@ -248,7 +230,8 @@ function renderBarChart(sortedTags) {
       datasets: [{
         label: 'Papers',
         data,
-        backgroundColor: colors,
+        backgroundColor: 'rgba(99, 102, 241, 0.65)',
+        hoverBackgroundColor: 'rgba(99, 102, 241, 0.85)',
         borderRadius: 6,
         borderSkipped: false,
         barThickness: 24
