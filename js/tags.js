@@ -121,22 +121,8 @@ export async function renderTags(container) {
           <canvas id="tags-chart"></canvas>
         </div>
       </div>
-
-      <!-- All Tags -->
-      <div class="dashboard-panel">
-        <h3 class="panel-title">🏷️ All Tags</h3>
-        <div class="tags-cloud">
-          ${sortedTags.map(([tag, count]) => {
-    const size = count >= 3 ? 'lg' : count >= 2 ? 'md' : 'sm';
-    return `
-            <a href="#papers?tag=${encodeURIComponent(tag)}" class="tag-cloud-badge tag-cloud-badge--${size}">
-              ${escapeHtml(tag)}
-              <span class="tag-count">${count}</span>
-            </a>`;
-  }).join('')}
-        </div>
-      </div>
     </div>`;
+
 
   container.innerHTML = html;
   destroyCharts();
