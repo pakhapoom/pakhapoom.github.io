@@ -1,152 +1,305 @@
 /**
- * tags.js — Tag statistics and visualisation
+ * tags.js — Tag statistics and visualisation dashboard
  */
 
 import { loadPapers, getAllTags } from './data.js';
 
-let chartInstance = null;
+let chartInstances = [];
 
 /**
- * Render the tags statistics view.
- * @param {HTMLElement} container
+ * Destroy all previous chart instances.
  */
-export async function renderTags(container) {
-    const papers = await loadPapers();
-    const tagMap = await getAllTags();
-    const totalPapers = papers.length;
-    const totalTags = tagMap.size;
-
-    // Sort tags by count descending
-    const sortedTags = [...tagMap.entries()].sort((a, b) => b[1] - a[1]);
-
-    // Year range
-    const years = papers.map(p => p.year);
-    const yearRange = years.length > 0 ? `${Math.min(...years)}–${Math.max(...years)}` : 'N/A';
-
-    let html = `
-    <div class="fade-in">
-      <!-- Stats Cards -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-value">${totalPapers}</div>
-          <div class="stat-label">Papers</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">${totalTags}</div>
-          <div class="stat-label">Unique Tags</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">${yearRange}</div>
-          <div class="stat-label">Year Range</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">${sortedTags.length > 0 ? sortedTags[0][0] : '—'}</div>
-          <div class="stat-label">Top Tag</div>
-        </div>
-      </div>
-
-      <!-- Tags Cloud -->
-      <h3 style="margin-bottom: var(--space-md);">All Tags</h3>
-      <div class="tags-cloud">
-        ${sortedTags.map(([tag, count]) => `
-          <a href="#papers?tag=${encodeURIComponent(tag)}" class="tag-badge">
-            ${escapeHtml(tag)}
-            <span class="tag-count">${count}</span>
-          </a>
-        `).join('')}
-      </div>
-
-      <!-- Chart -->
-      <h3 style="margin-bottom: var(--space-md);">Tag Distribution</h3>
-      <div class="chart-container">
-        <canvas id="tags-chart"></canvas>
-      </div>
-    </div>`;
-
-    container.innerHTML = html;
-
-    // Render Chart.js bar chart
-    renderChart(sortedTags);
+function destroyCharts() {
+  chartInstances.forEach(c => c.destroy());
+  chartInstances = [];
 }
 
 /**
- * Render a horizontal bar chart of tag counts using Chart.js.
+ * Render the tags statistics dashboard.
+ * @param {HTMLElement} container
  */
-function renderChart(sortedTags) {
-    const canvas = document.getElementById('tags-chart');
-    if (!canvas) return;
+export async function renderTags(container) {
+  const papers = await loadPapers();
+  const tagMap = await getAllTags();
+  const totalPapers = papers.length;
+  const totalTags = tagMap.size;
 
-    // Destroy previous instance
-    if (chartInstance) {
-        chartInstance.destroy();
-        chartInstance = null;
+  // Sort tags by count descending
+  const sortedTags = [...tagMap.entries()].sort((a, b) => b[1] - a[1]);
+
+  // Year stats
+  const years = papers.map(p => p.year);
+  const minYear = Math.min(...years);
+  const maxYear = Math.max(...years);
+
+  // Average tags per paper
+  const avgTags = (papers.reduce((sum, p) => sum + p.tags.length, 0) / totalPapers).toFixed(1);
+
+  // Papers per year
+  const yearCounts = {};
+  papers.forEach(p => { yearCounts[p.year] = (yearCounts[p.year] || 0) + 1; });
+  const allYears = [];
+  for (let y = minYear; y <= maxYear; y++) allYears.push(y);
+
+  // Top 3 tags
+  const top3 = sortedTags.slice(0, 3);
+
+  // Tag co-occurrence (which tags appear together most often)
+  const cooccurrence = {};
+  papers.forEach(p => {
+    for (let i = 0; i < p.tags.length; i++) {
+      for (let j = i + 1; j < p.tags.length; j++) {
+        const key = [p.tags[i], p.tags[j]].sort().join(' + ');
+        cooccurrence[key] = (cooccurrence[key] || 0) + 1;
+      }
     }
+  });
+  const topPairs = Object.entries(cooccurrence)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
 
-    const labels = sortedTags.map(([tag]) => tag);
-    const data = sortedTags.map(([, count]) => count);
+  let html = `
+    <div class="fade-in">
+      <!-- Hero Stats Row -->
+      <div class="stats-grid">
+        <div class="stat-card stat-card--accent">
+          <div class="stat-icon">📄</div>
+          <div class="stat-value">${totalPapers}</div>
+          <div class="stat-label">Papers</div>
+        </div>
+        <div class="stat-card stat-card--blue">
+          <div class="stat-icon">🏷️</div>
+          <div class="stat-value">${totalTags}</div>
+          <div class="stat-label">Unique Tags</div>
+        </div>
+        <div class="stat-card stat-card--teal">
+          <div class="stat-icon">📊</div>
+          <div class="stat-value">${avgTags}</div>
+          <div class="stat-label">Avg Tags / Paper</div>
+        </div>
+        <div class="stat-card stat-card--purple">
+          <div class="stat-icon">📅</div>
+          <div class="stat-value">${minYear}–${maxYear}</div>
+          <div class="stat-label">Year Range</div>
+        </div>
+      </div>
 
-    // Generate accent-derived colors
-    const colors = sortedTags.map((_, i) => {
-        const hue = 230 + (i * 25) % 60; // range around blue/violet
-        const sat = 65 + (i * 5) % 20;
-        return `hsl(${hue}, ${sat}%, 62%)`;
-    });
+      <!-- Two-column layout: Timeline + Top Tags -->
+      <div class="dashboard-row">
+        <div class="dashboard-panel dashboard-panel--wide">
+          <h3 class="panel-title">📈 Papers by Year</h3>
+          <div class="chart-container chart-container--timeline">
+            <canvas id="timeline-chart"></canvas>
+          </div>
+        </div>
+        <div class="dashboard-panel">
+          <h3 class="panel-title">🏆 Top Tags</h3>
+          <div class="top-tags-list">
+            ${top3.map(([tag, count], i) => {
+    const pct = Math.round((count / totalPapers) * 100);
+    const medals = ['🥇', '🥈', '🥉'];
+    return `
+                <a href="#papers?tag=${encodeURIComponent(tag)}" class="top-tag-item">
+                  <span class="top-tag-rank">${medals[i]}</span>
+                  <div class="top-tag-info">
+                    <span class="top-tag-name">${escapeHtml(tag)}</span>
+                    <div class="top-tag-bar-track">
+                      <div class="top-tag-bar-fill" style="width: ${pct}%"></div>
+                    </div>
+                  </div>
+                  <span class="top-tag-count">${count} <span class="top-tag-pct">(${pct}%)</span></span>
+                </a>`;
+  }).join('')}
+          </div>
 
-    chartInstance = new Chart(canvas, {
-        type: 'bar',
-        data: {
-            labels,
-            datasets: [{
-                label: 'Papers',
-                data,
-                backgroundColor: colors,
-                borderRadius: 6,
-                borderSkipped: false,
-                barThickness: 28
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    backgroundColor: '#1a1d23',
-                    titleFont: { family: 'Inter', size: 12 },
-                    bodyFont: { family: 'Inter', size: 12 },
-                    cornerRadius: 8,
-                    padding: 10
-                }
-            },
-            scales: {
-                x: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 1,
-                        font: { family: 'Inter', size: 11 },
-                        color: '#9aa3b1'
-                    },
-                    grid: { color: 'rgba(0,0,0,0.04)' }
-                },
-                y: {
-                    ticks: {
-                        font: { family: 'Inter', size: 12, weight: 500 },
-                        color: '#5f6878'
-                    },
-                    grid: { display: false }
-                }
-            }
+          <h3 class="panel-title" style="margin-top: var(--space-lg);">🔗 Common Pairs</h3>
+          <div class="tag-pairs-list">
+            ${topPairs.length > 0 ? topPairs.map(([pair, count]) => `
+              <div class="tag-pair-item">
+                <span class="tag-pair-name">${pair}</span>
+                <span class="tag-pair-count">${count}×</span>
+              </div>
+            `).join('') : '<div class="tag-pair-item" style="color:var(--color-muted)">Not enough data yet</div>'}
+          </div>
+        </div>
+      </div>
+
+      <!-- Tag Distribution (full width) -->
+      <div class="dashboard-panel">
+        <h3 class="panel-title">📊 Tag Distribution</h3>
+        <div class="chart-container chart-container--bar">
+          <canvas id="tags-chart"></canvas>
+        </div>
+      </div>
+
+      <!-- All Tags -->
+      <div class="dashboard-panel">
+        <h3 class="panel-title">🏷️ All Tags</h3>
+        <div class="tags-cloud">
+          ${sortedTags.map(([tag, count]) => {
+    const size = count >= 3 ? 'lg' : count >= 2 ? 'md' : 'sm';
+    return `
+            <a href="#papers?tag=${encodeURIComponent(tag)}" class="tag-cloud-badge tag-cloud-badge--${size}">
+              ${escapeHtml(tag)}
+              <span class="tag-count">${count}</span>
+            </a>`;
+  }).join('')}
+        </div>
+      </div>
+    </div>`;
+
+  container.innerHTML = html;
+  destroyCharts();
+  renderTimelineChart(allYears, yearCounts);
+  renderBarChart(sortedTags);
+}
+
+/**
+ * Render the papers-by-year timeline chart.
+ */
+function renderTimelineChart(allYears, yearCounts) {
+  const canvas = document.getElementById('timeline-chart');
+  if (!canvas) return;
+
+  const data = allYears.map(y => yearCounts[y] || 0);
+
+  const ctx = canvas.getContext('2d');
+  const gradient = ctx.createLinearGradient(0, 0, 0, canvas.parentElement.clientHeight || 200);
+  gradient.addColorStop(0, 'rgba(99, 102, 241, 0.3)');
+  gradient.addColorStop(1, 'rgba(99, 102, 241, 0.02)');
+
+  const chart = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: allYears.map(String),
+      datasets: [{
+        label: 'Papers',
+        data,
+        borderColor: 'rgb(99, 102, 241)',
+        backgroundColor: gradient,
+        fill: true,
+        tension: 0.35,
+        pointBackgroundColor: 'rgb(99, 102, 241)',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 5,
+        pointHoverRadius: 7
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(15, 23, 42, 0.9)',
+          titleFont: { family: 'Inter', size: 13, weight: '600' },
+          bodyFont: { family: 'Inter', size: 12 },
+          cornerRadius: 8,
+          padding: 12,
+          callbacks: {
+            label: ctx => `${ctx.parsed.y} paper${ctx.parsed.y !== 1 ? 's' : ''}`
+          }
         }
-    });
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: { family: 'Inter', size: 12 }, color: '#6b7280' }
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1,
+            font: { family: 'Inter', size: 11 },
+            color: '#9ca3af'
+          },
+          grid: { color: 'rgba(0, 0, 0, 0.04)' }
+        }
+      }
+    }
+  });
+  chartInstances.push(chart);
+}
+
+/**
+ * Render the tag distribution bar chart.
+ */
+function renderBarChart(sortedTags) {
+  const canvas = document.getElementById('tags-chart');
+  if (!canvas) return;
+
+  const labels = sortedTags.map(([tag]) => tag);
+  const data = sortedTags.map(([, count]) => count);
+
+  // Generate a nice gradient palette
+  const colors = sortedTags.map((_, i) => {
+    const hue = 240 + (i * 17) % 120;
+    const sat = 70 - (i * 2) % 20;
+    const light = 60 + (i * 3) % 15;
+    return `hsl(${hue}, ${sat}%, ${light}%)`;
+  });
+
+  const chart = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Papers',
+        data,
+        backgroundColor: colors,
+        borderRadius: 6,
+        borderSkipped: false,
+        barThickness: 24
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(15, 23, 42, 0.9)',
+          titleFont: { family: 'Inter', size: 13, weight: '600' },
+          bodyFont: { family: 'Inter', size: 12 },
+          cornerRadius: 8,
+          padding: 12,
+          callbacks: {
+            label: ctx => `${ctx.parsed.x} paper${ctx.parsed.x !== 1 ? 's' : ''}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1,
+            font: { family: 'Inter', size: 11 },
+            color: '#9ca3af'
+          },
+          grid: { color: 'rgba(0, 0, 0, 0.04)' }
+        },
+        y: {
+          ticks: {
+            font: { family: 'Inter', size: 12, weight: '500' },
+            color: '#4b5563'
+          },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+  chartInstances.push(chart);
 }
 
 /**
  * Escape HTML entities.
  */
 function escapeHtml(str) {
-    if (!str) return '';
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
 }
