@@ -6,7 +6,6 @@ import { loadPapers } from './data.js';
 import { initSearch, search } from './search.js';
 import { renderPapers, renderPaperDetail } from './papers.js';
 import { renderTags } from './tags.js';
-import { renderForm } from './form.js';
 
 // ---- DOM Elements ----
 const contentBody = document.getElementById('content-body');
@@ -26,7 +25,6 @@ const sidebarOverlay = document.getElementById('sidebar-overlay');
  *   #papers?tag=nlp  -> { page: 'papers', params: { tag: 'nlp' } }
  *   #paper/some-id   -> { page: 'paper', params: { id: 'some-id' } }
  *   #tags            -> { page: 'tags', params: {} }
- *   #add             -> { page: 'add', params: {} }
  */
 function parseRoute() {
     const hash = window.location.hash.slice(1) || 'papers';
@@ -85,11 +83,6 @@ async function navigate() {
         case 'tags':
             contentTitle.textContent = 'Tags & Stats';
             await renderTags(contentBody);
-            break;
-
-        case 'add':
-            contentTitle.textContent = 'Add Paper';
-            renderForm(contentBody);
             break;
 
         default:
