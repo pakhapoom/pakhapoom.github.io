@@ -241,6 +241,18 @@ function renderBarChart(sortedTags) {
       indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
+      onClick: (event, elements) => {
+        let tag = null;
+        if (elements.length > 0) {
+          tag = labels[elements[0].index];
+        }
+        if (tag) {
+          window.location.hash = `#papers?tag=${encodeURIComponent(tag)}`;
+        }
+      },
+      onHover: (event, elements) => {
+        event.native.target.style.cursor = elements.length > 0 ? 'pointer' : 'default';
+      },
       plugins: {
         legend: { display: false },
         tooltip: {
@@ -267,7 +279,7 @@ function renderBarChart(sortedTags) {
         y: {
           ticks: {
             font: { family: 'Inter', size: 12, weight: '500' },
-            color: '#4b5563'
+            color: 'rgb(99, 102, 241)'
           },
           grid: { display: false }
         }
