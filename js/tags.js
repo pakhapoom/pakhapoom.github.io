@@ -63,22 +63,22 @@ export async function renderTags(container) {
       <!-- Hero Stats Row -->
       <div class="stats-grid">
         <div class="stat-card stat-card--accent">
-          <div class="stat-icon">📄</div>
+          <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
           <div class="stat-value">${totalPapers}</div>
           <div class="stat-label">Papers</div>
         </div>
         <div class="stat-card stat-card--blue">
-          <div class="stat-icon">🏷️</div>
+          <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
           <div class="stat-value">${totalTags}</div>
           <div class="stat-label">Unique Tags</div>
         </div>
         <div class="stat-card stat-card--teal">
-          <div class="stat-icon">📊</div>
+          <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
           <div class="stat-value">${avgTags}</div>
           <div class="stat-label">Avg Tags / Paper</div>
         </div>
         <div class="stat-card stat-card--purple">
-          <div class="stat-icon">📅</div>
+          <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
           <div class="stat-value">${minYear}–${maxYear}</div>
           <div class="stat-label">Year Range</div>
         </div>
@@ -87,20 +87,19 @@ export async function renderTags(container) {
       <!-- Two-column layout: Timeline + Top Tags -->
       <div class="dashboard-row">
         <div class="dashboard-panel dashboard-panel--wide">
-          <h3 class="panel-title">📈 Papers by Year</h3>
+          <h3 class="panel-title"><svg class="panel-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Papers by Year</h3>
           <div class="chart-container chart-container--timeline">
             <canvas id="timeline-chart"></canvas>
           </div>
         </div>
         <div class="dashboard-panel">
-          <h3 class="panel-title">🏆 Top Tags</h3>
+          <h3 class="panel-title"><svg class="panel-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg> Top Tags</h3>
           <div class="top-tags-list">
             ${top3.map(([tag, count], i) => {
     const pct = Math.round((count / totalPapers) * 100);
-    const medals = ['🥇', '🥈', '🥉'];
     return `
                 <a href="#papers?tag=${encodeURIComponent(tag)}" class="top-tag-item">
-                  <span class="top-tag-rank">${medals[i]}</span>
+                  <span class="top-tag-rank">${i + 1}</span>
                   <div class="top-tag-info">
                     <span class="top-tag-name">${escapeHtml(tag)}</span>
                     <div class="top-tag-bar-track">
@@ -116,7 +115,7 @@ export async function renderTags(container) {
 
       <!-- Tag Distribution (full width) -->
       <div class="dashboard-panel">
-        <h3 class="panel-title">📊 Tag Distribution</h3>
+        <h3 class="panel-title"><svg class="panel-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Tag Distribution</h3>
         <div class="chart-container chart-container--bar">
           <canvas id="tags-chart"></canvas>
         </div>
