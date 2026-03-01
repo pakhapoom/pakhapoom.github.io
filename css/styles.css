@@ -3,28 +3,34 @@
    ============================================ */
 
 /* --- Google Fonts --- */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
 
 /* --- Design Tokens --- */
 :root {
-  /* Colors */
-  --color-bg: #f8f9fb;
-  --color-surface: #ffffff;
-  --color-surface-hover: #f1f3f7;
-  --color-border: #e2e6ec;
-  --color-text: #1a1d23;
-  --color-text-secondary: #5f6878;
-  --color-muted: #9aa3b1;
-  --color-accent: #4f6ef7;
-  --color-accent-hover: #3b5de5;
-  --color-accent-light: #eef1fe;
+  /* Colors — Dark AI-Inspired Palette */
+  --color-bg: #0a0e1a;
+  --color-surface: #111827;
+  --color-surface-hover: #1e293b;
+  --color-border: rgba(99, 102, 241, 0.15);
+  --color-text: #e2e8f0;
+  --color-text-secondary: #94a3b8;
+  --color-muted: #64748b;
+  --color-accent: #818cf8;
+  --color-accent-hover: #6366f1;
+  --color-accent-light: rgba(99, 102, 241, 0.12);
   --color-accent-text: #ffffff;
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-  --color-danger: #ef4444;
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
+  --color-danger: #f87171;
+
+  /* Glow & Gradients */
+  --color-glow: rgba(129, 140, 248, 0.25);
+  --gradient-accent: linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa);
+  --gradient-surface: linear-gradient(180deg, #141b2d, #0a0e1a);
 
   /* Typography */
   --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-heading: 'Outfit', 'Inter', sans-serif;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.8125rem;
   --font-size-base: 0.9375rem;
@@ -48,9 +54,9 @@
   --radius: 10px;
   --radius-sm: 6px;
   --radius-lg: 14px;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
-  --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
 
   /* Transitions */
   --transition: 180ms ease;
@@ -96,6 +102,7 @@ h1,
 h2,
 h3,
 h4 {
+  font-family: var(--font-heading);
   line-height: 1.3;
   font-weight: 600;
 }
@@ -115,7 +122,7 @@ h3 {
 /* --- Layout --- */
 .sidebar {
   width: var(--sidebar-width);
-  background: var(--color-surface);
+  background: var(--gradient-surface);
   border-right: 1px solid var(--color-border);
   padding: var(--space-xl);
   display: flex;
@@ -176,6 +183,7 @@ h3 {
 .sidebar-nav a.active {
   background: var(--color-accent-light);
   color: var(--color-accent);
+  box-shadow: inset 3px 0 0 var(--color-accent);
 }
 
 .sidebar-nav .nav-icon {
@@ -280,9 +288,9 @@ h3 {
 }
 
 .card:hover {
-  box-shadow: var(--shadow);
+  box-shadow: 0 0 20px var(--color-glow), var(--shadow);
   border-color: var(--color-accent);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 .card-title {
@@ -440,8 +448,9 @@ h3 {
 }
 
 .markdown-body pre {
-  background: #1e1e2e;
-  color: #cdd6f4;
+  background: #0d1117;
+  color: #c9d1d9;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius);
   padding: var(--space-lg);
   margin: var(--space-md) 0;
@@ -639,8 +648,9 @@ textarea.input {
 
 /* --- JSON Output --- */
 .json-output {
-  background: #1e1e2e;
-  color: #cdd6f4;
+  background: #0d1117;
+  color: #c9d1d9;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius);
   padding: var(--space-lg);
   font-family: 'SF Mono', 'Fira Code', monospace;
@@ -820,7 +830,7 @@ textarea.input {
 
 .top-tag-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #6366f1, #818cf8);
+  background: var(--gradient-accent);
   border-radius: 3px;
   transition: width 0.6s ease;
 }
@@ -942,18 +952,18 @@ textarea.input {
 }
 
 .search-mode-badge.exact {
-  background: #dcfce7;
-  color: #15803d;
+  background: rgba(52, 211, 153, 0.15);
+  color: #34d399;
 }
 
 .search-mode-badge.fuzzy {
-  background: #fef9c3;
-  color: #a16207;
+  background: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
 }
 
 .search-mode-badge.tfidf {
-  background: #e0e7ff;
-  color: #4338ca;
+  background: rgba(129, 140, 248, 0.15);
+  color: #818cf8;
 }
 
 .search-results-info {
@@ -1019,7 +1029,8 @@ textarea.input {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
   z-index: 90;
 }
 
@@ -1052,6 +1063,17 @@ textarea.input {
   animation: fadeIn var(--transition-slow);
 }
 
+/* --- Neural Network Canvas Background --- */
+#neural-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+}
+
 /* --- Landing Page --- */
 .landing {
   display: flex;
@@ -1059,6 +1081,8 @@ textarea.input {
   justify-content: center;
   min-height: 100vh;
   padding: 15vh var(--space-xl) var(--space-xl);
+  position: relative;
+  z-index: 1;
 }
 
 .landing-content {
@@ -1077,19 +1101,37 @@ textarea.input {
   height: 64px;
   color: var(--color-accent);
   margin-bottom: var(--space-md);
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    opacity: 0.12;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.25;
+    transform: scale(1.05);
+  }
 }
 
 .landing-quote {
-  font-size: 1.65rem;
-  font-weight: 300;
+  font-family: var(--font-heading);
+  font-size: 1.75rem;
+  font-weight: 600;
   font-style: italic;
   line-height: 1.5;
-  color: var(--color-text);
   letter-spacing: -0.01em;
   margin: 0;
   border: none;
   padding: 0;
-  background: none;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .landing-author {
@@ -1125,7 +1167,7 @@ textarea.input {
   max-width: 420px;
   padding: var(--space-sm) var(--space-lg);
   padding-left: 3.25rem;
-  background: var(--color-surface);
+  background: rgba(17, 24, 39, 0.7);
   border: 1.5px solid var(--color-border);
   border-radius: 50px;
   font-family: var(--font-family);
@@ -1138,7 +1180,7 @@ textarea.input {
 
 .landing-search-input:focus {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 4px var(--color-accent-light), var(--shadow);
+  box-shadow: 0 0 0 4px var(--color-glow), 0 0 20px var(--color-glow);
 }
 
 .landing-search-input:focus~.landing-search-icon {

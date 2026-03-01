@@ -6,7 +6,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description"
     content="Literature Vault — A personal repository for storing, searching, and exploring academic paper summaries.">
+  <meta name="theme-color" content="#0a0e1a">
   <title>Literature Vault</title>
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Literature Vault">
+  <meta property="og:description" content="AI Paper Summaries — Curated research insights at your fingertips.">
+  <meta property="og:image" content="assets/og-thumbnail.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Literature Vault">
+  <meta name="twitter:description" content="AI Paper Summaries — Curated research insights at your fingertips.">
+  <meta name="twitter:image" content="assets/og-thumbnail.png">
 
   <!-- Styles -->
   <link rel="stylesheet" href="css/styles.css">
@@ -25,8 +36,55 @@
   <!-- Sidebar -->
   <aside id="sidebar" class="sidebar">
     <div class="sidebar-brand">
-      <h1><a href="#home" style="color: inherit; text-decoration: none;">📚 Literature Vault</a></h1>
-      <p>Paper Summaries</p>
+      <h1>
+        <a href="#home"
+          style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+          <svg class="brand-logo" width="26" height="26" viewBox="0 0 32 36" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="logo-grad" x1="4" y1="2" x2="28" y2="34" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#6366f1" />
+                <stop offset="50%" stop-color="#8b5cf6" />
+                <stop offset="100%" stop-color="#a78bfa" />
+              </linearGradient>
+            </defs>
+            <!-- Connections — bulb outline -->
+            <line x1="16" y1="3" x2="6" y2="10" stroke="url(#logo-grad)" stroke-width="1" opacity="0.35" />
+            <line x1="16" y1="3" x2="26" y2="10" stroke="url(#logo-grad)" stroke-width="1" opacity="0.35" />
+            <line x1="6" y1="10" x2="5" y2="20" stroke="url(#logo-grad)" stroke-width="1" opacity="0.35" />
+            <line x1="26" y1="10" x2="27" y2="20" stroke="url(#logo-grad)" stroke-width="1" opacity="0.35" />
+            <line x1="5" y1="20" x2="12" y2="27" stroke="url(#logo-grad)" stroke-width="1" opacity="0.35" />
+            <line x1="27" y1="20" x2="20" y2="27" stroke="url(#logo-grad)" stroke-width="1" opacity="0.35" />
+            <!-- Connections — internal network -->
+            <line x1="16" y1="3" x2="16" y2="14" stroke="url(#logo-grad)" stroke-width="1" opacity="0.3" />
+            <line x1="6" y1="10" x2="16" y2="14" stroke="url(#logo-grad)" stroke-width="1" opacity="0.3" />
+            <line x1="26" y1="10" x2="16" y2="14" stroke="url(#logo-grad)" stroke-width="1" opacity="0.3" />
+            <line x1="16" y1="14" x2="5" y2="20" stroke="url(#logo-grad)" stroke-width="0.8" opacity="0.2" />
+            <line x1="16" y1="14" x2="27" y2="20" stroke="url(#logo-grad)" stroke-width="0.8" opacity="0.2" />
+            <line x1="16" y1="14" x2="12" y2="27" stroke="url(#logo-grad)" stroke-width="0.8" opacity="0.2" />
+            <line x1="16" y1="14" x2="20" y2="27" stroke="url(#logo-grad)" stroke-width="0.8" opacity="0.2" />
+            <!-- Connections — base -->
+            <line x1="12" y1="27" x2="20" y2="27" stroke="url(#logo-grad)" stroke-width="1.2" opacity="0.4" />
+            <line x1="13" y1="31" x2="19" y2="31" stroke="url(#logo-grad)" stroke-width="1.2" opacity="0.4" />
+            <line x1="12" y1="27" x2="13" y2="31" stroke="url(#logo-grad)" stroke-width="1" opacity="0.35" />
+            <line x1="20" y1="27" x2="19" y2="31" stroke="url(#logo-grad)" stroke-width="1" opacity="0.35" />
+            <!-- Nodes — bulb dome -->
+            <circle cx="16" cy="3" r="3" fill="url(#logo-grad)" />
+            <circle cx="6" cy="10" r="2.5" fill="url(#logo-grad)" opacity="0.85" />
+            <circle cx="26" cy="10" r="2.5" fill="url(#logo-grad)" opacity="0.85" />
+            <circle cx="5" cy="20" r="2" fill="url(#logo-grad)" opacity="0.7" />
+            <circle cx="27" cy="20" r="2" fill="url(#logo-grad)" opacity="0.7" />
+            <!-- Node — center (bright core) -->
+            <circle cx="16" cy="14" r="3.5" fill="url(#logo-grad)" />
+            <!-- Nodes — base -->
+            <circle cx="12" cy="27" r="2" fill="url(#logo-grad)" opacity="0.6" />
+            <circle cx="20" cy="27" r="2" fill="url(#logo-grad)" opacity="0.6" />
+            <circle cx="13" cy="31" r="1.5" fill="url(#logo-grad)" opacity="0.45" />
+            <circle cx="19" cy="31" r="1.5" fill="url(#logo-grad)" opacity="0.45" />
+          </svg>
+          Literature Vault
+        </a>
+      </h1>
     </div>
 
     <ul class="sidebar-nav">

@@ -1,6 +1,8 @@
 /**
- * landing.js — Landing page with quote, search, and explore link
+ * landing.js — Landing page with quote, search, neural-network bg, and explore link
  */
+
+import { initBackground, destroyBackground } from './background.js';
 
 /**
  * Render the landing page.
@@ -8,6 +10,18 @@
  * @param {Function} onSearch - Callback to trigger a search with a query
  */
 export function renderLanding(container, onSearch) {
+  // Destroy any previous background instance
+  destroyBackground();
+
+  // Remove any existing canvas
+  const existingCanvas = document.getElementById('neural-bg');
+  if (existingCanvas) existingCanvas.remove();
+
+  // Create new canvas
+  const canvasEl = document.createElement('canvas');
+  canvasEl.id = 'neural-bg';
+  document.body.appendChild(canvasEl);
+
   container.innerHTML = `
     <div class="landing fade-in">
       <div class="landing-content">
@@ -47,6 +61,9 @@ export function renderLanding(container, onSearch) {
     </div>
   `;
 
+  // Initialize the neural-network background
+  initBackground(canvasEl);
+
   // Wire up search
   const searchInput = container.querySelector('#landing-search-input');
 
@@ -61,4 +78,13 @@ export function renderLanding(container, onSearch) {
 
   // Auto-focus the search input
   requestAnimationFrame(() => searchInput.focus());
+}
+
+/**
+ * Clean up the landing page background when navigating away.
+ */
+export function cleanupLanding() {
+  destroyBackground();
+  const canvasEl = document.getElementById('neural-bg');
+  if (canvasEl) canvasEl.remove();
 }
