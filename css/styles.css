@@ -193,6 +193,7 @@ h3 {
   border-top: 1px solid var(--color-border);
   font-size: var(--font-size-xs);
   color: var(--color-muted);
+  text-align: center;
 }
 
 .main-content {
@@ -222,7 +223,6 @@ h3 {
 
 .content-body {
   padding: var(--space-xl);
-  max-width: var(--content-max-width);
 }
 
 /* --- Search Bar --- */
@@ -689,20 +689,11 @@ textarea.input {
   height: 3px;
 }
 
-.stat-card--accent::before {
-  background: linear-gradient(90deg, #6366f1, #818cf8);
-}
-
-.stat-card--blue::before {
-  background: linear-gradient(90deg, #3b82f6, #60a5fa);
-}
-
-.stat-card--teal::before {
-  background: linear-gradient(90deg, #14b8a6, #2dd4bf);
-}
-
+.stat-card--accent::before,
+.stat-card--blue::before,
+.stat-card--teal::before,
 .stat-card--purple::before {
-  background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-hover));
 }
 
 .stat-icon {
