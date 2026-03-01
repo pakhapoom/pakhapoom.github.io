@@ -6,6 +6,7 @@ import { loadPapers } from './data.js';
 import { initSearch, search } from './search.js';
 import { renderPapers, renderPaperDetail } from './papers.js';
 import { renderTags } from './tags.js';
+import { renderLanding, cleanupLanding } from './landing.js';
 
 // ---- DOM Elements ----
 const contentBody = document.getElementById('content-body');
@@ -15,6 +16,7 @@ const navLinks = document.querySelectorAll('.sidebar-nav a');
 const menuToggle = document.getElementById('menu-toggle');
 const sidebar = document.getElementById('sidebar');
 const sidebarOverlay = document.getElementById('sidebar-overlay');
+const mainContent = document.querySelector('.main-content');
 
 // ---- Routing ----
 
@@ -27,7 +29,7 @@ const sidebarOverlay = document.getElementById('sidebar-overlay');
  *   #tags            -> { page: 'tags', params: {} }
  */
 function parseRoute() {
-    const hash = window.location.hash.slice(1) || 'papers';
+    const hash = window.location.hash.slice(1) || 'home';
     const [pathPart, queryPart] = hash.split('?');
     const segments = pathPart.split('/');
     const page = segments[0];
@@ -63,16 +65,48 @@ async function navigate() {
     sidebar.classList.remove('open');
     sidebarOverlay.classList.remove('open');
 
+    // Toggle header visibility for landing page
+    const isLanding = (page === 'home');
+    mainContent.classList.toggle('header-hidden', isLanding);
+
+    // Update search bar placeholder based on current page
+    searchInput.closest('.search-bar').style.display = '';
+    searchInput.placeholder = (page === 'tags')
+        ? 'Search papers by title, author, tag, or keyword...'
+        : 'Search papers by title, author, tag, or keyword...';
+
+    // Clean up landing background when navigating away
+    if (!isLanding) {
+        cleanupLanding();
+    }
+
     // Route
     switch (page) {
+        case 'home':
+            contentTitle.textContent = '';
+            renderLanding(contentBody, performSearch);
+            break;
+
         case 'papers':
             contentTitle.textContent = 'Papers';
-            if (params.tag) {
+            if (pendingSearchQuery) {
+                // Handle search initiated from landing page
+                const query = pendingSearchQuery;
+                pendingSearchQuery = null;
+                const papers = await loadPapers();
+                const results = search(papers, query);
+                contentTitle.textContent = 'Search Results';
+                searchInput.value = query;
+                await renderPapers(contentBody, {
+                    searchResults: results,
+                    query: query
+                });
+            } else if (params.tag) {
                 await renderPapers(contentBody, { tag: params.tag });
             } else {
                 await renderPapers(contentBody);
+                searchInput.value = '';
             }
-            searchInput.value = '';
             break;
 
         case 'paper':
@@ -86,14 +120,40 @@ async function navigate() {
             break;
 
         default:
-            contentTitle.textContent = 'Papers';
-            await renderPapers(contentBody);
+            contentTitle.textContent = '';
+            renderLanding(contentBody, performSearch);
     }
 }
 
 // ---- Search Handler ----
 
 let searchDebounce = null;
+let pendingSearchQuery = null;
+
+/**
+ * Perform a search and render results in the papers view.
+ * Used both by the header search bar and the landing page search.
+ */
+async function performSearch(query) {
+    if (!query) return;
+
+    const currentRoute = parseRoute();
+    if (currentRoute.page === 'papers' || currentRoute.page === 'paper') {
+        // Already on papers — render results directly (hashchange won't fire)
+        const papers = await loadPapers();
+        const results = search(papers, query);
+        contentTitle.textContent = 'Search Results';
+        searchInput.value = query;
+        await renderPapers(contentBody, {
+            searchResults: results,
+            query: query
+        });
+    } else {
+        // Navigate to papers page with the search query
+        pendingSearchQuery = query;
+        window.location.hash = '#papers';
+    }
+}
 
 async function handleSearch() {
     const query = searchInput.value.trim();
@@ -106,19 +166,7 @@ async function handleSearch() {
         return;
     }
 
-    // Always navigate to papers view for search
-    const papers = await loadPapers();
-    const results = search(papers, query);
-
-    contentTitle.textContent = 'Search Results';
-    navLinks.forEach(link => {
-        link.classList.toggle('active', link.getAttribute('href') === '#papers');
-    });
-
-    await renderPapers(contentBody, {
-        searchResults: results,
-        query: query
-    });
+    await performSearch(query);
 }
 
 // ---- Mobile Menu ----
@@ -148,6 +196,14 @@ async function init() {
             clearTimeout(searchDebounce);
             handleSearch();
         }
+    });
+
+    // Clear search when clicking nav links
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            searchInput.value = '';
+            pendingSearchQuery = null;
+        });
     });
 
     menuToggle.addEventListener('click', toggleMobileMenu);
