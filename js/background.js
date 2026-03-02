@@ -4,8 +4,9 @@
  * Includes a subtle mouse-repel interaction.
  */
 
-const NODE_COUNT = 55;
-const CONNECTION_DIST = 150;
+const IS_MOBILE = window.innerWidth <= 768;
+const NODE_COUNT = IS_MOBILE ? 30 : 55;
+const CONNECTION_DIST = IS_MOBILE ? 100 : 150;
 const MOUSE_REPEL_DIST = 120;
 const MOUSE_REPEL_FORCE = 0.8;
 

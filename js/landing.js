@@ -30,7 +30,7 @@ export function renderLanding(container, onSearch) {
             <path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/>
           </svg>
           <blockquote class="landing-quote">
-            Somewhere, something incredible is<br>waiting to be known.
+            Somewhere, something incredible is waiting to be known.
           </blockquote>
           <cite class="landing-author">— Carl Sagan</cite>
         </div>
@@ -52,7 +52,7 @@ export function renderLanding(container, onSearch) {
 
         <a href="#papers" class="landing-explore">
           <span>Explore all possibilities</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="5" y1="12" x2="19" y2="12"/>
             <polyline points="12 5 19 12 12 19"/>
           </svg>
@@ -76,8 +76,10 @@ export function renderLanding(container, onSearch) {
     }
   });
 
-  // Auto-focus the search input
-  requestAnimationFrame(() => searchInput.focus());
+  // Auto-focus the search input (skip on mobile to avoid virtual keyboard popup)
+  if (window.innerWidth > 768) {
+    requestAnimationFrame(() => searchInput.focus());
+  }
 }
 
 /**
