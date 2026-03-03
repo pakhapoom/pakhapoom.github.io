@@ -134,6 +134,50 @@ export async function renderPaperDetail(container, paperId) {
 
   // Get markdown content and render to HTML
   const markdown = getMarkdownForPaper(paper);
+  // marked extension to handle {: width="x"} after images
+  marked.use({
+    extensions: [{
+      name: 'imageWithSize',
+      level: 'inline',
+      start(src) { return src.match(/!\[/)?.index; },
+      tokenizer(src, tokens) {
+        const rule = /^!\[([^\]]*)\]\(([^)]+)\)(?:\{:\s*width="([^"]+)"\s*\})?/;
+        const match = rule.exec(src);
+        if (match) {
+          return {
+            type: 'imageWithSize',
+            raw: match[0],
+            text: match[1],
+            href: match[2],
+            width: match[3] || null
+          };
+        }
+      },
+      renderer(token) {
+        let title = '';
+        let href = token.href;
+        const titleMatch = href.match(/(.*)\s+'([^']+)'\s*$/);
+        if (titleMatch) {
+          href = titleMatch[1].trim();
+          title = titleMatch[2];
+        }
+
+        const widthAttr = token.width ? ` style="width: ${token.width};"` : '';
+        const titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
+        const altAttr = token.text ? ` alt="${escapeHtml(token.text)}"` : '';
+        return `<img src="${encodeURI(href)}"${altAttr}${titleAttr}${widthAttr}>`;
+      }
+    }]
+  });
+
+  // marked extension for KaTeX (math equations)
+  if (window.markedKatex) {
+    marked.use(window.markedKatex({
+      throwOnError: false,
+      displayMode: true
+    }));
+  }
+
   const renderedHtml = marked.parse(markdown);
 
   let html = `

@@ -469,8 +469,9 @@ h3 {
   max-width: 100%;
   height: auto;
   border-radius: var(--radius);
-  margin: var(--space-md) 0;
+  margin: var(--space-md) auto;
   box-shadow: var(--shadow);
+  display: block;
 }
 
 .markdown-body table {
