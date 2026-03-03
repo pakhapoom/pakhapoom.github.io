@@ -15,6 +15,7 @@ STARec is a novel large language model (LLM)-based agent framework for recommend
 - **Slow Thinking** — retrospective self-reflection to update the user's preference memory
 
 ![Figure 1: STARec framework.](../assets/starec/01_arch.png){: width="50%"}
+<p align="center" style="color: var(--color-muted); font-size: var(--font-size-sm); margin-top: -10px;"><em>Figure 1: STARec framework.</em></p>
 
 To train these agents, the authors introduce **Anchored Reinforcement Training**, a two-stage paradigm consisting of:
 1. Supervised fine-tuning (SFT) distillation from a powerful teacher model (e.g., DeepSeek-R1)
@@ -89,17 +90,20 @@ Calculates the Group Relative Policy Optimization loss. It:
 STARec significantly outperforms traditional classical models (BPR, SASRec) and LLM-based agents (LLMRank, AgentCF) on the **ML-1M** and **Amazon CDs** datasets, using only **0.4% of full training data**.
 
 ![Figure 2: Leaderboard on MovieLens and CDs recommendations with 1,000 test samples.](../assets/starec/02_leaderboard.png)
+<p align="center" style="color: var(--color-muted); font-size: var(--font-size-sm); margin-top: -10px;"><em>Figure 2: Leaderboard on MovieLens and CDs recommendations with 1,000 test samples.</em></p>
 
 ## Ablation Studies
 Removing either the SFT Anchoring stage or the LLM-driven Slow Thinking self-reflection mechanism causes clear performance degradation, proving **both components are crucial**.
 
 ![Figure 3: Ablation study on removing components in the STARec framework.](../assets/starec/03_wo_sft.png){: width="50%"}
+<p align="center" style="color: var(--color-muted); font-size: var(--font-size-sm); margin-top: -10px;"><em>Figure 3: Ablation study on removing components in the STARec framework.</em></p>
 
 ## Parameter Efficiency & Scaling
 - Larger models (**7B parameters**) perform best
 - The **0.5B parameter** variant retained up to **97% of 7B model performance** in the SFT stage — highly efficient
 
 ![Figure 4: Scaling laws for STARec.](../assets/starec/04_scaling.png){: width="50%"}
+<p align="center" style="color: var(--color-muted); font-size: var(--font-size-sm); margin-top: -10px;"><em>Figure 4: Scaling laws for STARec.</em></p>
 
 ## Cold-Start Robustness
 STARec showed impressive resilience for **"Low Activity"** users in data-sparse environments, demonstrating an ability to extrapolate accurate recommendations from limited history.
@@ -110,6 +114,7 @@ Using a "Best of N" metric, researchers found:
 - **RL** acts as a *"success amplifier"*, sharpening the model's ability to output the best reasoning path on the **first attempt (N=1)**
 
 ![Figure 5: STARec-1.5B performance on (a) different user groups, and (b) different components (SFT & RL) with varying max attempt.](../assets/starec/05_best_of_n_sft.png){: width="50%"}
+<p align="center" style="color: var(--color-muted); font-size: var(--font-size-sm); margin-top: -10px;"><em>Figure 5: STARec-1.5B performance on (a) different user groups, and (b) different components (SFT & RL) with varying max attempt.</em></p>
 
 ---
 

@@ -65,6 +65,7 @@ Key findings and interpretations...
 Personal notes or takeaways...
 
 ![Figure 1: Architecture](../assets/attention-is-all-you-need/architecture.png)
+<p align="center" style="color: var(--color-muted); font-size: var(--font-size-sm); margin-top: -10px;"><em>Figure 1: Architecture</em></p>
 ```
 
 Images referenced in markdown files are stored in the `assets/` directory, organized by paper ID:
