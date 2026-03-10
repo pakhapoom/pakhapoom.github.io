@@ -7,6 +7,7 @@ import { initSearch, search } from './search.js';
 import { renderPapers, renderPaperDetail } from './papers.js';
 import { renderTags } from './tags.js';
 import { renderLanding, cleanupLanding } from './landing.js';
+import { renderAbout } from './about.js';
 
 // ---- DOM Elements ----
 const contentBody = document.getElementById('content-body');
@@ -69,11 +70,14 @@ async function navigate() {
     const isLanding = (page === 'home');
     mainContent.classList.toggle('header-hidden', isLanding);
 
-    // Update search bar placeholder based on current page
-    searchInput.closest('.search-bar').style.display = '';
-    searchInput.placeholder = (page === 'tags')
-        ? 'Search papers by title, author, tag, or keyword...'
-        : 'Search papers by title, author, tag, or keyword...';
+    // Update search bar visibility and placeholder based on current page
+    const searchBar = searchInput.closest('.search-bar');
+    if (page === 'about') {
+        searchBar.style.display = 'none';
+    } else {
+        searchBar.style.display = '';
+    }
+    searchInput.placeholder = 'Search papers by title, author, tag, or keyword...';
 
     // Clean up landing background when navigating away
     if (!isLanding) {
@@ -117,6 +121,11 @@ async function navigate() {
         case 'tags':
             contentTitle.textContent = 'Tags & Stats';
             await renderTags(contentBody);
+            break;
+
+        case 'about':
+            contentTitle.textContent = 'About';
+            renderAbout(contentBody);
             break;
 
         default:
