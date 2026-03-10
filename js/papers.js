@@ -88,8 +88,21 @@ export async function renderPapers(container, options = {}) {
  * Render a single paper card.
  */
 function renderPaperCard(paper, modes = []) {
-  // Extract plain-text preview from markdown content
-  const rawPreview = paper._markdownContent ? stripMarkdown(paper._markdownContent) : '';
+  // Extract plain-text preview from the "What are they doing?" section only
+  let rawPreview = '';
+  if (paper._markdownContent) {
+    const startMarker = /\*\*What are they doing\?\*\*/i;
+    const endMarker = /\*\*Why do we need it\?\*\*/i;
+    const startMatch = startMarker.exec(paper._markdownContent);
+    if (startMatch) {
+      const afterStart = paper._markdownContent.substring(startMatch.index + startMatch[0].length);
+      const endMatch = endMarker.exec(afterStart);
+      const section = endMatch ? afterStart.substring(0, endMatch.index) : afterStart;
+      rawPreview = stripMarkdown(section);
+    } else {
+      rawPreview = stripMarkdown(paper._markdownContent);
+    }
+  }
   const preview = rawPreview.length > 200 ? rawPreview.substring(0, 200) + '…' : rawPreview;
 
   const modeBadges = modes.map(m =>

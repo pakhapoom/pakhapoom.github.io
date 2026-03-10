@@ -7,7 +7,7 @@ url: "https://arxiv.org/abs/2508.18812"
 dateAdded: "2026-03-03"
 ---
 
-# 1. TL;DR
+# TL;DR
 **What are they doing?**
 The researchers created **STARec**, an efficient agent framework that transforms recommendation systems by giving them "autonomous deliberate reasoning". Instead of just matching patterns, each user is modeled as an agent with a "dual-process" brain: one for fast, intuitive ranking and one for slow, reflective reasoning.
 
@@ -28,7 +28,7 @@ The authors plan to strengthen reasoning by integrating even more advanced teach
 
 ---
 
-# 2. Research Questions
+# Research Questions
 The paper aims to address several critical limitations in modern recommendation systems:
 * **The Reasoning Gap:** How can we move beyond "fast-thinking" reactive models toward systems capable of human-like "slow reasoning"?
 * **The Data Efficiency Challenge:** Is it possible to surpass state-of-the-art baselines while training on a tiny fraction (0.4%) of the data?
@@ -36,7 +36,7 @@ The paper aims to address several critical limitations in modern recommendation 
 
 ---
 
-# 3. Approach
+# Approach
 The core of the methodology is **Anchored Reinforcement Training (ART)**, which bridges the gap between general AI knowledge and specific recommendation needs.
 
 ## Stage 1: SFT Anchoring (The Foundation)
@@ -53,7 +53,7 @@ $$\mathcal{J}_{GRPO}(\theta)=\mathbb{E}[q\sim P(Q),\{o_{i}\}_{i=1}^{G}\sim\pi_{\
 
 ---
 
-# 4. Results and Discussion
+# Results and Discussion
 * **Superior Data Efficiency:** STARec outperformed traditional models like SASRec and BPR even when they were trained on 100% of the data, despite STARec only using 0.4%.
 
 ![Figure 2: Leaderboard on MovieLens and CDs recommendations with 1,000 test samples.](../assets/starec/02_leaderboard.png)
@@ -77,7 +77,7 @@ $$\mathcal{J}_{GRPO}(\theta)=\mathbb{E}[q\sim P(Q),\{o_{i}\}_{i=1}^{G}\sim\pi_{\
 
 ---
 
-# 5. Notes
+# Notes
 
 **Strength**
 * **Generalization.** By focusing on reasoning rationales (CoT), the model can "extrapolate" what a user might like even with very little data.
