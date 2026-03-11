@@ -84,4 +84,4 @@ $$\mathcal{J}_{GRPO}(\theta)=\mathbb{E}[q\sim P(Q),\{o_{i}\}_{i=1}^{G}\sim\pi_{\
 * **Interpretabilty.** The generated Chain-of-Thought rationales provide clear, human-readable support for why a recommendation was made.
 
 **Weakness**
-* Training Complexity.** The two-stage training process requires a high-quality "teacher" model to generate the initial anchoring data
+* **Training Complexity.** The two-stage training process requires a high-quality "teacher" model to generate the initial anchoring data
