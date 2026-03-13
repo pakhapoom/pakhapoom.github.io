@@ -474,6 +474,13 @@ h3 {
   display: block;
 }
 
+/* Responsive image sizing — full width on mobile, 50% on desktop */
+@media (min-width: 768px) {
+  .markdown-body img.img-half {
+    max-width: 50%;
+  }
+}
+
 .markdown-body table {
   width: 100%;
   border-collapse: collapse;

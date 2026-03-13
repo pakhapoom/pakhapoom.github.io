@@ -23,7 +23,7 @@ We get "reasoning fidelity" which is simulations that are traceable, revisable, 
 **Next steps?**
 The team is building tools to extract these "logic blocks" from real-world interviews and developing new datasets for complex domains like housing, surveillance, and healthcare
 
-![school of thoughts](../assets/simulating_society/01_motivations.png){: width="50%"}
+![school of thoughts](../assets/simulating_society/01_motivations.png){: .img-half}
 <p align="center" style="color: var(--color-muted); font-size: var(--font-size-sm); margin-top: -10px;"><em>Figure 1: Three main schools of thoughts for human simulations.</em></p>
 
 ---
@@ -35,7 +35,7 @@ The paper focuses on three core failures in current AI social simulation:
 * **Individuality:** How do we preserve the unique, heterogeneous reasoning of real individuals and stop models from collapsing into a "median narrative" or stereotype?
 * **Evaluation:** How can we move past benchmarks that only look at "fluency" and start measuring the actual internal structure and traceability of an agent's reasoning
 
-![beliefs](../assets/simulating_society/02_beliefs.png){: width="50%"}
+![beliefs](../assets/simulating_society/02_beliefs.png){: .img-half}
 <p align="center" style="color: var(--color-muted); font-size: var(--font-size-sm); margin-top: -10px;"><em>Figure 2: Paradigm shift from role-playing at a surface level to cognitively grounded simulation.</em></p>
 
 
@@ -50,7 +50,7 @@ This framework captures "Structured Thought" by conducting interviews and parsin
 * **Nodes (V):** Represent concept units like "Fairness," "Safety," or "Privacy".
 * **Edges (E):** Encode directional causal relations with confidence and polarity scores.
 
-![beliefs](../assets/simulating_society/03_mitifs.png){: width="50%"}
+![beliefs](../assets/simulating_society/03_motifs.png){: .img-half}
 <p align="center" style="color: var(--color-muted); font-size: var(--font-size-sm); margin-top: -10px;"><em>Figure 3: GenMinds framework.</em></p>
 
 ## Mathematical Inference
@@ -73,7 +73,7 @@ The authors argue that current "output-centric" models are failing the vibe chec
 * **The Illusion of Consensus:** Multi-agent simulations often converge on a fake agreement because models are trained to pick the "most likely" (median) perspective, suppressing real disagreement.
 * **Identity Flattening:** Agents often replace rich, positional knowledge with monolithic stereotypes because they "average" across pre-training data.
 
-![beliefs](../assets/simulating_society/04_genminds.png){: width="50%"}
+![beliefs](../assets/simulating_society/04_genminds.png){: .img-half}
 <p align="center" style="color: var(--color-muted); font-size: var(--font-size-sm); margin-top: -10px;"><em>Figure 4: Differences between GenMinds and other approaches.</em></p>
 
 ---

@@ -23,7 +23,7 @@ It’s incredibly efficient. STARec achieves massive performance gains on MovieL
 **Next steps?**
 The authors plan to strengthen reasoning by integrating even more advanced teacher models and exploring multi-agent collaboration and hierarchical planning.
 
-![Figure 1: STARec framework.](../assets/starec/01_arch.png){: width="50%"}
+![Figure 1: STARec framework.](../assets/starec/01_arch.png){: .img-half}
 <p align="center" style="color: var(--color-muted); font-size: var(--font-size-sm); margin-top: -10px;"><em>Figure 1: STARec framework.</em></p>
 
 ---
@@ -61,18 +61,18 @@ $$\mathcal{J}_{GRPO}(\theta)=\mathbb{E}[q\sim P(Q),\{o_{i}\}_{i=1}^{G}\sim\pi_{\
 
 * **STARec compomnents:** Removing either the SFT Anchoring stage or the LLM-driven Slow Thinking self-reflection mechanism causes clear performance degradation.
 
-![Figure 3: Ablation study on removing components in the STARec framework.](../assets/starec/03_wo_sft.png){: width="50%"}
+![Figure 3: Ablation study on removing components in the STARec framework.](../assets/starec/03_wo_sft.png){: .img-half}
 <p align="center" style="color: var(--color-muted); font-size: var(--font-size-sm); margin-top: -10px;"><em>Figure 3: Ablation study on removing components in the STARec framework.</em></p>
 
 * **Scaling Laws:** Performance consistently improves with model size (from 0.5B to 7B), but even the tiny 0.5B model retains about 88-97% of the 7B model's effectiveness.
 
-![Figure 4: Scaling laws for STARec.](../assets/starec/04_scaling.png){: width="50%"}
+![Figure 4: Scaling laws for STARec.](../assets/starec/04_scaling.png){: .img-half}
 <p align="center" style="color: var(--color-muted); font-size: var(--font-size-sm); margin-top: -10px;"><em>Figure 4: Scaling laws for STARec.</em></p>
 
 * **Robustness to Sparse Data:** While performance is best with high user activity, STARec remains remarkably resilient and accurate for "Low Activity" users.
 * **Success Amplification:** Analysis suggests that RL's primary role is "success amplification"—sharpening the model's ability to select high-quality solutions it already "knows" from the SFT stage.
 
-![Figure 5: STARec-1.5B performance on (a) different user groups, and (b) different components (SFT & RL) with varying max attempt.](../assets/starec/05_best_of_n_sft.png){: width="50%"}
+![Figure 5: STARec-1.5B performance on (a) different user groups, and (b) different components (SFT & RL) with varying max attempt.](../assets/starec/05_best_of_n_sft.png){: .img-half}
 <p align="center" style="color: var(--color-muted); font-size: var(--font-size-sm); margin-top: -10px;"><em>Figure 5: STARec-1.5B performance on (a) different user groups, and (b) different components (SFT & RL) with varying max attempt.</em></p>
 
 ---
