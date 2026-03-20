@@ -147,38 +147,42 @@ export async function renderPaperDetail(container, paperId) {
 
   // Get markdown content and render to HTML
   const markdown = getMarkdownForPaper(paper);
-  // marked extension to handle {: width="x"} after images
+  // marked extension to handle {: .classname} or {: width="x"} after images
   marked.use({
     extensions: [{
       name: 'imageWithSize',
       level: 'inline',
       start(src) { return src.match(/!\[/)?.index; },
       tokenizer(src, tokens) {
-        const rule = /^!\[([^\]]*)\]\(([^)]+)\)(?:\{:\s*width="([^"]+)"\s*\})?/;
+        const rule = /^!\[([^\]]*)\]\(([^)]+)\)(?:\(([^)]*)\))?(?:\{:([^}]+)\})?/;
         const match = rule.exec(src);
         if (match) {
+          const attrs = match[4] || '';
+          const classes = (attrs.match(/\.([\w-]+)/g) || []).map(c => c.slice(1)).join(' ');
+          const widthMatch = attrs.match(/width="([^"]+)"/);
           return {
             type: 'imageWithSize',
             raw: match[0],
             text: match[1],
             href: match[2],
-            width: match[3] || null
+            caption: match[3] || null,
+            className: classes || null,
+            width: widthMatch ? widthMatch[1] : null
           };
         }
       },
       renderer(token) {
-        let title = '';
-        let href = token.href;
-        const titleMatch = href.match(/(.*)\s+'([^']+)'\s*$/);
-        if (titleMatch) {
-          href = titleMatch[1].trim();
-          title = titleMatch[2];
-        }
+        const title = token.caption || '';
+        const href = token.href;
 
+        const classAttr = ` class="${token.className || 'img-half'}"`;  // default to img-half if no explicit class
         const widthAttr = token.width ? ` style="width: ${token.width};"` : '';
-        const titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
         const altAttr = token.text ? ` alt="${escapeHtml(token.text)}"` : '';
-        return `<img src="${encodeURI(href)}"${altAttr}${titleAttr}${widthAttr}>`;
+        const img = `<img src="${encodeURI(href)}"${altAttr}${classAttr}${widthAttr}>`;
+        if (title) {
+          return `<figure>${img}<figcaption>${escapeHtml(title)}</figcaption></figure>`;
+        }
+        return img;
       }
     }]
   });

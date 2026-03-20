@@ -474,11 +474,27 @@ h3 {
   display: block;
 }
 
-/* Responsive image sizing — full width on mobile, 50% on desktop */
+/* Responsive image sizing — full width on mobile, 60% on laptop/desktop */
 @media (min-width: 768px) {
   .markdown-body img.img-half {
-    max-width: 50%;
+    max-width: 60%;
   }
+}
+
+.markdown-body figure {
+  margin: var(--space-md) 0;
+  text-align: center;
+}
+
+.markdown-body figure img {
+  margin: 0 auto;
+}
+
+.markdown-body figcaption {
+  color: var(--color-muted);
+  font-size: var(--font-size-sm);
+  font-style: italic;
+  margin-top: var(--space-xs);
 }
 
 .markdown-body table {
