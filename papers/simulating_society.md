@@ -23,8 +23,7 @@ We get "reasoning fidelity" which is simulations that are traceable, revisable, 
 **Next steps?**
 The team is building tools to extract these "logic blocks" from real-world interviews and developing new datasets for complex domains like housing, surveillance, and healthcare
 
-![school of thoughts](../assets/simulating_society/01_motivations.png){: .img-half}
-<p align="center" style="color: var(--color-muted); font-size: var(--font-size-sm); margin-top: -10px;"><em>Figure 1: Three main schools of thoughts for human simulations.</em></p>
+![school of thoughts](../assets/simulating_society/01_motivations.png)(Figure 1: Three main schools of thoughts for human simulations.)
 
 ---
 
@@ -35,8 +34,7 @@ The paper focuses on three core failures in current AI social simulation:
 * **Individuality:** How do we preserve the unique, heterogeneous reasoning of real individuals and stop models from collapsing into a "median narrative" or stereotype?
 * **Evaluation:** How can we move past benchmarks that only look at "fluency" and start measuring the actual internal structure and traceability of an agent's reasoning
 
-![beliefs](../assets/simulating_society/02_beliefs.png){: .img-half}
-<p align="center" style="color: var(--color-muted); font-size: var(--font-size-sm); margin-top: -10px;"><em>Figure 2: Paradigm shift from role-playing at a surface level to cognitively grounded simulation.</em></p>
+![beliefs](../assets/simulating_society/02_beliefs.png)(Figure 2: Paradigm shift from role-playing at a surface level to cognitively grounded simulation.)
 
 
 ---
@@ -50,8 +48,7 @@ This framework captures "Structured Thought" by conducting interviews and parsin
 * **Nodes (V):** Represent concept units like "Fairness," "Safety," or "Privacy".
 * **Edges (E):** Encode directional causal relations with confidence and polarity scores.
 
-![beliefs](../assets/simulating_society/03_motifs.png){: .img-half}
-<p align="center" style="color: var(--color-muted); font-size: var(--font-size-sm); margin-top: -10px;"><em>Figure 3: GenMinds framework.</em></p>
+![beliefs](../assets/simulating_society/03_motifs.png)(Figure 3: GenMinds framework.)
 
 ## Mathematical Inference
 Reasoning is defined as forward inference over these graphs. Using **do-calculus** interventions, the system simulates how beliefs shift mathematically:
@@ -73,14 +70,33 @@ The authors argue that current "output-centric" models are failing the vibe chec
 * **The Illusion of Consensus:** Multi-agent simulations often converge on a fake agreement because models are trained to pick the "most likely" (median) perspective, suppressing real disagreement.
 * **Identity Flattening:** Agents often replace rich, positional knowledge with monolithic stereotypes because they "average" across pre-training data.
 
-![beliefs](../assets/simulating_society/04_genminds.png){: .img-half}
-<p align="center" style="color: var(--color-muted); font-size: var(--font-size-sm); margin-top: -10px;"><em>Figure 4: Differences between GenMinds and other approaches.</em></p>
+![beliefs](../assets/simulating_society/04_genminds.png)(Figure 4: Differences between GenMinds and other approaches.)
 
 ---
 
 # Notes
 
-This paper is basically saying that if you want to simulate society, you can't have your agents just "playing a role"—they need to have actual skin in the game (internal logic).
+The core argument is simple: you can't simulate society by having agents "play a role." They need actual internal logic — something closer to how beliefs are formed and revised, not just plausible outputs.
 
-* **Strength:** The concept of **"Cognitive Motifs"** is brilliant. It allows for modular reasoning where an AI can "think" about a new topic by recombining logic blocks it already knows from other areas.
-* **Weakness:** The authors admit that human reasoning isn't always 100% causal—we have emotions, analogies, and vibes that are hard to turn into a math graph.
+* **Strength:** The concept of **Cognitive Motifs** is genuinely compelling. Modular logic blocks let an agent reason about unfamiliar topics by recombining reasoning patterns it already knows — more like how humans generalize than how LLMs currently work.
+* **Weakness:** The authors acknowledge that human reasoning isn't purely causal. Emotions, analogies, and gut feelings are hard to encode in a DAG. It's unclear how much of real human cognition this framework can actually capture.
+
+# Current Failures
+
+**1. Fidelity — next-token prediction ≠ belief-state transitions**
+
+There are two mismatches here. First, a *decoding faithfulness mismatch*: the model's visible reasoning (e.g., a chain-of-thought output) often diverges from its actual internal computational path. Second, a *cognitive-alignment mismatch*: even if the inference path were faithful, it still may not reflect how humans actually form beliefs.
+
+This breaks down further when looking at Chain-of-Thought (CoT). CoT maps text patterns to actions without grounding in belief states, collapses under out-of-distribution inputs, and produces outputs that are not a reliable window into the model's actual reasoning — especially under distribution shift.
+
+On counterfactual reasoning: current agents struggle to revise beliefs when key assumptions change, can't explain why a belief holds or what follows from it, and domain-specific approaches (causal memory, knowledge graphs) don't generalize to the open-ended nature of human belief.
+
+**2. Individuality — preserving heterogeneous beliefs and values**
+
+Autoregressive models collapse to the mean by design, meaning there's no structural mechanism for representing heterogeneous beliefs across agents. In multi-agent setups, this gets worse: agents converge toward a synthetic consensus that reflects the majority perspective rather than genuine disagreement — the "illusion of consensus."
+
+Identity flattening is a related problem. LLMs trained on aggregated corpora condition behavior on demographic dimensions (race, gender, class) as monolithic proxies, reproducing majority-class correlations instead of capturing the joint distribution of beliefs and values that real individuals hold.
+
+**3. Evaluation — benchmarks measure outputs, not reasoning**
+
+Current benchmarks focus on surface-level output coherence and fluency. They don't assess causal consistency, belief traceability, or heterogeneity in reasoning — leading to *intervention blindness*, where a model appears to reason well but cannot respond meaningfully to counterfactual changes in assumptions.
