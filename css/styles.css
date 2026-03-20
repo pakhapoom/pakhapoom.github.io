@@ -1237,14 +1237,20 @@ textarea.input {
 }
 
 .pub-item {
+  list-style: none;
+}
+
+.pub-item-link {
   display: flex;
   gap: var(--space-md);
   padding: var(--space-md);
   border-radius: var(--radius);
   transition: background var(--transition);
+  text-decoration: none;
+  color: inherit;
 }
 
-.pub-item:hover {
+.pub-item-link:hover {
   background: var(--color-bg);
 }
 
@@ -1278,7 +1284,7 @@ textarea.input {
   transition: color var(--transition);
 }
 
-.pub-title:hover {
+.pub-item-link:hover .pub-title {
   color: var(--color-accent);
 }
 
@@ -1290,7 +1296,7 @@ textarea.input {
   transition: opacity var(--transition);
 }
 
-.pub-title:hover .pub-link-icon {
+.pub-item-link:hover .pub-link-icon {
   opacity: 1;
 }
 
@@ -1593,7 +1599,7 @@ textarea.input {
     padding: var(--space-lg);
   }
 
-  .pub-item {
+  .pub-item-link {
     flex-direction: column;
     gap: var(--space-sm);
   }
