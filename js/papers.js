@@ -3,6 +3,7 @@
  */
 
 import { loadPapers, getPaperById, getMarkdownForPaper } from './data.js';
+import { escapeHtml } from './utils.js';
 
 /**
  * Strip markdown syntax to get plain text for previews.
@@ -221,12 +222,3 @@ export async function renderPaperDetail(container, paperId) {
   container.innerHTML = html;
 }
 
-/**
- * Escape HTML entities to prevent XSS.
- */
-function escapeHtml(str) {
-  if (!str) return '';
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}

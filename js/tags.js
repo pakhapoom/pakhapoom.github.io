@@ -3,6 +3,7 @@
  */
 
 import { loadPapers, getAllTags } from './data.js';
+import { escapeHtml } from './utils.js';
 
 let chartInstances = [];
 
@@ -26,6 +27,11 @@ export async function renderTags(container) {
 
   // Sort tags by count descending
   const sortedTags = [...tagMap.entries()].sort((a, b) => b[1] - a[1]);
+
+  if (totalPapers === 0) {
+    container.innerHTML = '<p class="empty-state">No papers found.</p>';
+    return;
+  }
 
   // Year stats
   const years = papers.map(p => p.year);
@@ -274,12 +280,3 @@ function renderBarChart(sortedTags) {
   chartInstances.push(chart);
 }
 
-/**
- * Escape HTML entities.
- */
-function escapeHtml(str) {
-  if (!str) return '';
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}

@@ -745,7 +745,7 @@ textarea.input {
 .stat-card .stat-value {
   font-size: var(--font-size-2xl);
   font-weight: 700;
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .stat-card .stat-label {
@@ -779,7 +779,7 @@ textarea.input {
 .panel-title {
   font-size: var(--font-size-md);
   font-weight: 600;
-  color: var(--color-primary);
+  color: var(--color-accent);
   margin-bottom: var(--space-md);
   padding-bottom: var(--space-sm);
   border-bottom: 1px solid var(--color-border);
@@ -840,7 +840,7 @@ textarea.input {
 .top-tag-name {
   font-size: var(--font-size-sm);
   font-weight: 600;
-  color: var(--color-primary);
+  color: var(--color-accent);
   display: block;
   margin-bottom: 4px;
 }
@@ -862,7 +862,7 @@ textarea.input {
 .top-tag-count {
   font-size: var(--font-size-sm);
   font-weight: 600;
-  color: var(--color-primary);
+  color: var(--color-accent);
   flex-shrink: 0;
 }
 

@@ -11,6 +11,7 @@ const MOUSE_REPEL_DIST = 120;
 const MOUSE_REPEL_FORCE = 0.8;
 
 let canvas, ctx, nodes, mouse, animId, running;
+let resizeHandler, mousemoveHandler, mouseleaveHandler;
 
 class Node {
     constructor(w, h) {
@@ -123,19 +124,13 @@ export function initBackground(canvasEl) {
     resize();
     nodes = Array.from({ length: NODE_COUNT }, () => new Node(window.innerWidth, window.innerHeight));
 
-    window.addEventListener('resize', () => {
-        resize();
-    });
+    resizeHandler = () => resize();
+    mousemoveHandler = (e) => { mouse.x = e.clientX; mouse.y = e.clientY; };
+    mouseleaveHandler = () => { mouse.x = null; mouse.y = null; };
 
-    window.addEventListener('mousemove', (e) => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-    });
-
-    window.addEventListener('mouseleave', () => {
-        mouse.x = null;
-        mouse.y = null;
-    });
+    window.addEventListener('resize', resizeHandler);
+    window.addEventListener('mousemove', mousemoveHandler);
+    window.addEventListener('mouseleave', mouseleaveHandler);
 
     document.addEventListener('visibilitychange', handleVisibility);
 
@@ -148,5 +143,8 @@ export function initBackground(canvasEl) {
 export function destroyBackground() {
     running = false;
     cancelAnimationFrame(animId);
+    window.removeEventListener('resize', resizeHandler);
+    window.removeEventListener('mousemove', mousemoveHandler);
+    window.removeEventListener('mouseleave', mouseleaveHandler);
     document.removeEventListener('visibilitychange', handleVisibility);
 }
