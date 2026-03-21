@@ -92,7 +92,7 @@ function renderPaperCard(paper, modes = []) {
   // Extract plain-text preview from the "What are they doing?" section only
   let rawPreview = '';
   if (paper._markdownContent) {
-    const startMarker = /\*\*What are they doing\?\*\*/i;
+    const startMarker = /\*\*What are they (?:doing|arguing)\?\*\*/i;
     const endMarker = /\*\*Why do we need it\?\*\*/i;
     const startMatch = startMarker.exec(paper._markdownContent);
     if (startMatch) {
@@ -155,7 +155,7 @@ export async function renderPaperDetail(container, paperId) {
       level: 'inline',
       start(src) { return src.match(/!\[/)?.index; },
       tokenizer(src, tokens) {
-        const rule = /^!\[([^\]]*)\]\(([^)]+)\)(?:\(([^)]*)\))?(?:\{:([^}]+)\})?/;
+        const rule = /^!\[([^\]]*)\]\(([^)]+)\)(?:\(((?:[^)(]|\([^)]*\))*)\))?(?:\{:([^}]+)\})?/;
         const match = rule.exec(src);
         if (match) {
           const attrs = match[4] || '';
