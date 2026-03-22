@@ -191,8 +191,7 @@ export async function renderPaperDetail(container, paperId) {
   // marked extension for KaTeX (math equations)
   if (window.markedKatex) {
     marked.use(window.markedKatex({
-      throwOnError: false,
-      displayMode: true
+      throwOnError: false
     }));
   }
 
