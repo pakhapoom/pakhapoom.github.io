@@ -12,6 +12,10 @@ dateAdded: "2026-03-12"
 
 # Simulating Society Requires Simulating Thought
 
+## 0. Overview
+
+LLM agents can mimic what people say, but not how they think — and for social simulations that inform real policy, that gap matters. This paper makes the case for cognitively grounded agents whose reasoning is structured, traceable, and causally faithful, proposing GenMinds and RECAP as conceptual frameworks to get there.
+
 ## 1. Background & Motivation
 
 - **Field / Problem:** LLM-based social simulation — using large language models as stand-ins for human agents in computational models of society, policy, and group behavior.
@@ -43,6 +47,8 @@ The authors distinguish two dimensions along which current agents fail:
 
 **Individuality** — whether agents preserve heterogeneous belief structures across a simulated population. Because LLMs are trained to minimize token-level loss over aggregated corpora, their generative priors push toward statistical averages. In multi-agent settings this produces an *illusion of consensus* — agents appear to agree not because of shared reasoning, but because their generative priors converge to a median narrative. Within demographic conditioning, this yields *identity flattening*, where intersectional variation is erased in favor of majority-class stereotypes.
 
+![motivation](../assets/simulating_society/fig01.png)(Figure: Contrasts current LLM-based simulations (top: surface opinions derived from demographics) with GenMinds (bottom: latent belief dynamics producing heterogeneous, causally faithful population-level patterns).)
+
 ### GenMinds: Structured Belief Formation
 
 GenMinds models individuals' internal reasoning via three steps:
@@ -53,11 +59,7 @@ GenMinds models individuals' internal reasoning via three steps:
 
 3. **Inference via symbolic-neural hybrid.** Given a CBN and a hypothetical intervention (e.g., `do(Transparency = high)`), the agent performs forward inference using belief propagation (do-calculus), simulating how downstream beliefs shift. A language model handles natural language parsing and motif assembly; the causal graph handles structural inference. This hybrid ensures both interpretability and expressive power.
 
-![motivation](../assets/simulating_society/fig01.png)
-(Figure 1: Contrasts current LLM-based simulations (top: surface opinions derived from demographics) with GenMinds (bottom: latent belief dynamics producing heterogeneous, causally faithful population-level patterns).)
-
-![motifs](../assets/simulating_society/fig02.png)
-(Figure 2: Illustrataiton of the motif-based belief graph for a surveillance scenario, showing how natural language QA responses are parsed into causal links, composed into a personalized belief graph, and updated via intervention propagation.)
+![motifs](../assets/simulating_society/fig02.png)(Figure: Illustrataiton of the motif-based belief graph for a surveillance scenario, showing how natural language QA responses are parsed into causal links, composed into a personalized belief graph, and updated via intervention propagation.)
 
 The illustrative example in the paper is instructive: two QA pairs from a surveillance interview are parsed into motifs (`Transparency → Crime rate → Public Safety` and `Privacy ← Transparency → Crime rate`), composed into a CBN, and then a policy intervention `do(Transparency = high)` is applied. The result is a principled, traceable shift in downstream beliefs: P(Privacy Concern) drops from 0.7 to 0.3, and P(Opposition to Surveillance) drops from 0.7 to 0.2.
 
@@ -69,8 +71,7 @@ RECAP is a benchmark *schema* rather than a static dataset — a replicable prot
 - **Belief coherence** — internal consistency of the model's reasoning trace.
 - **Counterfactual robustness** — sensible, causally grounded belief updates under hypothetical interventions.
 
-![motifs](../assets/simulating_society/tab01.png)
-(Table 1: paradigm shift from existing output-mimicry approaches to GenMinds along four dimensions: reasoning format, belief dynamics, evaluation lens, and social representation.)
+![paradigm shift](../assets/simulating_society/tab01.png)(Table: paradigm shift from existing output-mimicry approaches to GenMinds along four dimensions: reasoning format, belief dynamics, evaluation lens, and social representation.)
 
 ## 5. Experimental Setup
 

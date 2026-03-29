@@ -149,6 +149,8 @@ export async function renderPaperDetail(container, paperId) {
   // Get markdown content and render to HTML
   const markdown = getMarkdownForPaper(paper);
   // marked extension to handle {: .classname} or {: width="x"} after images
+  let figureCount = 0;
+  let tableCount = 0;
   marked.use({
     extensions: [{
       name: 'imageWithSize',
@@ -173,8 +175,16 @@ export async function renderPaperDetail(container, paperId) {
         }
       },
       renderer(token) {
-        const title = token.caption || '';
+        let title = token.caption || '';
         const href = token.href;
+
+        if (/^Figure\s*:/i.test(title)) {
+          figureCount++;
+          title = title.replace(/^Figure\s*:/i, `Figure ${figureCount}:`);
+        } else if (/^Table\s*:/i.test(title)) {
+          tableCount++;
+          title = title.replace(/^Table\s*:/i, `Table ${tableCount}:`);
+        }
 
         const classAttr = ` class="${token.className || 'img-half'}"`;  // default to img-half if no explicit class
         const widthAttr = token.width ? ` style="width: ${token.width};"` : '';
@@ -220,4 +230,3 @@ export async function renderPaperDetail(container, paperId) {
 
   container.innerHTML = html;
 }
-
