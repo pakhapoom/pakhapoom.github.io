@@ -89,15 +89,13 @@ export async function renderPapers(container, options = {}) {
  * Render a single paper card.
  */
 function renderPaperCard(paper, modes = []) {
-  // Extract plain-text preview from the "What are they doing?" section only
+  // Extract plain-text preview from the "## 0. ..." section
   let rawPreview = '';
   if (paper._markdownContent) {
-    const startMarker = /\*\*What are they (?:doing|arguing)\?\*\*/i;
-    const endMarker = /\*\*Why do we need it\?\*\*/i;
-    const startMatch = startMarker.exec(paper._markdownContent);
+    const startMatch = /^## 0\..+$/m.exec(paper._markdownContent);
     if (startMatch) {
       const afterStart = paper._markdownContent.substring(startMatch.index + startMatch[0].length);
-      const endMatch = endMarker.exec(afterStart);
+      const endMatch = /^## /m.exec(afterStart);
       const section = endMatch ? afterStart.substring(0, endMatch.index) : afterStart;
       rawPreview = stripMarkdown(section);
     } else {
