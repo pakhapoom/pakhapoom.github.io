@@ -49,7 +49,7 @@ To operationalize this, the authors measure the Jensen–Shannon divergence *D*_
 
 The **deep-thinking ratio (DTR)** for a full sequence is simply the proportion of its tokens that are deep-thinking tokens. Two hyperparameters govern the definition: settling threshold *g* = 0.5 and depth fraction *ρ* = 0.85, selected via ablation as the best-performing and most stable configuration.
 
-![dtr algorithm](../assets/think_deep_not_just_long/fig02.png)(Figure: A step-by-step illustration of the deep-thinking token identification algorithm for a toy 10-layer model, showing which layers fail the JSD threshold and how the settling depth is determined.)
+![dtr algorithm](../assets/think_deep_not_just_long/fig03.png)(Figure: A step-by-step illustration of the deep-thinking token identification algorithm for a toy 10-layer model, showing which layers fail the JSD threshold and how the settling depth is determined.)
 
 ### Think@n
 

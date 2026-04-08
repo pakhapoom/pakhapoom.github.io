@@ -12,7 +12,7 @@ dateAdded: "2026-03-03"
 
 # STARec: An Efficient Agent Framework for Recommender Systems via Autonomous Deliberate Reasoning
 
-## 0. High-level summary
+## 0. Overview
 
 STARec equips LLM-based recommender systems with "slow thinking" — deliberate, chain-of-thought reasoning — by training each user agent via a two-stage pipeline of knowledge distillation followed by reinforcement learning. Trained on just 0.4% of available data, it outperforms state-of-the-art baselines on two standard benchmarks.
 
@@ -61,7 +61,7 @@ Achieving slow thinking via zero-shot prompting is unreliable, so the authors tr
 
 **Stage 2 — RL Enhancement.** Starting from the SFT model, GRPO (Group Relative Policy Optimization — a memory-efficient RL algorithm without a separate critic model) is applied. The reward function is ranking-oriented: +1.0 if the ground-truth item is ranked 1st, +0.5 for ranks 2–5, 0.0 for 6–10, −0.5 for 11–20, and −1.0 if it falls outside the top 20. For memory update steps, the updated preference description is immediately tested on a follow-up ranking task and rewarded accordingly — ensuring preference summaries actually improve downstream performance. A KL divergence penalty prevents excessive drift from the SFT baseline.
 
-![starec framework](../assets/starec/fig02.png)(Figure: STARec framework: the dual-process agent architecture)
+![starec framework](../assets/starec/fig01.png)(Figure: STARec framework: the dual-process agent architecture)
 
 ## 5. Experimental Setup
 
