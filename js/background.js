@@ -4,7 +4,9 @@
  * Includes a subtle mouse-repel interaction.
  */
 
-const IS_MOBILE = window.innerWidth <= 768;
+import { MOBILE_BREAKPOINT } from './utils.js';
+
+const IS_MOBILE = window.innerWidth <= MOBILE_BREAKPOINT;
 const NODE_COUNT = IS_MOBILE ? 30 : 55;
 const CONNECTION_DIST = IS_MOBILE ? 100 : 150;
 const MOUSE_REPEL_DIST = 120;
@@ -118,6 +120,7 @@ function handleVisibility() {
 export function initBackground(canvasEl) {
     canvas = canvasEl;
     ctx = canvas.getContext('2d');
+    if (!ctx) return;
     mouse = { x: null, y: null };
     running = true;
 

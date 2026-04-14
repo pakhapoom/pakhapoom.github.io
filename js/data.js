@@ -65,18 +65,25 @@ export async function loadPapers() {
   try {
     // Fetch the index of paper filenames
     const indexRes = await fetch('papers/index.json');
-    if (!indexRes.ok) throw new Error(`Failed to load index: ${indexRes.status}`);
+    if (!indexRes.ok) throw new Error(`[data] Failed to load papers/index.json: HTTP ${indexRes.status}`);
     const filenames = await indexRes.json();
 
     // Fetch all markdown files in parallel
     const paperPromises = filenames.map(async (filename) => {
       const res = await fetch(`papers/${filename}`);
       if (!res.ok) {
-        console.warn(`Failed to load papers/${filename}: ${res.status}`);
+        console.warn(`[data] Failed to load papers/${filename}: HTTP ${res.status}`);
         return null;
       }
       const raw = await res.text();
       const { meta, content } = parseFrontmatter(raw);
+
+      // Validate required fields
+      const REQUIRED = ['title', 'authors', 'year', 'tags'];
+      const missing = REQUIRED.filter(f => meta[f] === undefined);
+      if (missing.length > 0) {
+        console.warn(`[data] ${filename} is missing required fields: ${missing.join(', ')}`);
+      }
 
       // Derive ID from filename (strip .md extension)
       const id = filename.replace(/\.md$/, '');
@@ -97,7 +104,7 @@ export async function loadPapers() {
     _papers = (await Promise.all(paperPromises)).filter(Boolean);
     return _papers;
   } catch (err) {
-    console.error('Error loading papers:', err);
+    console.error('[data] Error loading papers:', err);
     _papers = [];
     return _papers;
   }

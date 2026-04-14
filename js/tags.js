@@ -3,9 +3,17 @@
  */
 
 import { loadPapers, getAllTags } from './data.js';
-import { escapeHtml } from './utils.js';
+import { escapeHtml, showLoading } from './utils.js';
 
 let chartInstances = [];
+
+const BASE_TOOLTIP = {
+  backgroundColor: 'rgba(15, 23, 42, 0.9)',
+  titleFont: { family: 'Inter', size: 13, weight: '600' },
+  bodyFont: { family: 'Inter', size: 12 },
+  cornerRadius: 8,
+  padding: 12,
+};
 
 /**
  * Destroy all previous chart instances.
@@ -20,6 +28,7 @@ function destroyCharts() {
  * @param {HTMLElement} container
  */
 export async function renderTags(container) {
+  showLoading(container);
   const papers = await loadPapers();
   const tagMap = await getAllTags();
   const totalPapers = papers.length;
@@ -174,11 +183,7 @@ function renderTimelineChart(allYears, yearCounts) {
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: 'rgba(15, 23, 42, 0.9)',
-          titleFont: { family: 'Inter', size: 13, weight: '600' },
-          bodyFont: { family: 'Inter', size: 12 },
-          cornerRadius: 8,
-          padding: 12,
+          ...BASE_TOOLTIP,
           callbacks: {
             label: ctx => `${ctx.parsed.y} paper${ctx.parsed.y !== 1 ? 's' : ''}`
           }
@@ -232,12 +237,9 @@ function renderBarChart(sortedTags) {
       indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
-      onClick: (event, elements) => {
-        let tag = null;
+      onClick: (_event, elements) => {
         if (elements.length > 0) {
-          tag = labels[elements[0].index];
-        }
-        if (tag) {
+          const tag = labels[elements[0].index];
           window.location.hash = `#papers?tag=${encodeURIComponent(tag)}`;
         }
       },
@@ -247,11 +249,7 @@ function renderBarChart(sortedTags) {
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: 'rgba(15, 23, 42, 0.9)',
-          titleFont: { family: 'Inter', size: 13, weight: '600' },
-          bodyFont: { family: 'Inter', size: 12 },
-          cornerRadius: 8,
-          padding: 12,
+          ...BASE_TOOLTIP,
           callbacks: {
             label: ctx => `${ctx.parsed.x} paper${ctx.parsed.x !== 1 ? 's' : ''}`
           }

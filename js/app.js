@@ -54,6 +54,10 @@ function parseRoute() {
  * Route to the correct view.
  */
 async function navigate() {
+    // Cancel any in-flight debounced search before rendering a new page
+    clearTimeout(searchDebounce);
+    searchDebounce = null;
+
     const { page, params } = parseRoute();
 
     // Update active nav link
@@ -93,10 +97,9 @@ async function navigate() {
 
         case 'papers':
             contentTitle.textContent = 'Papers';
-            if (pendingSearchQuery) {
-                // Handle search initiated from landing page
-                const query = pendingSearchQuery;
-                pendingSearchQuery = null;
+            if (params.q) {
+                // Handle search initiated from landing page or direct URL
+                const query = decodeURIComponent(params.q);
                 const papers = await loadPapers();
                 const results = search(papers, query);
                 contentTitle.textContent = 'Search Results';
@@ -137,7 +140,6 @@ async function navigate() {
 // ---- Search Handler ----
 
 let searchDebounce = null;
-let pendingSearchQuery = null;
 
 /**
  * Perform a search and render results in the papers view.
@@ -158,9 +160,8 @@ async function performSearch(query) {
             query: query
         });
     } else {
-        // Navigate to papers page with the search query
-        pendingSearchQuery = query;
-        window.location.hash = '#papers';
+        // Navigate to papers page — encode query in the hash so navigate() picks it up
+        window.location.hash = `#papers?q=${encodeURIComponent(query)}`;
     }
 }
 
@@ -207,11 +208,10 @@ async function init() {
         }
     });
 
-    // Clear search when clicking nav links
+    // Clear search input when clicking nav links
     navLinks.forEach(link => {
         link.addEventListener('click', () => {
             searchInput.value = '';
-            pendingSearchQuery = null;
         });
     });
 

@@ -3,7 +3,13 @@
  */
 
 import { loadPapers, getPaperById, getMarkdownForPaper } from './data.js';
-import { escapeHtml } from './utils.js';
+import { escapeHtml, safeUrl, showLoading } from './utils.js';
+
+/** Maximum characters shown in a card preview. */
+const PREVIEW_MAX_CHARS = 200;
+
+// Delegated click handler — stored so it can be swapped out on each render
+let cardClickHandler = null;
 
 /**
  * Strip markdown syntax to get plain text for previews.
@@ -32,6 +38,7 @@ function stripMarkdown(md) {
  * @param {string} [options.query] - The search query (for display)
  */
 export async function renderPapers(container, options = {}) {
+  showLoading(container);
   const papers = await loadPapers();
   let displayPapers = papers;
   let subtitle = '';
@@ -76,13 +83,19 @@ export async function renderPapers(container, options = {}) {
   html += '</div>';
   container.innerHTML = html;
 
-  // Attach click handlers
-  container.querySelectorAll('.card[data-paper-id]').forEach(card => {
-    card.addEventListener('click', (e) => {
-      if (e.target.closest('.tag-badge')) return; // don't navigate when clicking a tag
+  // Use event delegation — one listener on the container instead of one per card.
+  // Remove the previous handler first to avoid stacking listeners across re-renders.
+  if (cardClickHandler) {
+    container.removeEventListener('click', cardClickHandler);
+  }
+  cardClickHandler = (e) => {
+    if (e.target.closest('.tag-badge')) return; // let the <a> navigate naturally
+    const card = e.target.closest('.card[data-paper-id]');
+    if (card) {
       window.location.hash = `#paper/${card.dataset.paperId}`;
-    });
-  });
+    }
+  };
+  container.addEventListener('click', cardClickHandler);
 }
 
 /**
@@ -102,7 +115,7 @@ function renderPaperCard(paper, modes = []) {
       rawPreview = stripMarkdown(paper._markdownContent);
     }
   }
-  const preview = rawPreview.length > 200 ? rawPreview.substring(0, 200) + '…' : rawPreview;
+  const preview = rawPreview.length > PREVIEW_MAX_CHARS ? rawPreview.substring(0, PREVIEW_MAX_CHARS) + '…' : rawPreview;
 
   const modeBadges = modes.map(m =>
     `<span class="search-mode-badge ${m}">${m}</span>`
@@ -120,7 +133,7 @@ function renderPaperCard(paper, modes = []) {
       </div>
       <p class="card-summary">${escapeHtml(preview)}</p>
       <div class="card-tags">
-        ${paper.tags.map(t => `<a href="#papers?tag=${encodeURIComponent(t)}" class="tag-badge" onclick="event.stopPropagation()">${escapeHtml(t)}</a>`).join('')}
+        ${paper.tags.map(t => `<a href="#papers?tag=${encodeURIComponent(t)}" class="tag-badge">${escapeHtml(t)}</a>`).join('')}
       </div>
     </div>`;
 }
@@ -131,6 +144,7 @@ function renderPaperCard(paper, modes = []) {
  * @param {string} paperId
  */
 export async function renderPaperDetail(container, paperId) {
+  showLoading(container);
   const paper = await getPaperById(paperId);
 
   if (!paper) {
@@ -146,6 +160,17 @@ export async function renderPaperDetail(container, paperId) {
 
   // Get markdown content and render to HTML
   const markdown = getMarkdownForPaper(paper);
+
+  if (typeof marked === 'undefined') {
+    container.innerHTML = `
+      <div class="paper-detail fade-in">
+        <a href="#papers" class="back-link">← Back to Papers</a>
+        <h1>${escapeHtml(paper.title)}</h1>
+        <pre style="white-space:pre-wrap">${escapeHtml(markdown)}</pre>
+      </div>`;
+    return;
+  }
+
   // marked extension to handle {: .classname} or {: width="x"} after images
   let figureCount = 0;
   let tableCount = 0;
@@ -208,7 +233,7 @@ export async function renderPaperDetail(container, paperId) {
   let html = `
     <div class="paper-detail fade-in">
       <a href="#papers" class="back-link">← Back to Papers</a>
-      <h1>${escapeHtml(paper.title)}${paper.url ? ` <a href="${escapeHtml(paper.url)}" target="_blank" rel="noopener noreferrer" class="paper-external-link" title="View original paper"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>` : ''}</h1>
+      <h1>${escapeHtml(paper.title)}${safeUrl(paper.url) ? ` <a href="${safeUrl(paper.url)}" target="_blank" rel="noopener noreferrer" class="paper-external-link" title="View original paper"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>` : ''}</h1>
       <div class="card-meta" style="font-size: var(--font-size-sm);">
         <span>${escapeHtml(paper.authors.join(', '))}</span>
         <span>${paper.year}</span>

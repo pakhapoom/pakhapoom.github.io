@@ -3,6 +3,10 @@
  */
 
 import { initBackground, destroyBackground } from './background.js';
+import { MOBILE_BREAKPOINT } from './utils.js';
+
+let _searchInputEl = null;
+let _keydownHandler = null;
 
 /**
  * Render the landing page.
@@ -64,20 +68,21 @@ export function renderLanding(container, onSearch) {
   // Initialize the neural-network background
   initBackground(canvasEl);
 
-  // Wire up search
+  // Wire up search — store refs so cleanupLanding can remove the listener
   const searchInput = container.querySelector('#landing-search-input');
-
-  searchInput.addEventListener('keydown', (e) => {
+  _searchInputEl = searchInput;
+  _keydownHandler = (e) => {
     if (e.key === 'Enter') {
       const query = searchInput.value.trim();
       if (query && onSearch) {
         onSearch(query);
       }
     }
-  });
+  };
+  searchInput.addEventListener('keydown', _keydownHandler);
 
   // Auto-focus the search input (skip on mobile to avoid virtual keyboard popup)
-  if (window.innerWidth > 768) {
+  if (window.innerWidth > MOBILE_BREAKPOINT) {
     requestAnimationFrame(() => searchInput.focus());
   }
 }
@@ -86,6 +91,11 @@ export function renderLanding(container, onSearch) {
  * Clean up the landing page background when navigating away.
  */
 export function cleanupLanding() {
+  if (_searchInputEl && _keydownHandler) {
+    _searchInputEl.removeEventListener('keydown', _keydownHandler);
+    _keydownHandler = null;
+    _searchInputEl = null;
+  }
   destroyBackground();
   const canvasEl = document.getElementById('neural-bg');
   if (canvasEl) canvasEl.remove();

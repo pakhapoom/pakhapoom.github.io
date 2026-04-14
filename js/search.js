@@ -6,6 +6,12 @@
 let fuseInstance = null;
 let tfidfIndex = null;
 
+/**
+ * Fuse.js match threshold: 0 = exact match only, 1 = match anything.
+ * 0.4 balances precision against recall for short academic queries.
+ */
+const FUSE_THRESHOLD = 0.4;
+
 // ---- Stopwords for TF-IDF ----
 const STOPWORDS = new Set([
     'a', 'an', 'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
@@ -45,7 +51,18 @@ function tokenize(text) {
 // ---- TF-IDF Engine ----
 
 /**
- * Build TF-IDF index from an array of papers.
+ * Build a TF-IDF index from an array of papers.
+ *
+ * TF (term frequency): how often a term appears in a document, normalised by
+ * the document's highest-frequency term so longer papers don't dominate.
+ *
+ * IDF (inverse document frequency): log(N / df) + 1, smoothed by +1 so that
+ * terms appearing in every document still carry a small positive weight.
+ *
+ * The resulting index stores per-document TF maps and a global IDF map.
+ * Scores at query time are computed as the sum of TF×IDF across query terms.
+ *
+ * @param {Array<Object>} papers
  */
 function buildTFIDFIndex(papers) {
     const N = papers.length;
@@ -84,8 +101,14 @@ function buildTFIDFIndex(papers) {
 }
 
 /**
- * Search using TF-IDF index.
- * @returns {Array<{paper, score}>} sorted by score descending
+ * Score all indexed documents against a query using TF-IDF.
+ *
+ * For each query token the document score is incremented by TF×IDF.
+ * Documents with a score of zero (no query terms present) are excluded.
+ * Results are returned sorted by score descending.
+ *
+ * @param {string} query - Raw query string (will be tokenised internally)
+ * @returns {Array<{paper: Object, score: number}>} sorted by score descending
  */
 function searchTFIDF(query) {
     if (!tfidfIndex) return [];
@@ -139,7 +162,7 @@ function getFuseInstance(papers) {
             { name: 'tags', weight: 2 },
             { name: '_markdownContent', weight: 1 }
         ],
-        threshold: 0.4,
+        threshold: FUSE_THRESHOLD,
         includeScore: true,
         ignoreLocation: true,
         minMatchCharLength: 2
@@ -157,6 +180,15 @@ function getFuseInstance(papers) {
 export function initSearch(papers) {
     getFuseInstance(papers);
     buildTFIDFIndex(papers);
+}
+
+/**
+ * Clear the cached search indices so they are rebuilt on the next search.
+ * Call this whenever the papers data changes.
+ */
+export function clearSearchIndex() {
+    fuseInstance = null;
+    tfidfIndex = null;
 }
 
 /**
