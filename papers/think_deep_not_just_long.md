@@ -31,7 +31,7 @@ Token count is a poor proxy for LLM reasoning quality — longer outputs often s
 - **Main idea (intuition):** A token that the model "settles on" early — where the predicted token distribution converges to its final value in shallow layers — required little internal computation. A token whose distribution continues to shift until deep layers required more internal computation. The fraction of such *deep-thinking tokens* in a generated sequence is a direct measure of how hard the model worked on that sequence.
 - **Claimed contributions:**
   1. **Deep-thinking ratio (DTR):** A new inference-time metric that measures reasoning effort by tracking depth-wise distributional stabilization of token predictions using Jensen–Shannon divergence (JSD) between intermediate and final layer outputs.
-  2. **Empirical validation:** Across four hard benchmarks (AIME 24/25, HMMT 25, GPQA-Diamond) and eight model variants (GPT-OSS, DeepSeek-R1, Qwen3), DTR shows substantially stronger and more consistent positive correlation with accuracy (avg *r* = 0.683) than token count (avg *r* = −0.594) or confidence-based baselines.
+  2. **Empirical validation:** Across four hard benchmarks (AIME 24/25, HMMT 25, GPQA-Diamond) and eight model variants (GPT-OSS, DeepSeek-R1, Qwen3), DTR shows substantially stronger and more consistent positive correlation with accuracy (avg $r = 0.683$) than token count (avg $r = −0.594$) or confidence-based baselines.
   3. **Think@n:** A test-time scaling strategy that uses DTR estimated from short prefixes (as few as 50 tokens) to reject unpromising generations early, matching or exceeding standard self-consistency at approximately half the inference cost.
 - **Evaluation preview:** Empirical correlation analysis across 32 model–benchmark combinations; direct accuracy vs. cost comparison against multiple aggregation baselines.
 
@@ -39,21 +39,21 @@ Token count is a poor proxy for LLM reasoning quality — longer outputs often s
 
 ### Deep-Thinking Tokens
 
-The method builds on the "logit lens" insight: for a transformer with *L* layers, one can project any intermediate hidden state *h*_{t,l} into the vocabulary space using the model's final unembedding matrix *W_U*, yielding a probability distribution *p*_{t,l} at each layer *l* for each generation step *t*. The final-layer distribution *p*_{t,L} is the one actually used for sampling.
+The method builds on the "logit lens" insight: for a transformer with $L$ layers, one can project any intermediate hidden state $h_{t,l}$ into the vocabulary space using the model's final unembedding matrix $W_U$, yielding a probability distribution $p_{t,l}$ at each layer $l$ for each generation step $t$. The final-layer distribution $p_{t,L}$ is the one actually used for sampling.
 
 ![dtr heatmap](../assets/think_deep_not_just_long/fig02.png)(Figure: A heatmap showing JSD values across layers for each generated token in a GPQA answer. It vividly illustrates that functional words converge early while computed numerical values and answer tokens settle only in the deepest layers.)
 
-The key observation is that some tokens "make up their mind" early — their *p*_{t,l} converges to the final *p*_{t,L} in shallow layers — while others undergo sustained revision deep into the network before settling. The former correspond to low-effort tokens (e.g., function words, templated phrases); the latter correspond to high-effort tokens (e.g., computed values, answer symbols).
+The key observation is that some tokens "make up their mind" early — their $p_{t,l}$ converges to the final $p_{t,L}$ in shallow layers — while others undergo sustained revision deep into the network before settling. The former correspond to low-effort tokens (e.g., function words, templated phrases); the latter correspond to high-effort tokens (e.g., computed values, answer symbols).
 
-To operationalize this, the authors measure the Jensen–Shannon divergence *D*_{t,l} = JSD(*p*_{t,L} ∥ *p*_{t,l}) between the intermediate and final distributions at each layer. A "settling depth" *c*_t is defined as the first layer at which the running minimum of *D*_{t,l} falls below a threshold *g*. A token is classified as a **deep-thinking token** if *c*_t falls in the "late" portion of the network, defined by a depth fraction *ρ* (e.g., the top 15% of layers for *ρ* = 0.85).
+To operationalize this, the authors measure the Jensen–Shannon divergence $D_{t,l} = \text{JSD}\left(p_{t,L} \,\middle\|\, p_{t,l}\right)$ between the intermediate and final distributions at each layer. A "settling depth" $c_t$ is defined as the first layer at which the running minimum of $D_{t,l}$ falls below a threshold $g$. A token is classified as a **deep-thinking token** if $c_t$ falls in the "late" portion of the network, defined by a depth fraction $ρ$ (e.g., the top 15% of layers for *ρ* = 0.85).
 
-The **deep-thinking ratio (DTR)** for a full sequence is simply the proportion of its tokens that are deep-thinking tokens. Two hyperparameters govern the definition: settling threshold *g* = 0.5 and depth fraction *ρ* = 0.85, selected via ablation as the best-performing and most stable configuration.
+The **deep-thinking ratio (DTR)** for a full sequence is simply the proportion of its tokens that are deep-thinking tokens. Two hyperparameters govern the definition: settling threshold $g = 0.5$ and depth fraction $ρ = 0.85$, selected via ablation as the best-performing and most stable configuration.
 
 ![dtr algorithm](../assets/think_deep_not_just_long/fig03.png)(Figure: A step-by-step illustration of the deep-thinking token identification algorithm for a toy 10-layer model, showing which layers fail the JSD threshold and how the settling depth is determined.)
 
 ### Think@n
 
-Given a pool of *n* sampled responses to a problem, Think@n estimates DTR from only the first *ℓ*_prefix tokens of each response (as few as 50 tokens suffice), ranks responses by DTR, retains the top *η* = 50%, and performs majority voting over those selected responses. Early termination of low-DTR responses before full generation is what enables the ~50% compute savings.
+Given a pool of *n* sampled responses to a problem, Think@n estimates DTR from only the first $l_prefix$ tokens of each response (as few as 50 tokens suffice), ranks responses by DTR, retains the top $\eta$ = 50%, and performs majority voting over those selected responses. Early termination of low-DTR responses before full generation is what enables the ~50% compute savings.
 
 ## 5. Experimental Setup
 
@@ -64,12 +64,12 @@ Given a pool of *n* sampled responses to a problem, Think@n estimates DTR from o
 
 ## 6. Results & Analysis
 
-- **Main results:** DTR achieves the highest average Pearson correlation with accuracy (*r* = 0.683) across all 32 model–benchmark combinations. The next best baselines are Self-Certainty (*r* = 0.605) and negative entropy (*r* = 0.571). Token count achieves *r* = −0.594, confirming that longer outputs are systematically associated with *lower* accuracy. Only 2 of 32 DTR results are negative; confidence baselines have many more failure cases.
+- **Main results:** DTR achieves the highest average Pearson correlation with accuracy ($r = 0.683$) across all 32 model–benchmark combinations. The next best baselines are Self-Certainty ($r = 0.605$) and negative entropy ($r = 0.571$). Token count achieves $r = −0.594$, confirming that longer outputs are systematically associated with *lower* accuracy. Only 2 of 32 DTR results are negative; confidence baselines have many more failure cases.
 
 ![full results](../assets/think_deep_not_just_long/tab01.png)(Table: the full correlation matrix across all 8 models × 4 benchmarks × 7 measures, color-coded to show the consistency of DTR (green) vs. the inconsistency of baselines.)
 
 - **Do results support claims?** Yes, strongly. The consistency of DTR's positive correlation across model families, scales, and reasoning levels is the paper's strongest empirical result.
-- **Ablations / key insights:** The settling threshold *g* is the more sensitive hyperparameter — a too-permissive threshold (g = 0.25) flattens the signal. The depth fraction *ρ* affects the range of DTR values but leaves the positive slope intact across all tested values. The optimal setting (*g*, *ρ*) = (0.5, 0.85) is robust.
+- **Ablations / key insights:** The settling threshold $g$ is the more sensitive hyperparameter — a too-permissive threshold ($g = 0.25$) flattens the signal. The depth fraction $\rho$ affects the range of DTR values but leaves the positive slope intact across all tested values. The optimal setting ($g$, $\rho$) = (0.5, 0.85) is robust.
 - **Surprising findings:** Higher reasoning level configurations of GPT-OSS produce *lower* DTR values despite achieving higher accuracy. The interpretation is that higher-level reasoning redistributes effort from per-token depth to sequence length: more forward passes, but each individual token requires less layer-wise revision. This is a genuinely counter-intuitive result and raises questions about the comparability of DTR across model modes.
 
 For Think@n, using only 50 prefix tokens to estimate DTR not only matches but slightly outperforms DTR estimated over the full sequence on AIME 2025 (94.7% vs. 94.0%), while halving cost relative to Cons@n (155k vs. 307k tokens).
