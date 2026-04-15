@@ -210,7 +210,7 @@ export async function renderPaperDetail(container, paperId) {
         }
 
         const classAttr = ` class="${token.className || 'img-half'}"`;  // default to img-half if no explicit class
-        const widthAttr = token.width ? ` style="width: ${token.width};"` : '';
+        const widthAttr = token.width ? ` style="width: ${token.width}; max-width: 100%;"` : '';
         const altAttr = token.text ? ` alt="${escapeHtml(token.text)}"` : '';
         const img = `<img src="${encodeURI(href)}"${altAttr}${classAttr}${widthAttr}>`;
         if (title) {

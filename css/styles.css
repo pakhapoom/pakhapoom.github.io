@@ -1635,15 +1635,50 @@ textarea.input {
     font-size: var(--font-size-base);
   }
 
+  /* Prevent horizontal overflow on mobile */
+  .main-content {
+    overflow-x: hidden;
+  }
+
   /* Markdown tables — horizontal scroll on overflow */
   .markdown-body table {
     display: block;
     overflow-x: auto;
   }
 
-  /* Paper detail title — slightly smaller */
+  /* KaTeX display math — scroll instead of overflow */
+  .markdown-body .katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: var(--space-xs);
+  }
+
+  /* Paper detail — word wrap and overflow protection */
+  .paper-detail {
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  /* Paper detail title — smaller on mobile */
   .paper-detail h1 {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-md);
+    line-height: 1.4;
+  }
+
+  /* Markdown headings — smaller on mobile */
+  .markdown-body h2 {
+    font-size: var(--font-size-md);
+  }
+
+  .markdown-body h3 {
+    font-size: var(--font-size-base);
+  }
+
+  /* Images — always respect viewport width, even with inline width style */
+  .markdown-body img {
+    max-width: 100% !important;
+    height: auto !important;
+    width: auto;
   }
 
   /* About page — mobile adjustments */
@@ -1690,6 +1725,25 @@ textarea.input {
 
   .content-header h2 {
     font-size: var(--font-size-base);
+  }
+
+  /* Paper detail — further reduce on small screens */
+  .paper-detail h1 {
+    font-size: var(--font-size-base);
+  }
+
+  .markdown-body h2 {
+    font-size: var(--font-size-base);
+  }
+
+  .markdown-body h3 {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+  }
+
+  .markdown-body p,
+  .markdown-body li {
+    font-size: var(--font-size-sm);
   }
 
   .about-name {
