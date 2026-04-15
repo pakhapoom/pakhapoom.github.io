@@ -775,6 +775,8 @@ textarea.input {
   border-radius: var(--radius);
   padding: var(--space-lg);
   margin-bottom: var(--space-lg);
+  display: flex;
+  flex-direction: column;
 }
 
 .dashboard-row .dashboard-panel {
@@ -800,11 +802,66 @@ textarea.input {
   flex-shrink: 0;
 }
 
+/* --- Timeline toggle (Year / Month) --- */
+.timeline-toggle {
+  display: flex;
+  gap: 2px;
+  margin-left: auto;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: calc(var(--radius) - 4px);
+  padding: 2px;
+}
+
+.timeline-toggle-btn {
+  padding: 3px 10px;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  font-family: inherit;
+  color: var(--color-muted);
+  background: transparent;
+  border: none;
+  border-radius: calc(var(--radius) - 6px);
+  cursor: pointer;
+  transition: background-color var(--transition), color var(--transition);
+}
+
+.timeline-toggle-btn:hover {
+  color: var(--color-accent);
+}
+
+.timeline-toggle-btn--active {
+  background: var(--color-surface);
+  color: var(--color-accent);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
 /* --- Top Tags List --- */
 .top-tags-list {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
+}
+
+.top-tags-list--scrollable {
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: var(--space-xs);
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.top-tags-list--scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.top-tags-list--scrollable::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.top-tags-list--scrollable::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
 }
 
 .top-tag-item {
@@ -965,7 +1022,8 @@ textarea.input {
 }
 
 .chart-container--timeline {
-  height: 220px;
+  min-height: 220px;
+  flex: 1;
 }
 
 .chart-container--bar {
@@ -1532,6 +1590,10 @@ textarea.input {
 
   .chart-container--bar {
     height: 400px;
+  }
+
+  .top-tags-list--scrollable {
+    max-height: 300px;
   }
 
   /* Landing page — mobile adjustments */

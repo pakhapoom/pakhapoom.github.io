@@ -42,7 +42,7 @@ export async function renderTags(container) {
     return;
   }
 
-  // Year stats
+  // Year stats (from publication year field)
   const years = papers.map(p => p.year);
   const minYear = Math.min(...years);
   const maxYear = Math.max(...years);
@@ -50,28 +50,25 @@ export async function renderTags(container) {
   // Average tags per paper
   const avgTags = (papers.reduce((sum, p) => sum + p.tags.length, 0) / totalPapers).toFixed(1);
 
-  // Papers per year
-  const yearCounts = {};
-  papers.forEach(p => { yearCounts[p.year] = (yearCounts[p.year] || 0) + 1; });
-  const allYears = [];
-  for (let y = minYear; y <= maxYear; y++) allYears.push(y);
-
-  // Top 3 tags
-  const top3 = sortedTags.slice(0, 3);
-
-  // Tag co-occurrence (which tags appear together most often)
-  const cooccurrence = {};
-  papers.forEach(p => {
-    for (let i = 0; i < p.tags.length; i++) {
-      for (let j = i + 1; j < p.tags.length; j++) {
-        const key = [p.tags[i], p.tags[j]].sort().join(' + ');
-        cooccurrence[key] = (cooccurrence[key] || 0) + 1;
+  // Build dateAdded buckets for both groupings
+  function buildBuckets(groupBy) {
+    const counts = {};
+    papers.forEach(p => {
+      if (!p.dateAdded) return;
+      const key = groupBy === 'month' ? p.dateAdded.slice(0, 7) : p.dateAdded.slice(0, 4);
+      counts[key] = (counts[key] || 0) + 1;
+    });
+    const labels = Object.keys(counts).sort();
+    // Fill in gaps for year grouping
+    if (groupBy === 'year' && labels.length >= 2) {
+      const filled = [];
+      for (let y = parseInt(labels[0]); y <= parseInt(labels[labels.length - 1]); y++) {
+        filled.push(String(y));
       }
+      return { labels: filled, data: filled.map(l => counts[l] || 0) };
     }
-  });
-  const topPairs = Object.entries(cooccurrence)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 5);
+    return { labels, data: labels.map(l => counts[l]) };
+  }
 
   let html = `
     <div class="fade-in">
@@ -99,18 +96,25 @@ export async function renderTags(container) {
         </div>
       </div>
 
-      <!-- Two-column layout: Timeline + Top Tags -->
+      <!-- Two-column layout: Timeline + Tag Distribution -->
       <div class="dashboard-row">
         <div class="dashboard-panel dashboard-panel--wide">
-          <h3 class="panel-title"><svg class="panel-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Papers by Year</h3>
+          <div class="panel-title">
+            <svg class="panel-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <span>Reading Trend</span>
+            <div class="timeline-toggle">
+              <button class="timeline-toggle-btn timeline-toggle-btn--active" data-group="month">Month</button>
+              <button class="timeline-toggle-btn" data-group="year">Year</button>
+            </div>
+          </div>
           <div class="chart-container chart-container--timeline">
             <canvas id="timeline-chart"></canvas>
           </div>
         </div>
         <div class="dashboard-panel">
-          <h3 class="panel-title"><svg class="panel-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg> Top Tags</h3>
-          <div class="top-tags-list">
-            ${top3.map(([tag, count], i) => {
+          <h3 class="panel-title"><svg class="panel-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Tag Distribution</h3>
+          <div class="top-tags-list top-tags-list--scrollable">
+            ${sortedTags.map(([tag, count], i) => {
     const pct = Math.round((count / totalPapers) * 100);
     return `
                 <a href="#papers?tag=${encodeURIComponent(tag)}" class="top-tag-item">
@@ -127,31 +131,31 @@ export async function renderTags(container) {
           </div>
         </div>
       </div>
-
-      <!-- Tag Distribution (full width) -->
-      <div class="dashboard-panel">
-        <h3 class="panel-title"><svg class="panel-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Tag Distribution</h3>
-        <div class="chart-container chart-container--bar">
-          <canvas id="tags-chart"></canvas>
-        </div>
-      </div>
     </div>`;
 
 
   container.innerHTML = html;
   destroyCharts();
-  renderTimelineChart(allYears, yearCounts);
-  renderBarChart(sortedTags);
+  renderTimelineChart(buildBuckets('month'));
+
+  // Wire up Year/Month toggle
+  container.querySelectorAll('.timeline-toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      container.querySelectorAll('.timeline-toggle-btn').forEach(b => b.classList.remove('timeline-toggle-btn--active'));
+      btn.classList.add('timeline-toggle-btn--active');
+      destroyCharts();
+      renderTimelineChart(buildBuckets(btn.dataset.group));
+    });
+  });
 }
 
 /**
- * Render the papers-by-year timeline chart.
+ * Render the papers-added timeline chart.
+ * @param {{ labels: string[], data: number[] }} bucket
  */
-function renderTimelineChart(allYears, yearCounts) {
+function renderTimelineChart({ labels, data }) {
   const canvas = document.getElementById('timeline-chart');
   if (!canvas) return;
-
-  const data = allYears.map(y => yearCounts[y] || 0);
 
   const ctx = canvas.getContext('2d');
   const gradient = ctx.createLinearGradient(0, 0, 0, canvas.parentElement.clientHeight || 200);
@@ -161,7 +165,7 @@ function renderTimelineChart(allYears, yearCounts) {
   const chart = new Chart(canvas, {
     type: 'line',
     data: {
-      labels: allYears.map(String),
+      labels,
       datasets: [{
         label: 'Papers',
         data,
@@ -209,72 +213,4 @@ function renderTimelineChart(allYears, yearCounts) {
   chartInstances.push(chart);
 }
 
-/**
- * Render the tag distribution bar chart.
- */
-function renderBarChart(sortedTags) {
-  const canvas = document.getElementById('tags-chart');
-  if (!canvas) return;
-
-  const labels = sortedTags.map(([tag]) => tag);
-  const data = sortedTags.map(([, count]) => count);
-
-  const chart = new Chart(canvas, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [{
-        label: 'Papers',
-        data,
-        backgroundColor: 'rgba(99, 102, 241, 0.65)',
-        hoverBackgroundColor: 'rgba(99, 102, 241, 0.85)',
-        borderRadius: 6,
-        borderSkipped: false,
-        barThickness: 24
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: false,
-      onClick: (_event, elements) => {
-        if (elements.length > 0) {
-          const tag = labels[elements[0].index];
-          window.location.hash = `#papers?tag=${encodeURIComponent(tag)}`;
-        }
-      },
-      onHover: (event, elements) => {
-        event.native.target.style.cursor = elements.length > 0 ? 'pointer' : 'default';
-      },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          ...BASE_TOOLTIP,
-          callbacks: {
-            label: ctx => `${ctx.parsed.x} paper${ctx.parsed.x !== 1 ? 's' : ''}`
-          }
-        }
-      },
-      scales: {
-        x: {
-          beginAtZero: true,
-          ticks: {
-            stepSize: 1,
-            font: { family: 'Inter', size: 11 },
-            color: '#9ca3af'
-          },
-          grid: { color: 'rgba(0, 0, 0, 0.04)' }
-        },
-        y: {
-          ticks: {
-            font: { family: 'Inter', size: 12, weight: '500' },
-            color: 'rgb(99, 102, 241)'
-          },
-          grid: { display: false }
-        }
-      }
-    }
-  });
-  chartInstances.push(chart);
-}
 
