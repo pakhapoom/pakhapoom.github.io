@@ -64,8 +64,8 @@ export async function loadPapers() {
 
   try {
     // Fetch the index of paper filenames
-    const indexRes = await fetch('papers/index.json');
-    if (!indexRes.ok) throw new Error(`[data] Failed to load papers/index.json: HTTP ${indexRes.status}`);
+    const indexRes = await fetch('data/index.json');
+    if (!indexRes.ok) throw new Error(`[data] Failed to load data/index.json: HTTP ${indexRes.status}`);
     const filenames = await indexRes.json();
 
     // Fetch all markdown files in parallel
