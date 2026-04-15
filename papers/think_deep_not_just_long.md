@@ -3,7 +3,7 @@ title: "Think Deep, Not Just Long: Measuring LLM Reasoning Effort via Deep-Think
 authors: ["Wei-Lin Chen", "Liqian Peng", "Tian Tan", "Chao Zhao", "Blake JianHang Chen", "Ziqian Lin", "Alec Go", "Yu Meng"]
 affiliations: ["University of Virginia", "Google"]
 venue: "arXiv preprint (arXiv:2602.13517)"
-type: "Empirical Paper"
+type: "Empirical"
 year: 2026
 tags: ["test-time-compute", "chain-of-thought", "reasoning", "interpretability", "llm-efficiency", "inference-scaling", "self-consistency", "mechanistic-analysis"]
 url: "https://arxiv.org/abs/2602.13517"

@@ -3,7 +3,7 @@ title: "Simulating Society Requires Simulating Thought"
 authors: ["Chance Jiajie Li", "Jiayi Wu", "Zhenze Mo", "Ao Qu", "Yuhan Tang", "Kaiya Ivy Zhao", "Yulu Gan", "Jie Fan", "Jiangbo Yu", "Jinhua Zhao", "Paul Pu Liang", "Luis Alonso", "Kent Larson"]
 affiliations: ["MIT Media Lab", "MIT EECS", "MIT BCS", "MIT IDSS", "MIT CEE", "MIT DUSP", "MIT Architecture", "Northeastern University", "Brown University", "McGill University"]
 venue: "NeurIPS 2025 (39th Conference on Neural Information Processing Systems)"
-type: "Position Paper"
+type: "Position"
 year: 2025
 tags: ["simulation", "reasoning", "cognitive-science", "causal-inference", "social-simulation", "llm-agents"]
 url: "https://arxiv.org/abs/2506.06958"

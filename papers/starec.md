@@ -3,7 +3,7 @@ title: "STARec: An Efficient Agent Framework for Recommender Systems via Autonom
 authors: ["Chenghao Wu", "Ruiyang Ren", "Junjie Zhang", "Ruirui Wang", "Zhongrui Ma", "Qi Ye", "Wayne Xin Zhao"]
 affiliations: ["Gaoling School of AI, Renmin University of China", "Poisson Lab, Huawei"]
 venue: "CIKM 2025 (34th ACM International Conference on Information and Knowledge Management)"
-type: "Empirical Paper"
+type: "Empirical"
 year: 2025
 tags: ["recommendations", "llms", "rl", "agents", "knowledge-distillation", "grpo", "dual-process-cognition"]
 url: "https://arxiv.org/abs/2508.18812"
