@@ -55,7 +55,7 @@ function parseFrontmatter(raw) {
 }
 
 /**
- * Load all papers from individual markdown files listed in papers/index.json.
+ * Load all papers from individual markdown files listed in data/index.json.
  * Parses YAML frontmatter for metadata, keeps markdown body for rendering.
  * @returns {Promise<Array>} Array of paper objects
  */
