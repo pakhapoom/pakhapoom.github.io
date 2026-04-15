@@ -17,6 +17,15 @@ python3 -m http.server 8000
 
 No install, no build. Deploying means pushing to the `main` branch.
 
+## Git Hooks
+
+A pre-commit hook at `.git/hooks/pre-commit` auto-regenerates `data/index.json` on every commit — scanning `papers/*.md` and sorting by `dateAdded` descending. Since `.git/` is not tracked, reinstall it after a fresh clone:
+
+```bash
+cp scripts/pre-commit .git/hooks/pre-commit
+chmod +x .git/hooks/pre-commit
+```
+
 ## Adding a Paper
 
 1. Create `papers/<slug>.md` with YAML frontmatter:
@@ -30,8 +39,7 @@ No install, no build. Deploying means pushing to the `main` branch.
    dateAdded: "2025-01-01"
    ---
    ```
-2. Add the filename to `papers/index.json`
-3. Place any images in `assets/<slug>/`
+2. Place any images in `assets/<slug>/`
 
 ## Architecture
 
@@ -39,7 +47,7 @@ No install, no build. Deploying means pushing to the `main` branch.
 `js/app.js` handles hash-based routing (`#home`, `#papers`, `#paper/:id`, `#tags`, `#about`). Each route calls a render function from the corresponding module that clears and repopulates `#main-content`.
 
 ### Data Flow
-`js/data.js` fetches `papers/index.json`, then lazily loads each `.md` file and parses YAML frontmatter. Papers are cached in a module-level singleton after first load. All other modules import from `data.js`.
+`js/data.js` fetches `data/index.json`, then lazily loads each `.md` file and parses YAML frontmatter. Papers are cached in a module-level singleton after first load. All other modules import from `data.js`.
 
 ### Search (`js/search.js`)
 Three-mode search merged by priority: **exact match** > **fuzzy (Fuse.js)** > **TF-IDF**. Title is weighted 3×, authors/tags 2×, content 1×. Results deduplicated with mode annotations.

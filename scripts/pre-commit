@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Auto-regenerate data/index.json from papers/*.md before each commit
+# Papers are sorted by dateAdded (descending — newest first)
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+PAPERS_DIR="$REPO_ROOT/papers"
+INDEX_FILE="$REPO_ROOT/data/index.json"
+
+python3 - "$PAPERS_DIR" "$INDEX_FILE" <<'EOF'
+import sys, os, json, re
+
+papers_dir, index_file = sys.argv[1], sys.argv[2]
+
+def get_date_added(filepath):
+    with open(filepath) as f:
+        content = f.read()
+    m = re.search(r'^dateAdded:\s*["\']?(\d{4}-\d{2}-\d{2})["\']?', content, re.MULTILINE)
+    return m.group(1) if m else "0000-00-00"
+
+files = sorted(
+    [f for f in os.listdir(papers_dir) if f.endswith(".md")],
+    key=lambda f: get_date_added(os.path.join(papers_dir, f)),
+    reverse=True
+)
+
+with open(index_file, "w") as f:
+    f.write(json.dumps(files, indent=4) + "\n")
+
+print(f"Updated data/index.json ({len(files)} papers, sorted by dateAdded desc)")
+EOF
