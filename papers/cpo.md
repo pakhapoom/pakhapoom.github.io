@@ -5,7 +5,7 @@ affiliations: ["Tongyi Lab, Alibaba Group", "Independent Researcher"]
 venue: "EMNLP"
 type: "Empirical"
 year: 2025
-tags: ["reinforcement-learning", "role-playing", "reward-modeling", "dialogue-systems", "rlhf", "group-relative-policy-optimization", "llm-alignment"]
+tags: ["rl", "role-playing", "reward-modeling", "dialogue-systems", "rlhf", "grpo", "llm-alignment"]
 url: "https://arxiv.org/abs/2508.09074"
 dateAdded: "2026-04-13"
 ---

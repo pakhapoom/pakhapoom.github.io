@@ -5,7 +5,7 @@ affiliations: ["Gaoling School of AI, Renmin University of China", "Poisson Lab,
 venue: "CIKM 2025 (34th ACM International Conference on Information and Knowledge Management)"
 type: "Empirical"
 year: 2025
-tags: ["recommendations", "llms", "rl", "agents", "knowledge-distillation", "grpo", "dual-process-cognition"]
+tags: ["recommendations", "llm", "rl", "llm-agents", "knowledge-distillation", "grpo", "dual-process-cognition"]
 url: "https://arxiv.org/abs/2508.18812"
 dateAdded: "2026-03-03"
 ---
