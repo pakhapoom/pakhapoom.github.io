@@ -43,7 +43,7 @@ The paper is primarily an empirical analysis rather than a novel algorithm. The 
 
 ### Formalizing Self-Distillation
 
-In the self-distillation framework, student and teacher share parameters $\pi_\theta$ but differ in conditioning. The student generates $y \sim \pi_\theta(\cdot \mid x)$; the teacher has access to a richer context $c$ (e.g., the ground-truth solution $s$). Training minimizes:
+In the self-distillation framework, student and teacher share parameters $\pi_\theta$ but differ in conditioning. The student generates $y \sim \pi_\theta(\cdot \mid x)$, while the teacher has access to a richer context $c$ (e.g., the ground-truth solution $s$). Training minimizes:
 
 $$
 \mathcal{L}_\text{SD}(\theta) = \sum_t \text{KL}\!\left[\pi_\theta(\cdot \mid x, y_{<t}) \;\|\; \text{stopgrad}\, \pi_\theta(\cdot \mid x, c, y_{<t})\right]
@@ -72,8 +72,6 @@ Two SFT datasets of 800 correct trajectories are constructed: $D_\text{ug}$ (ung
 ### Experiment 3 — On-Policy Self-Distillation and Task Coverage (Sections 5–6)
 
 GRPO vs. SDPO are compared across multiple models and varying dataset sizes $|D| \in \{1, 8, 64, 128, 512, \text{full DAPO-17k}\}$ to characterize how task coverage moderates the epistemic suppression effect.
-
-> [Figure 3]
 
 ![main result](../assets/sdpo_reasoning/fig03.png)(Figure: Four-panel figure showing on-policy self-distillation results for DeepSeek-R1-Distill-Qwen-7B — training score vs. steps, OOD accuracy on AMC23 and AIME24, and per-token changes in epistemic verbalization for GRPO vs. SDPO with different conditioning contexts. The figure makes the epistemic suppression mechanism visually concrete by showing that SDPO dramatically reduces "wait" token usage while GRPO slightly increases it.)
 
