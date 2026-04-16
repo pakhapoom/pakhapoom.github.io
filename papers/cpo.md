@@ -58,7 +58,7 @@ The reward model is prompted to (1) analyze the full set against the evaluation 
 
 **Integration with GRPO.** CPO reuses the PPO-style policy loss from GRPO exactly; the only change is that the reward values plugged into advantage estimation come from group-wise rather than sample-wise scoring. This makes CPO a drop-in replacement with minimal implementation overhead.
 
-![cpo vs grpo](../assets/cpo/fig02.png)(Figure: side-by-side comparison of vanilla GRPO vs. CPO reward modeling pipelines, showing how independent reward model calls become a single joint call in CPO..)
+![cpo vs grpo](../assets/cpo/fig02.png)(Figure: side-by-side comparison of vanilla GRPO vs. CPO reward modeling pipelines, showing how independent reward model calls become a single joint call in CPO.)
 
 ### CharacterArena Evaluation Framework
 
