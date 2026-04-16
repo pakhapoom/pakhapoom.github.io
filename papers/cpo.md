@@ -10,8 +10,6 @@ url: "https://arxiv.org/abs/2508.09074"
 dateAdded: "2026-04-13"
 ---
 
-# CPO: Addressing Reward Ambiguity in Role-playing Dialogue via Comparative Policy Optimization
-
 ## 0. Overview
 
 Standard RLFT reward models fail on subjective tasks like role-playing because sample-wise scoring is noisy and unstable. CPO replaces individual scoring with group-wise comparative evaluation, reducing reward ambiguity and yielding consistent gains over GRPO across multiple model architectures and benchmarks.

@@ -10,8 +10,6 @@ url: "https://arxiv.org/abs/2601.09215"
 dateAdded: "2026-04-16"
 ---
 
-# UserLM-R1: Modeling Human Reasoning in User Language Models with Multi-Reward Reinforcement Learning
-
 ## 0. Overview
 
 Current user simulators for agent post-training fail to generalize across domains and are easily manipulated by task agents. UserLM-R1 fixes this by equipping user simulators with explicit chain-of-thought reasoning and multi-reward RL, enabling strategic, manipulation-resistant user behavior across diverse real-world scenarios.

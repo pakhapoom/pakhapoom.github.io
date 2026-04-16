@@ -10,8 +10,6 @@ url: "https://arxiv.org/abs/2602.13517"
 dateAdded: "2026-03-21"
 ---
 
-# Think Deep, Not Just Long: Measuring LLM Reasoning Effort via Deep-Thinking Tokens
-
 ## 0. Overview
 
 Token count is a poor proxy for LLM reasoning quality — longer outputs often signal *overthinking*, not better thinking. This paper proposes measuring reasoning effort by how deeply a model's internal token predictions are revised across transformer layers, and leverages this signal to build a more efficient test-time scaling strategy.

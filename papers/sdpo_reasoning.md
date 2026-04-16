@@ -7,8 +7,6 @@ url: "https://arxiv.org/abs/2603.24472"
 dateAdded: "2026-04-15"
 ---
 
-# Why Does Self-Distillation (Sometimes) Degrade the Reasoning Capability of LLMs?
-
 ## 0. Overview
 
 Self-distillation — training an LLM using its own teacher-conditioned outputs — sometimes *hurts* math reasoning despite training on correct traces. The culprit is suppression of epistemic verbalization: tokens like "Wait" or "Hmm" that signal uncertainty and enable error correction are trained away, undermining out-of-distribution generalization.

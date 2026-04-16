@@ -10,8 +10,6 @@ url: "https://arxiv.org/abs/2506.06958"
 dateAdded: "2026-03-12"
 ---
 
-# Simulating Society Requires Simulating Thought
-
 ## 0. Overview
 
 LLM agents can mimic what people say, but not how they think — and for social simulations that inform real policy, that gap matters. This paper makes the case for cognitively grounded agents whose reasoning is structured, traceable, and causally faithful, proposing GenMinds and RECAP as conceptual frameworks to get there.

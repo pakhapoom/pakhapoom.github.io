@@ -10,8 +10,6 @@ url: "https://arxiv.org/abs/2508.18812"
 dateAdded: "2026-03-03"
 ---
 
-# STARec: An Efficient Agent Framework for Recommender Systems via Autonomous Deliberate Reasoning
-
 ## 0. Overview
 
 STARec equips LLM-based recommender systems with "slow thinking" — deliberate, chain-of-thought reasoning — by training each user agent via a two-stage pipeline of knowledge distillation followed by reinforcement learning. Trained on just 0.4% of available data, it outperforms state-of-the-art baselines on two standard benchmarks.
