@@ -1755,3 +1755,228 @@ textarea.input {
     height: 120px;
   }
 }
+
+/* ============================================================
+   Knowledge Graph Page
+   ============================================================ */
+
+.graph-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  /* Stretch to fill the visible viewport below the sticky header */
+  min-height: calc(100vh - 250px);
+}
+
+/* Controls panel — reuse dashboard-panel but remove its default margin */
+.graph-controls-panel {
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.graph-controls-top {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-xl);
+  flex-wrap: wrap;
+}
+
+/* --- Slider group --- */
+.graph-slider-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.graph-control-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.graph-control-label strong {
+  color: var(--color-accent);
+}
+
+.graph-slider-track {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.graph-slider-end {
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
+  min-width: 22px;
+}
+
+.graph-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 200px;
+  height: 6px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+
+.graph-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  border: 2px solid var(--color-bg);
+  box-shadow: 0 0 8px var(--color-glow);
+  cursor: pointer;
+}
+
+.graph-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  border: 2px solid var(--color-bg);
+  cursor: pointer;
+}
+
+/* --- Year legend --- */
+.graph-year-legend {
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+  margin-left: auto;
+}
+
+.graph-legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.graph-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px currentColor;
+}
+
+/* --- Filtered tags row --- */
+.graph-filtered-tags {
+  margin-top: var(--space-sm);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs);
+  min-height: 26px;
+}
+
+.graph-filter-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
+}
+
+.graph-filtered-badge {
+  opacity: 0.55;
+  cursor: default !important;
+  pointer-events: none;
+}
+
+.graph-no-filter {
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
+  font-style: italic;
+}
+
+/* --- SVG canvas wrapper --- */
+.graph-canvas-wrapper {
+  flex: 1;
+  height: calc(100vh - 300px);
+  min-height: 420px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+}
+
+/* --- Tooltip --- */
+.graph-tooltip {
+  position: fixed;
+  background: rgba(11, 17, 32, 0.97);
+  border: 1px solid var(--color-accent-border);
+  border-radius: var(--radius);
+  padding: var(--space-sm) var(--space-md);
+  color: var(--color-text);
+  font-size: var(--font-size-xs);
+  pointer-events: none;
+  z-index: 300;
+  max-width: 280px;
+  display: none;
+  line-height: 1.5;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(99, 102, 241, 0.1);
+}
+
+.graph-tt-title {
+  font-weight: 600;
+  color: var(--color-text);
+  font-size: var(--font-size-xs);
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.graph-tt-meta {
+  font-size: 11px;
+  color: var(--color-muted);
+  margin-bottom: 6px;
+}
+
+.graph-tt-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.graph-tt-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+/* --- Hint text --- */
+.graph-hint {
+  position: absolute;
+  bottom: var(--space-sm);
+  right: var(--space-md);
+  font-size: 11px;
+  color: var(--color-muted);
+  pointer-events: none;
+  opacity: 0.55;
+  font-family: var(--font-family);
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .graph-canvas-wrapper {
+    height: 55vh;
+    min-height: 320px;
+  }
+
+  .graph-slider {
+    width: 140px;
+  }
+
+  .graph-controls-top {
+    gap: var(--space-md);
+  }
+
+  .graph-year-legend {
+    margin-left: 0;
+  }
+}

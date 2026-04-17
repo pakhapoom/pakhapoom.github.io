@@ -6,6 +6,7 @@ import { loadPapers } from './data.js';
 import { initSearch, search } from './search.js';
 import { renderPapers, renderPaperDetail } from './papers.js';
 import { renderTags } from './tags.js';
+import { renderGraph } from './graph.js';
 import { renderLanding, cleanupLanding } from './landing.js';
 import { renderAbout } from './about.js';
 
@@ -119,6 +120,11 @@ async function navigate() {
         case 'paper':
             contentTitle.textContent = 'Paper Detail';
             await renderPaperDetail(contentBody, params.id);
+            break;
+
+        case 'graph':
+            contentTitle.textContent = 'Knowledge Graph';
+            await renderGraph(contentBody);
             break;
 
         case 'tags':
