@@ -5,7 +5,7 @@ affiliations: [Scale AI]
 venue: "arXiv preprint"
 type: "Empirical"
 year: 2025
-tags: [rlvr, llm, reward-modeling, rl, alignment, post-training]
+tags: ["rlvr", "llm", "reward-modeling", "rl", "alignment", "post-training"]
 url: "https://arxiv.org/abs/2507.17746"
 dateAdded: "2026-04-27"
 ---
