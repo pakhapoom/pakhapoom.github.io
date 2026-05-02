@@ -10,8 +10,6 @@ url: "https://arxiv.org/abs/2507.17746"
 dateAdded: "2026-04-27"
 ---
 
-# Rubrics as Rewards: Reinforcement Learning Beyond Verifiable Domains
-
 ## 0. Overview
 
 RLVR works great for math and code, but falls apart when "correct" is nuanced. This paper introduces **Rubrics as Rewards (RaR)**: use instance-specific, LLM-generated evaluation checklists as reward signals for on-policy RL, achieving up to 31% relative gains on medical and scientific reasoning benchmarks.
