@@ -176,6 +176,24 @@ export async function renderPaperDetail(container, paperId) {
   let tableCount = 0;
   marked.use({
     extensions: [{
+      name: 'videoEmbed',
+      level: 'block',
+      start(src) { return src.match(/^\[video\]/)?.index; },
+      tokenizer(src) {
+        const match = /^\[video\]\(([^)]+)\)/.exec(src);
+        if (match) return { type: 'videoEmbed', raw: match[0], url: match[1].trim() };
+      },
+      renderer(token) {
+        const url = token.url;
+        const idMatch = url.match(/youtu\.be\/([A-Za-z0-9_-]+)/) ||
+                        url.match(/[?&]v=([A-Za-z0-9_-]+)/) ||
+                        url.match(/youtube\.com\/embed\/([A-Za-z0-9_-]+)/);
+        if (!idMatch) return `<p><a href="${escapeHtml(url)}">${escapeHtml(url)}</a></p>`;
+        return `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;margin:1rem 0;">` +
+          `<iframe src="https://www.youtube.com/embed/${idMatch[1]}" ` +
+          `style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen loading="lazy"></iframe></div>`;
+      }
+    }, {
       name: 'imageWithSize',
       level: 'inline',
       start(src) { return src.match(/!\[/)?.index; },

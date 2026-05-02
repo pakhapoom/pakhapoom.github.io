@@ -14,6 +14,8 @@ dateAdded: "2026-03-21"
 
 Token count is a poor proxy for LLM reasoning quality — longer outputs often signal *overthinking*, not better thinking. This paper proposes measuring reasoning effort by how deeply a model's internal token predictions are revised across transformer layers, and leverages this signal to build a more efficient test-time scaling strategy.
 
+[video](https://youtu.be/iQjc_1rHNW0)
+
 ## 1. Background & Motivation
 
 - **Field / Problem:** Test-time scaling for LLM reasoning — the practice of allocating more computation at inference to improve accuracy. The dominant proxy for this compute has been output token length (i.e., longer Chain-of-Thought = more effort = better answers).

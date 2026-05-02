@@ -14,6 +14,8 @@ dateAdded: "2026-04-13"
 
 Standard RLFT reward models fail on subjective tasks like role-playing because sample-wise scoring is noisy and unstable. CPO replaces individual scoring with group-wise comparative evaluation, reducing reward ambiguity and yielding consistent gains over GRPO across multiple model architectures and benchmarks.
 
+[video](https://youtu.be/WXdyiKkIXjQ)
+
 ## 1. Background & Motivation
 
 - **Field / Problem:** Reinforcement Learning Fine-Tuning (RLFT) of LLMs for open-ended, subjective dialogue — specifically role-playing agents that must maintain consistent character personas, narrative coherence, and emotional engagement across multi-turn conversations.

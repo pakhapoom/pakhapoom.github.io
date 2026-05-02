@@ -14,6 +14,8 @@ dateAdded: "2026-04-16"
 
 Current user simulators for agent post-training fail to generalize across domains and are easily manipulated by task agents. UserLM-R1 fixes this by equipping user simulators with explicit chain-of-thought reasoning and multi-reward RL, enabling strategic, manipulation-resistant user behavior across diverse real-world scenarios.
 
+[video](https://youtu.be/Vz1FqBi3G2I)
+
 ## 1. Background & Motivation
 
 - **Field / Problem:** User simulation for LLM agent post-training — building scalable, human-like user models that can serve as interactive environments for training and evaluating task-oriented dialogue agents (e.g., sales bots, hiring assistants).
