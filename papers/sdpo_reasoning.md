@@ -1,6 +1,8 @@
 ---
 title: "Why Does Self-Distillation (Sometimes) Degrade the Reasoning Capability of LLMs?"
 authors: ["Jeonghye Kim", "Xufang Luo", "Minbeom Kim", "Sangmook Lee", "Dohyung Kim", "Jiwon Jeon", "Dongsheng Li", "Yuqing Yang"]
+affiliations: ["Microsoft Research", "KAIST", "Seoul National University"]
+type: "Empirical"
 year: 2026
 tags: ["llm", "reasoning", "self-distillation", "rlvr", "post-training", "epistemic-verbalization"]
 url: "https://arxiv.org/abs/2603.24472"

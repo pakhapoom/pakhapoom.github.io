@@ -1,7 +1,7 @@
 ---
 title: "Rubrics as Rewards: Reinforcement Learning Beyond Verifiable Domains"
-authors: [Anisha Gunjal, Anthony Wang, Elaine Lau, Vaskar Nath, Yunzhong He, Bing Liu, Sean Hendryx]
-affiliations: [Scale AI]
+authors: ["Anisha Gunjal", "Anthony Wang", "Elaine Lau", "Vaskar Nath", "Yunzhong He", "Bing Liu", "Sean Hendryx"]
+affiliations: ["Scale AI"]
 venue: "arXiv preprint"
 type: "Empirical"
 year: 2025
