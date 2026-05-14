@@ -4,6 +4,14 @@
 
 const publications = [
   {
+    title: 'ThaiSafetyBench: Assessing Language Model Safety in Thai Cultural Contexts',
+    authors: 'T. Ukarapol, N. Chukamphaeng, K. Pipatanakul, P. Sarapat',
+    venue: 'ICLR 2026 Workshop on Principled Design for Trustworthy AI',
+    year: 2026,
+    doi: '10.48550/arXiv.2603.04992',
+    url: 'https://arxiv.org/abs/2603.04992'
+  },
+  {
     title: 'Language Confusion and Multilingual Performance: A Case Study of Thai-Adapted Large Language Models',
     authors: 'P. Sarapat, T. Ukarapol, T. Hashimoto',
     venue: 'Proceedings of the 1st Workshop on Confabulation, Hallucinations and Overgeneration in Multilingual and Practical Settings (CHOMPS 2025), IJCNLP-AACL',
