@@ -14,6 +14,8 @@ dateAdded: "2026-04-27"
 
 RLVR works great for math and code, but falls apart when "correct" is nuanced. This paper introduces **Rubrics as Rewards (RaR)**: use instance-specific, LLM-generated evaluation checklists as reward signals for on-policy RL, achieving up to 31% relative gains on medical and scientific reasoning benchmarks.
 
+[video](https://youtu.be/GLA8xLxMa3w)
+
 ## 1. Background & Motivation
 
 - **Field / Problem:** Post-training of large language models via reinforcement learning (RL). Specifically, how to extend Reinforcement Learning with Verifiable Rewards (RLVR) — which has proven powerful for math and coding — to open-ended expert domains like medicine and science where no single ground-truth answer exists.
