@@ -6,6 +6,9 @@
 
 let _papers = null;
 
+/** Frontmatter fields every paper must define. */
+const REQUIRED_FIELDS = ['title', 'authors', 'year', 'tags'];
+
 /**
  * Parse YAML frontmatter from a markdown string.
  * Handles: strings, numbers, arrays (JSON-style), and bare values.
@@ -79,8 +82,7 @@ export async function loadPapers() {
       const { meta, content } = parseFrontmatter(raw);
 
       // Validate required fields
-      const REQUIRED = ['title', 'authors', 'year', 'tags'];
-      const missing = REQUIRED.filter(f => meta[f] === undefined);
+      const missing = REQUIRED_FIELDS.filter(f => meta[f] === undefined);
       if (missing.length > 0) {
         console.warn(`[data] ${filename} is missing required fields: ${missing.join(', ')}`);
       }
@@ -142,13 +144,4 @@ export async function getAllTags() {
     }
   }
   return tagMap;
-}
-
-/**
- * Get total count of papers.
- * @returns {Promise<number>}
- */
-export async function getPaperCount() {
-  const papers = await loadPapers();
-  return papers.length;
 }

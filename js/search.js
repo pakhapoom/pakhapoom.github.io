@@ -183,15 +183,6 @@ export function initSearch(papers) {
 }
 
 /**
- * Clear the cached search indices so they are rebuilt on the next search.
- * Call this whenever the papers data changes.
- */
-export function clearSearchIndex() {
-    fuseInstance = null;
-    tfidfIndex = null;
-}
-
-/**
  * Search across all modes and return merged, deduplicated results.
  * @param {Array} papers - All papers
  * @param {string} query - The search query
