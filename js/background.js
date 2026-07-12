@@ -13,6 +13,7 @@ const MOUSE_REPEL_DIST = 120;
 const MOUSE_REPEL_FORCE = 0.8;
 
 let canvas, ctx, nodes, mouse, animId, running;
+let viewW, viewH; // canvas size in CSS pixels (drawing context is DPR-scaled)
 let resizeHandler, mousemoveHandler, mouseleaveHandler;
 
 class Node {
@@ -81,12 +82,10 @@ function drawConnections() {
 
 function animate() {
     if (!running) return;
-    const w = canvas.width;
-    const h = canvas.height;
-    ctx.clearRect(0, 0, w, h);
+    ctx.clearRect(0, 0, viewW, viewH);
 
     for (const node of nodes) {
-        node.update(w, h);
+        node.update(viewW, viewH);
         node.draw(ctx);
     }
     drawConnections();
@@ -96,11 +95,14 @@ function animate() {
 
 function resize() {
     const dpr = window.devicePixelRatio || 1;
-    canvas.width = window.innerWidth * dpr;
-    canvas.height = window.innerHeight * dpr;
-    canvas.style.width = window.innerWidth + 'px';
-    canvas.style.height = window.innerHeight + 'px';
-    ctx.scale(dpr, dpr);
+    viewW = window.innerWidth;
+    viewH = window.innerHeight;
+    canvas.width = viewW * dpr;
+    canvas.height = viewH * dpr;
+    canvas.style.width = viewW + 'px';
+    canvas.style.height = viewH + 'px';
+    // Setting canvas.width resets the transform, so apply the DPR scale fresh
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 
 function handleVisibility() {
@@ -125,7 +127,7 @@ export function initBackground(canvasEl) {
     running = true;
 
     resize();
-    nodes = Array.from({ length: NODE_COUNT }, () => new Node(window.innerWidth, window.innerHeight));
+    nodes = Array.from({ length: NODE_COUNT }, () => new Node(viewW, viewH));
 
     resizeHandler = () => resize();
     mousemoveHandler = (e) => { mouse.x = e.clientX; mouse.y = e.clientY; };
