@@ -116,7 +116,7 @@ export function renderAbout(container) {
         <div class="about-portrait-wrapper">
           <img
             class="about-portrait"
-            src="assets/about-portrait.jpg"
+            src="assets/site/about-portrait.jpg"
             alt="Portrait of Pakhapoom Sarapat"
             loading="eager"
           />
