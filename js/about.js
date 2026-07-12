@@ -4,6 +4,14 @@
 
 const publications = [
   {
+    title: 'Language-Aware Token Boosting: LLM Language Confusion Reduction Without Tuning',
+    authors: 'T. Ukarapol, P. Sarapat, N. Chukamphaeng',
+    venue: 'Proceedings of the 64th Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers), ACL 2026',
+    year: 2026,
+    doi: '10.18653/v1/2026.acl-short.40',
+    url: 'https://aclanthology.org/2026.acl-short.40/'
+  },
+  {
     title: 'ThaiSafetyBench: Assessing Language Model Safety in Thai Cultural Contexts',
     authors: 'T. Ukarapol, N. Chukamphaeng, K. Pipatanakul, P. Sarapat',
     venue: 'ICLR 2026 Workshop on Principled Design for Trustworthy AI',
