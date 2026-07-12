@@ -3,6 +3,7 @@
  */
 
 import { loadPapers, getPaperById, getMarkdownForPaper } from './data.js';
+import { renderMarkdown, canRenderMarkdown, stripMarkdown } from './markdown.js';
 import { escapeHtml, safeUrl, showLoading } from './utils.js';
 
 /** Maximum characters shown in a card preview. */
@@ -10,24 +11,6 @@ const PREVIEW_MAX_CHARS = 200;
 
 // Delegated click handler — stored so it can be swapped out on each render
 let cardClickHandler = null;
-
-/**
- * Strip markdown syntax to get plain text for previews.
- */
-function stripMarkdown(md) {
-  return md
-    .replace(/^#{1,6}\s+/gm, '')       // headings
-    .replace(/\*\*(.+?)\*\*/g, '$1')    // bold
-    .replace(/\*(.+?)\*/g, '$1')        // italic
-    .replace(/`(.+?)`/g, '$1')          // inline code
-    .replace(/!\[.*?\]\(.*?\)/g, '')    // images
-    .replace(/\[(.+?)\]\(.*?\)/g, '$1') // links
-    .replace(/^\s*[-*+]\s+/gm, '')      // list items
-    .replace(/^\s*>\s+/gm, '')          // blockquotes
-    .replace(/\n{2,}/g, ' ')            // collapse newlines
-    .replace(/\n/g, ' ')
-    .trim();
-}
 
 /**
  * Render the paper list view.
@@ -161,7 +144,7 @@ export async function renderPaperDetail(container, paperId) {
   // Get markdown content and render to HTML
   const markdown = getMarkdownForPaper(paper);
 
-  if (typeof marked === 'undefined') {
+  if (!canRenderMarkdown()) {
     container.innerHTML = `
       <div class="paper-detail fade-in">
         <a href="#papers" class="back-link">← Back to Papers</a>
@@ -171,82 +154,7 @@ export async function renderPaperDetail(container, paperId) {
     return;
   }
 
-  // marked extension to handle {: .classname} or {: width="x"} after images
-  let figureCount = 0;
-  let tableCount = 0;
-  marked.use({
-    extensions: [{
-      name: 'videoEmbed',
-      level: 'block',
-      start(src) { return src.match(/^\[video\]/)?.index; },
-      tokenizer(src) {
-        const match = /^\[video\]\(([^)]+)\)/.exec(src);
-        if (match) return { type: 'videoEmbed', raw: match[0], url: match[1].trim() };
-      },
-      renderer(token) {
-        const url = token.url;
-        const idMatch = url.match(/youtu\.be\/([A-Za-z0-9_-]+)/) ||
-                        url.match(/[?&]v=([A-Za-z0-9_-]+)/) ||
-                        url.match(/youtube\.com\/embed\/([A-Za-z0-9_-]+)/);
-        if (!idMatch) return `<p><a href="${escapeHtml(url)}">${escapeHtml(url)}</a></p>`;
-        return `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;margin:1rem 0;">` +
-          `<iframe src="https://www.youtube.com/embed/${idMatch[1]}" ` +
-          `style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen loading="lazy"></iframe></div>`;
-      }
-    }, {
-      name: 'imageWithSize',
-      level: 'inline',
-      start(src) { return src.match(/!\[/)?.index; },
-      tokenizer(src, tokens) {
-        const rule = /^!\[([^\]]*)\]\(([^)]+)\)(?:\(((?:[^)(]|\([^)]*\))*)\))?(?:\{:([^}]+)\})?/;
-        const match = rule.exec(src);
-        if (match) {
-          const attrs = match[4] || '';
-          const classes = (attrs.match(/\.([\w-]+)/g) || []).map(c => c.slice(1)).join(' ');
-          const widthMatch = attrs.match(/width="([^"]+)"/);
-          return {
-            type: 'imageWithSize',
-            raw: match[0],
-            text: match[1],
-            href: match[2],
-            caption: match[3] || null,
-            className: classes || null,
-            width: widthMatch ? widthMatch[1] : null
-          };
-        }
-      },
-      renderer(token) {
-        let title = token.caption || '';
-        const href = token.href;
-
-        if (/^Figure\s*:/i.test(title)) {
-          figureCount++;
-          title = title.replace(/^Figure\s*:/i, `Figure ${figureCount}:`);
-        } else if (/^Table\s*:/i.test(title)) {
-          tableCount++;
-          title = title.replace(/^Table\s*:/i, `Table ${tableCount}:`);
-        }
-
-        const classAttr = ` class="${token.className || 'img-half'}"`;  // default to img-half if no explicit class
-        const widthAttr = token.width ? ` style="width: ${token.width}; max-width: 100%;"` : '';
-        const altAttr = token.text ? ` alt="${escapeHtml(token.text)}"` : '';
-        const img = `<img src="${encodeURI(href)}"${altAttr}${classAttr}${widthAttr}>`;
-        if (title) {
-          return `<figure>${img}<figcaption>${escapeHtml(title)}</figcaption></figure>`;
-        }
-        return img;
-      }
-    }]
-  });
-
-  // marked extension for KaTeX (math equations)
-  if (window.markedKatex) {
-    marked.use(window.markedKatex({
-      throwOnError: false
-    }));
-  }
-
-  const renderedHtml = marked.parse(markdown);
+  const renderedHtml = renderMarkdown(markdown);
 
   let html = `
     <div class="paper-detail fade-in">
