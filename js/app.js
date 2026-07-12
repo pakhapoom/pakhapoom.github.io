@@ -89,6 +89,9 @@ async function navigate() {
         cleanupLanding();
     }
 
+    // Reset scroll so the new view starts at the top
+    window.scrollTo(0, 0);
+
     // Route
     switch (page) {
         case 'home':
@@ -99,8 +102,9 @@ async function navigate() {
         case 'papers':
             contentTitle.textContent = 'Papers';
             if (params.q) {
-                // Handle search initiated from landing page or direct URL
-                const query = decodeURIComponent(params.q);
+                // Handle search initiated from landing page or direct URL.
+                // params.q is already decoded by URLSearchParams in parseRoute().
+                const query = params.q;
                 const papers = await loadPapers();
                 const results = search(papers, query);
                 contentTitle.textContent = 'Search Results';
