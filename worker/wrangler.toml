@@ -1,0 +1,9 @@
+name = "resume-chat"
+main = "index.js"
+compatibility_date = "2025-01-01"
+
+# TYPHOON_API_KEY is NOT set here — secrets never belong in a tracked file.
+#   npx wrangler secret put TYPHOON_API_KEY
+#
+# The résumé data is imported from ../js/resume-data.js, so wrangler needs to
+# bundle from the repository root rather than from worker/ alone.
