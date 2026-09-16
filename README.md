@@ -1,57 +1,60 @@
-# Literature Vault
+# pakhapoom.github.io
 
-A static site for storing, searching, and exploring academic paper summaries.
-Pure HTML5, vanilla CSS, and vanilla JS (ES modules) with CDN libraries — no build step, no backend.
+Interactive online résumé for **Pakhapoom Sarapat, PhD**, live at
+<https://pakhapoom.github.io/>. A static GitHub Pages site (vanilla HTML, CSS,
+ES modules; no build step) plus a Cloudflare Worker that powers a
+résumé-grounded chat widget.
 
-![Landing Page](assets/site/landing-page.png)
+The previous Literature Vault site is on the `literature-vault` branch.
 
-Deployed at: https://pakhapoom.github.io/
+## Structure
+
+```
+index.html            page shell, chat widget markup
+css/styles.css        light / dark / print styles
+js/resume-data.js     the résumé — single source of truth
+js/render.js          builds the page from resume-data.js
+js/chat.js            chat widget (SSE streaming, markdown)
+js/config.js          chat endpoint (dev vs production)
+js/main.js            boot, theme toggle, scroll-spy
+worker/index.js       Typhoon API proxy: key, system prompt, CORS, rate limit
+scripts/dev.sh        runs the Worker locally with the key from .env
+```
+
+To update the résumé, edit `js/resume-data.js`. The page and the chatbot both
+read from it.
 
 ## Running locally
 
 ```bash
-python3 -m http.server 8000
-# Visit http://localhost:8000
+python3 -m http.server 8000   # site → http://localhost:8000
+./scripts/dev.sh              # chat → http://localhost:8787
 ```
 
-No install, no build. Deploying means pushing to the `main` branch.
+Put `TYPHOON_API_KEY` in `.env`. `js/config.js` uses the local Worker
+automatically on localhost. The site works without the Worker; only chat needs
+it.
 
-## Project structure
+## Deploying
 
-```
-index.html          App shell (sidebar, header, content container)
-css/styles.css      All styles
-js/
-  app.js            Entry point: hash routing, search bar wiring
-  data.js           Loads papers/*.md, parses YAML frontmatter, caches
-  search.js         Exact + fuzzy (Fuse.js) + TF-IDF search
-  markdown.js       marked.js setup: image sizing/captions, video embeds, KaTeX
-  papers.js         Paper card grid and detail view
-  graph.js          Knowledge graph (D3 force layout)
-  tags.js           Stats dashboard (Chart.js)
-  landing.js        Landing page (+ background.js canvas animation)
-  about.js          About page
-  utils.js          Shared helpers
-data/index.json     Generated list of paper files (newest first)
-papers/<slug>.md    One markdown file per paper (YAML frontmatter + summary)
-assets/<slug>/      Figures for each paper
-assets/site/        Site-level imagery (portrait, og thumbnail, screenshot)
-scripts/pre-commit  Git hook that regenerates data/index.json
-```
+**Site:** push to `main`; `.github/workflows/pages.yml` publishes the repo root.
 
-## Setup after cloning
-
-A git hook keeps `data/index.json` in sync automatically. Install it once after cloning:
+**Worker:**
 
 ```bash
-cp scripts/pre-commit .git/hooks/pre-commit
-chmod +x .git/hooks/pre-commit
+cd worker
+npx wrangler secret put TYPHOON_API_KEY
+npx wrangler deploy
 ```
 
-After that, `data/index.json` is updated on every `git commit` — no manual edits needed.
+Then set `PRODUCTION_ENDPOINT` in `js/config.js` to the deployed `/chat` URL.
 
-## Adding a paper
+## Chat widget
 
-1. Create `papers/<slug>.md` with YAML frontmatter (`title`, `authors`, `year`, `tags`, `url`, `dateAdded`).
-2. Put any figures in `assets/<slug>/`.
-3. Commit — the pre-commit hook regenerates `data/index.json`.
+The browser sends only visitor turns to the Worker, which adds the system
+prompt and API key and streams the reply from Typhoon
+(`typhoon-v2.5-30b-a3b-instruct`). The key never reaches the browser.
+
+Worker limits: CORS restricted to `pakhapoom.github.io` and localhost, 20
+requests/min per IP, 24 messages and 1000 chars per message, `user`/`assistant`
+roles only.

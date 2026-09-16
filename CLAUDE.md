@@ -1,73 +1,30 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Project overview, layout, local dev, and deployment are in `README.md`. This
+file covers only the rules to follow when changing code.
 
-## Project Overview
+## Résumé data
 
-**Literature Vault** is a static GitHub Pages site for storing, searching, and exploring academic paper summaries. No build step, no backend — pure HTML5, vanilla CSS, and vanilla JS (ES modules) with CDN libraries.
+`js/resume-data.js` is the single source of truth. `render.js` builds the page
+from `resume`; `worker/index.js` builds the chatbot's system prompt from
+`resumeToText()`. Never hard-code résumé content elsewhere.
 
-Deployed at: `https://pakhapoom.github.io/`
+To add a section: extend `resume`, add a render function in `render.js`, append
+it to the array in `renderResume()`, and add a `.rail__link` in `index.html`.
 
-## Running Locally
+## Conventions
 
-```bash
-python3 -m http.server 8000
-# Visit http://localhost:8000
-```
+- **Escape everything rendered.** Use the local `esc()` in `render.js` /
+  `chat.js`. Model output goes through `miniMarkdown()`, which escapes first.
+- **Theme tokens:** define every colour on bare `:root` (light). Dark mode
+  redefines tokens only, in both `@media (prefers-color-scheme: dark)` under
+  `:root:not([data-theme='light'])` and `:root[data-theme='dark']`.
+- **Print is a feature.** Check `Cmd+P` output after layout changes to `.job`,
+  `.role`, or `.section`.
+- No build step and no CDN libraries beyond Google Fonts (Inter).
 
-No install, no build. Deploying means pushing to the `main` branch.
+## Secrets
 
-## Git Hooks
-
-A pre-commit hook at `.git/hooks/pre-commit` auto-regenerates `data/index.json` on every commit — scanning `papers/*.md` and sorting by `dateAdded` descending. Since `.git/` is not tracked, reinstall it after a fresh clone:
-
-```bash
-cp scripts/pre-commit .git/hooks/pre-commit
-chmod +x .git/hooks/pre-commit
-```
-
-## Adding a Paper
-
-1. Create `papers/<slug>.md` with YAML frontmatter:
-   ```yaml
-   ---
-   title: "Paper Title"
-   authors: ["Author One", "Author Two"]
-   year: 2025
-   tags: ["tag1", "tag2"]
-   url: https://arxiv.org/abs/...
-   dateAdded: "2025-01-01"
-   ---
-   ```
-2. Place any images in `assets/<slug>/` (site-level imagery lives in `assets/site/`)
-
-## Architecture
-
-### Routing
-`js/app.js` handles hash-based routing (`#home`, `#papers`, `#paper/:id`, `#graph`, `#tags`, `#about`). Each route calls a render function from the corresponding module that clears and repopulates `#content-body`.
-
-### Data Flow
-`js/data.js` fetches `data/index.json`, then lazily loads each `.md` file and parses YAML frontmatter. Papers are cached in a module-level singleton after first load. All other modules import from `data.js`.
-
-### Search (`js/search.js`)
-Three-mode search merged by priority: **exact match** > **fuzzy (Fuse.js)** > **TF-IDF**. Title is weighted 3×, authors/tags 2×, content 1×. Results deduplicated with mode annotations.
-
-### Page Modules
-| Module | Responsibility |
-|--------|---------------|
-| `landing.js` | Landing page with animated canvas background (`background.js`) |
-| `papers.js` | Paper card grid and full paper detail view |
-| `markdown.js` | marked.js configuration and custom extensions (images, video embeds, KaTeX) |
-| `graph.js` | Knowledge graph of papers connected by shared tags (D3 force layout) |
-| `tags.js` | Statistics dashboard with Chart.js (timeline, tag distribution) |
-| `about.js` | About page with hardcoded publications list |
-| `utils.js` | Shared helpers: `escapeHtml`, `safeUrl`, `showLoading`, `MOBILE_BREAKPOINT` |
-
-### Markdown Papers
-Papers use marked.js with custom extensions defined in `js/markdown.js`:
-- Images with captions and sizing: `![alt](url)(Figure: caption){: .img-half width="80%"}` — `Figure:`/`Table:` captions are auto-numbered
-- YouTube embeds via `[video](youtube-url)`
-- KaTeX math rendering via `$...$` and `$$...$$`
-
-### External Libraries (CDN only)
-Fuse.js, Chart.js, marked.js, D3.js, KaTeX, Google Fonts (Inter, Outfit). No package.json, no node_modules.
+`TYPHOON_API_KEY` must never appear in `js/`, `index.html`, or `wrangler.toml`
+— everything served by Pages is public. It lives in `.env` locally and as a
+Wrangler secret in production.
