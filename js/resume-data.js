@@ -10,6 +10,23 @@ export const resume = {
     'Generative AI & Machine Learning Solutions',
   ],
   location: 'Bangkok, Thailand',
+
+  // The hero decodes headline[0] the way a language model would emit it: one
+  // token at a time, with the runners-up visible before each one commits.
+  // `top` always wins, so the `top` strings must join back into headline[0] —
+  // render.js checks that and falls back to plain text if it ever stops
+  // matching. The runners-up are real jobs a career like this could have gone
+  // to instead, which is the joke.
+  decode: [
+    { top: ['Lead', 0.71], alt: [['Senior', 0.19], ['Chief', 0.07]] },
+    { top: [' AI', 0.88], alt: [[' Data', 0.08], [' ML', 0.03]] },
+    { top: [' Scient', 0.94], alt: [[' Research', 0.04], [' Engine', 0.01]] },
+    { top: ['ist', 0.97], alt: [['ists', 0.02], ['ific', 0.01]] },
+  ],
+  photo: {
+    src: 'public/me_v2_sq-480.jpg',
+    alt: 'Portrait of Pakhapoom Sarapat',
+  },
   contact: {
     email: 'pakhapoom.sar@gmail.com',
     phone: '+66 86 813 7261',
@@ -33,14 +50,6 @@ export const resume = {
     'client-facing engagements. Delivers thought leadership through peer-reviewed LLM research ' +
     'at ACL 2026, conference speaking on agentic AI and RAG, and 4th place of 75 teams worldwide ' +
     'in the NeurIPS 2023 LLM Efficiency Challenge.',
-
-  // Headline figures shown under the summary.
-  highlights: [
-    { value: '6+', label: 'Years in AI delivery' },
-    { value: '4th', label: 'NeurIPS 2023 LLM Efficiency Challenge' },
-    { value: 'ACL 2026', label: 'Peer-reviewed LLM research' },
-    { value: 'h-index 6', label: '81 citations' },
-  ],
 
   skills: [
     {
@@ -86,6 +95,8 @@ export const resume = {
   experience: [
     {
       company: 'DataX (SCB DataX Co., Ltd.)',
+      short: 'DataX',
+      logo: 'public/logos/datax.svg',
       location: 'Bangkok, Thailand',
       period: 'February 2022 – Present',
       current: true,
@@ -127,6 +138,8 @@ export const resume = {
     },
     {
       company: 'SCG Logistics Management Co., Ltd.',
+      short: 'SCG Logistics',
+      logo: 'public/logos/scg-jwd.svg',
       location: 'Bangkok, Thailand',
       period: 'October 2021 – January 2022',
       roles: [
@@ -142,6 +155,8 @@ export const resume = {
     },
     {
       company: 'Government Big Data Institute (GBDi)',
+      short: 'GBDi',
+      logo: 'public/logos/bdi.png',
       location: 'Bangkok, Thailand',
       period: 'October 2019 – September 2021',
       roles: [
@@ -187,16 +202,20 @@ export const resume = {
   education: [
     {
       institution: 'Mahidol University',
+      logo: 'public/logos/mahidol.svg',
       location: 'Bangkok, Thailand',
       period: 'August 2016 – January 2020',
       degree: 'Doctor of Philosophy (PhD) in Applied Mathematics',
+      short: 'PhD, Applied Mathematics',
       detail: 'By dissertation.',
     },
     {
       institution: 'Mahidol University',
+      logo: 'public/logos/mahidol.svg',
       location: 'Bangkok, Thailand',
       period: 'May 2012 – June 2016',
       degree: 'Bachelor of Science (BSc) in Mathematics',
+      short: 'BSc, Mathematics',
       detail: 'First-Class Honors, GPA 3.86, highest score in the Mathematics major.',
     },
   ],
@@ -214,7 +233,7 @@ export const resume = {
     },
     {
       title: 'Language Confusion and Multilingual Performance: A Case Study of Thai-Adapted Large Language Models',
-      venue: 'CHR Workshop',
+      venue: 'CHOMPS Workshop at AACL-IJCNLP',
       year: '2025',
     },
     {

@@ -2,6 +2,8 @@
 
 import { renderResume } from './render.js';
 import { initChat } from './chat.js';
+import { initDecode } from './decode.js';
+import { initTimeline } from './timeline.js';
 
 /* ------------------------------------------------------------------ theme */
 
@@ -75,37 +77,17 @@ function initScrollSpy() {
   mark(sections[0].id);
 }
 
-/* ------------------------------------------------------------------ reveal */
-
-function initReveal() {
-  const targets = document.querySelectorAll('.reveal');
-
-  if (!('IntersectionObserver' in window) ||
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    targets.forEach((t) => t.classList.add('is-in'));
-    return;
-  }
-
-  const observer = new IntersectionObserver(
-    (entries, obs) => {
-      for (const entry of entries) {
-        if (!entry.isIntersecting) continue;
-        entry.target.classList.add('is-in');
-        obs.unobserve(entry.target);   // one-shot; no re-animation on scroll back
-      }
-    },
-    { rootMargin: '0px 0px -8% 0px', threshold: 0.05 }
-  );
-
-  targets.forEach((t) => observer.observe(t));
-}
-
 /* -------------------------------------------------------------------- boot */
 
-renderResume(document.getElementById('resume-root'));
+renderResume({
+  hero: document.getElementById('hero-root'),
+  career: document.getElementById('career-root'),
+  main: document.getElementById('resume-root'),
+});
 initTheme();
 initScrollSpy();
-initReveal();
+initDecode(document.querySelector('.hero__text'));
+initTimeline(document.getElementById('journey'));
 initChat();
 
 document.getElementById('print-btn').addEventListener('click', () => window.print());
