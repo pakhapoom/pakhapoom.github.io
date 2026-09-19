@@ -17,6 +17,12 @@ export function initDecode(host, r = resume) {
   const out = line?.querySelector('.decode__out');
   const caret = line?.querySelector('.decode__caret');
   const replay = host.querySelector('[data-decode-replay]');
+  // The popover is measured and positioned against the line's own box, not the
+  // whole hero, so it can never land on top of the portrait. On a phone the
+  // type all sits under the photo and the popover moves into the empty cell
+  // beside it instead — CSS parks it there, so no measuring is needed.
+  const frame = line?.closest('.hero__lede') || host;
+  const slot = host.querySelector('[data-decode-slot]');
   const steps = r.decode;
   const title = r.headline[0];
 
@@ -28,7 +34,15 @@ export function initDecode(host, r = resume) {
   pop.className = 'decode__pop';
   pop.hidden = true;
   pop.setAttribute('aria-hidden', 'true');
-  host.appendChild(pop);
+  // Every step shows the same number of candidates, so the popover is already
+  // a constant height; widening the token column to the longest token in the
+  // whole run makes it a constant width too, and the box then holds still from
+  // the first token to the last instead of snapping wider and narrower.
+  // ch is exact here because the popover is set in the mono face.
+  const widest = steps.reduce(
+    (n, s) => Math.max(n, ...[s.top, ...s.alt].map(([token]) => token.length)), 0);
+  pop.style.setProperty('--tok', `${widest}ch`);
+  frame.appendChild(pop);
 
   let run = 0;
 
@@ -44,13 +58,24 @@ export function initDecode(host, r = resume) {
       </div>`).join('');
     pop.hidden = false;
 
+    // The slot is display:none on the wide layout, so this also picks the
+    // right home again after a resize across the breakpoint mid-run.
+    const docked = slot && getComputedStyle(slot).display !== 'none';
+    if (docked) {
+      if (pop.parentNode !== slot) slot.appendChild(pop);
+      line.classList.remove('has-pop');
+      pop.style.left = pop.style.top = '';
+      return;
+    }
+    if (pop.parentNode !== frame) frame.appendChild(pop);
+
     // Out in the empty right-hand margin, its top on the title's line: that
     // clears the name above it and the short lines below it, so the popover
     // never covers type. In a column too narrow for that it drops under the
     // title instead, and the title reserves the room so nothing reflows.
-    const box = host.getBoundingClientRect();
+    const box = frame.getBoundingClientRect();
     const tip = caret.getBoundingClientRect();
-    const room = host.clientWidth - pop.offsetWidth;
+    const room = frame.clientWidth - pop.offsetWidth;
     const beside = room >= tip.right - box.left + 12;
 
     line.classList.toggle('has-pop', !beside);

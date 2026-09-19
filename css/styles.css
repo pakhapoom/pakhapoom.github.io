@@ -214,14 +214,26 @@ img { max-width: 100%; }
    ============================================================ */
 .hero { padding: clamp(4rem, 12vh, 8rem) 0 clamp(3rem, 8vh, 5rem); }
 
+/* The photo and every line of type are siblings in one grid. On the wide
+   layout the photo spans all the rows and the type stacks in column 2 — the
+   same picture as a photo-plus-text-column pair. The narrow layout below then
+   rearranges the rows without touching the DOM. */
 .hero__inner {
   width: min(100% - 2 * var(--gutter), 60rem);
   margin: 0 auto;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: start;
-  gap: clamp(1.75rem, 5vw, 3.25rem);
+  column-gap: clamp(1.75rem, 5vw, 3.25rem);
 }
+.hero__photo { grid-column: 1; grid-row: 1 / span 5; }
+.hero__name,
+.hero__lede,
+.hero__sub,
+.hero__place,
+.hero__foot { grid-column: 2; }
+/* Only the narrow layout has room beside the photo to spare for the popover. */
+.hero__slot { display: none; }
 
 .hero__photo {
   width: clamp(6.5rem, 12vw, 9rem);
@@ -234,7 +246,8 @@ img { max-width: 100%; }
   border: 1px solid var(--rule-2);
 }
 
-.hero__text { position: relative; }
+/* Containing block for the candidate popover. */
+.hero__lede { position: relative; }
 
 .hero__name {
   font-family: var(--font-mono);
@@ -277,7 +290,9 @@ img { max-width: 100%; }
   position: absolute;
   z-index: 2;
   display: grid;
-  grid-template-columns: max-content minmax(3.5rem, 1fr) max-content;
+  /* --tok is set by decode.js to the longest token in the run, so the columns
+     stop resizing per step; max-content is the fallback if it never runs. */
+  grid-template-columns: var(--tok, max-content) minmax(3.5rem, 1fr) max-content;
   align-items: center;
   gap: .3rem .6rem;
   padding: .5rem .6rem;
@@ -983,8 +998,40 @@ img { max-width: 100%; }
 
 @media (max-width: 44rem) {
   body { font-size: 16px; }
-  .hero__inner { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
-  .hero__photo { width: 5.5rem; }
+  /* Top row is the portrait alone, with the candidate popover in the space to
+     its right while the title decodes; every line of type — name, title, tag
+     line, location, contact icons — runs full width underneath. Only the grid
+     placement changes: the DOM order is the wide layout's. */
+  .hero { padding: 4.5rem 0 2.5rem; }
+  .hero__inner { grid-template-columns: auto minmax(0, 1fr); column-gap: 1.1rem; }
+  .hero__photo { grid-column: 1; grid-row: 1; width: min(38vw, 10rem); }
+  /* stretch against the grid's align-items:start, or the slot is a zero-height
+     box at the top of the row and the popover centres itself above the photo */
+  .hero__slot {
+    display: block;
+    grid-column: 2;
+    grid-row: 1;
+    align-self: stretch;
+    position: relative;
+  }
+  .hero__name { grid-column: 1 / -1; grid-row: 2; margin-top: 1.4rem; }
+  .hero__lede { grid-column: 1 / -1; grid-row: 3; }
+  .hero__sub { grid-column: 1 / -1; grid-row: 4; }
+  .hero__place { grid-column: 1 / -1; grid-row: 5; }
+  .hero__foot { grid-column: 1 / -1; grid-row: 6; }
+
+  /* Docked in the slot: still absolute, so appearing and vanishing between
+     tokens can never resize the row the portrait sits in. */
+  .hero__slot .decode__pop {
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .hero__title { font-size: clamp(1.05rem, 5vw, 1.45rem); }
+  .hero__name { font-size: clamp(1.35rem, 6.5vw, 1.8rem); }
+  .hero__sub { margin-top: .9rem; font-size: 1rem; }
+  .hero__place { font-size: 1rem; }
   .skill-group { grid-template-columns: minmax(0, 1fr); gap: .1rem; }
   .skill-group__name { line-height: 1.6; }
   .org__label { padding-left: 2.4rem; }
@@ -1024,7 +1071,8 @@ img { max-width: 100%; }
 
   body { font-size: 10pt; line-height: 1.45; background: #fff; }
   .rail, .theme-btn, .chat-launcher, .chat-panel, .skip-link, .foot,
-  .career, .hero__replay, .decode__pop, .decode__caret { display: none !important; }
+  .career, .hero__replay, .decode__pop, .decode__caret,
+  .hero__slot { display: none !important; }
 
   .shell { display: block; max-width: none; padding: 0; }
   .main { max-width: none; padding: 0; }
@@ -1032,7 +1080,7 @@ img { max-width: 100%; }
   a { color: var(--accent); text-decoration: none; }
 
   .hero { padding: 0 0 6mm; }
-  .hero__inner { width: auto; gap: 6mm; }
+  .hero__inner { width: auto; column-gap: 6mm; row-gap: 0; }
   .hero__photo { width: 22mm; }
   .hero__name { font-size: 20pt; }
   .hero__title { margin-top: .2rem; font-size: 12pt; }

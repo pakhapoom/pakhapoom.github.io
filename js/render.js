@@ -86,23 +86,31 @@ function hero(r) {
   // The title is written out in full. decode.js only takes it over once it has
   // confirmed the tokens still spell it, so this is what everyone sees if the
   // script never runs, or if someone prefers reduced motion.
+  // Flat grid children rather than a photo + text-column pair: it lets the
+  // narrow layout drop every line of type below the photo without moving
+  // anything in the DOM.
+  // .hero__lede is the decoding line's own box — decode.js positions the
+  // candidate popover against it. .hero__slot is the empty cell beside the
+  // photo on a phone, where the popover docks instead; it collapses on the
+  // wide layout, and decode.js reads its display to know which one applies.
   return `
     <header class="hero">
       <div class="hero__inner">
         <img class="hero__photo" src="${esc(r.photo.src)}" alt="${esc(r.photo.alt)}"
              width="480" height="480" decoding="async">
-        <div class="hero__text">
-          <h1 class="hero__name">${esc(r.name)}<span class="hero__cred">, ${esc(r.credential)}</span></h1>
+        <div class="hero__slot" data-decode-slot aria-hidden="true"></div>
+        <h1 class="hero__name">${esc(r.name)}<span class="hero__cred">, ${esc(r.credential)}</span></h1>
+        <div class="hero__lede">
           <p class="hero__title" data-decode><span class="decode__out">${esc(r.headline[0])}</span><span
              class="decode__caret" aria-hidden="true"></span></p>
-          <p class="hero__sub">${esc(r.headline[1])}</p>
-          <p class="hero__place">${esc(r.location)}</p>
-          <div class="hero__foot">
-            <div class="hero__links">${links}</div>
-            <button class="hero__replay" type="button" data-decode-replay hidden>
-              ${svg(ICON.replay)}Decode again
-            </button>
-          </div>
+        </div>
+        <p class="hero__sub">${esc(r.headline[1])}</p>
+        <p class="hero__place">${esc(r.location)}</p>
+        <div class="hero__foot">
+          <div class="hero__links">${links}</div>
+          <button class="hero__replay" type="button" data-decode-replay hidden>
+            ${svg(ICON.replay)}Decode again
+          </button>
         </div>
       </div>
     </header>`;

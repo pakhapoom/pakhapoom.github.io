@@ -86,6 +86,6 @@ renderResume({
 });
 initTheme();
 initScrollSpy();
-initDecode(document.querySelector('.hero__text'));
+initDecode(document.querySelector('.hero'));
 initTimeline(document.getElementById('journey'));
 initChat();
