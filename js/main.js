@@ -89,5 +89,3 @@ initScrollSpy();
 initDecode(document.querySelector('.hero__text'));
 initTimeline(document.getElementById('journey'));
 initChat();
-
-document.getElementById('print-btn').addEventListener('click', () => window.print());

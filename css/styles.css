@@ -182,21 +182,29 @@ img { max-width: 100%; }
   background: var(--accent);
 }
 
-.rail__tools { margin-top: auto; display: flex; flex-wrap: wrap; gap: .4rem; }
-
-.tool-btn {
+/* ---------- theme toggle ---------- */
+/* Fixed to the top right of the viewport. It sits above the hero band, so it
+   carries its own background — the hero scrolls underneath it. */
+.theme-btn {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 40;
   display: inline-flex;
   align-items: center;
   gap: .4rem;
-  padding: .32rem .65rem;
+  padding: .38rem .7rem;
   font-family: var(--font-mono);
   font-size: .72rem;
   color: var(--ink-3);
+  background: var(--paper-2);
   border: 1px solid var(--rule);
+  border-radius: 2px;
+  backdrop-filter: blur(6px);
   transition: border-color .18s ease, color .18s ease;
 }
-.tool-btn:hover { color: var(--ink); border-color: var(--rule-2); }
-.tool-btn svg { width: 12px; height: 12px; flex: none; }
+.theme-btn:hover { color: var(--ink); border-color: var(--rule-2); }
+.theme-btn svg { width: 12px; height: 12px; flex: none; }
 
 /* ---------- main column ---------- */
 .main { max-width: var(--measure); padding: 3.5rem 0 6rem; }
@@ -970,7 +978,6 @@ img { max-width: 100%; }
     padding: 1.5rem 0 0;
   }
   .rail__nav { display: none; }
-  .rail__tools { margin-top: 0; }
   .main { max-width: none; padding-top: 2rem; }
 }
 
@@ -987,13 +994,16 @@ img { max-width: 100%; }
 }
 
 @media (max-width: 30rem) {
-  .rail__identity { display: none; }
-  .rail { justify-content: flex-end; }
+  /* Nothing left in the rail at this width — the nav is hidden and the theme
+     toggle is fixed to the viewport — so it would only add an empty bar. */
+  .rail { display: none; }
   .chat-panel { right: 0; bottom: 0; width: 100vw; height: 100dvh; border: 0; }
   .pub { grid-template-columns: minmax(0, 1fr); }
   .pub__venue { grid-column: 1; }
   .chat-launcher span { display: none; }
   .chat-launcher { padding: .75rem; }
+  .theme-btn { top: .75rem; right: .75rem; padding: .4rem; }
+  .theme-btn [data-label] { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 }
 
 /* ============================================================
@@ -1013,7 +1023,7 @@ img { max-width: 100%; }
   @page { margin: 12mm 14mm; }
 
   body { font-size: 10pt; line-height: 1.45; background: #fff; }
-  .rail, .chat-launcher, .chat-panel, .skip-link, .foot,
+  .rail, .theme-btn, .chat-launcher, .chat-panel, .skip-link, .foot,
   .career, .hero__replay, .decode__pop, .decode__caret { display: none !important; }
 
   .shell { display: block; max-width: none; padding: 0; }
