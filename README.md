@@ -17,6 +17,9 @@ js/render.js          builds the page from resume-data.js
 js/chat.js            chat widget (SSE streaming, markdown)
 js/config.js          chat endpoint (dev vs production)
 js/main.js            boot, theme toggle, scroll-spy
+js/decode.js          hero: the job title emitted token by token
+js/timeline.js        career timeline: open one org, draw the bars in
+public/               photo and organisation logos
 worker/index.js       Typhoon API proxy: key, system prompt, CORS, rate limit
 scripts/dev.sh        runs the Worker locally with the key from .env
 ```
