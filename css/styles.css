@@ -662,6 +662,127 @@ img { max-width: 100%; }
 .pub__title { font-size: .98rem; line-height: 1.5; color: var(--ink); }
 .pub__venue { grid-column: 2; font-size: .9rem; color: var(--ink-3); }
 
+.pub__link {
+  color: inherit;
+  text-decoration: none;
+  background-image: linear-gradient(var(--rule-2), var(--rule-2));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 1px;
+  transition: color .15s ease, background-image .15s ease;
+}
+.pub__link:hover, .pub__link:focus-visible {
+  color: var(--accent);
+  background-image: linear-gradient(var(--accent), var(--accent));
+}
+
+/* ============================================================
+   Paper write-ups — papers/<slug>.html
+   ============================================================ */
+.paper-shell {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 3.5rem 1.5rem 5rem;
+}
+
+.paper__back, .paper__foot a {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  text-decoration: none;
+}
+.paper__back::before { content: '← '; }
+.paper__back:hover, .paper__foot a:hover,
+.paper__back:focus-visible, .paper__foot a:focus-visible { color: var(--accent); }
+
+.paper__head { margin: 2rem 0 2.5rem; padding-bottom: 1.75rem; border-bottom: 1px solid var(--rule); }
+.paper__title {
+  margin: 0;
+  font-size: clamp(1.7rem, 4.2vw, 2.4rem);
+  font-weight: 600;
+  line-height: 1.22;
+  letter-spacing: -.015em;
+  text-wrap: balance;
+}
+.paper__meta {
+  margin: .9rem 0 0;
+  font-family: var(--font-mono);
+  font-size: .8rem;
+  color: var(--accent);
+}
+.paper__authors { margin: .4rem 0 0; font-size: .95rem; color: var(--ink-3); }
+.paper__me { color: var(--ink); font-weight: 600; }
+
+.paper__links { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.25rem; }
+.paper__links .paper__source {
+  padding: .3rem .7rem;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: .76rem;
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: border-color .15s ease, color .15s ease;
+}
+.paper__links .paper__source::after { content: ' ↗'; opacity: .55; }
+.paper__links .paper__source:hover,
+.paper__links .paper__source:focus-visible { border-color: var(--accent); color: var(--accent); }
+
+/* The one-paragraph version, set larger — a reader should be able to stop here. */
+.paper__tldr {
+  margin: 0 0 2.5rem;
+  padding-left: 1.1rem;
+  border-left: 2px solid var(--accent);
+  font-size: 1.12rem;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+
+/* Standing note for a paper whose full text could not be read. */
+.paper__partial {
+  margin: -1.5rem 0 2.5rem;
+  padding: .8rem 1rem;
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  font-size: .9rem;
+  line-height: 1.6;
+  color: var(--ink-3);
+}
+
+.paper__section { margin-bottom: 2.5rem; }
+.paper__heading {
+  margin: 0 0 .9rem;
+  font-family: var(--font-mono);
+  font-size: .82rem;
+  font-weight: 500;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.paper__section p { margin: 0 0 1.05rem; font-size: 1.02rem; line-height: 1.75; color: var(--ink-2); }
+.paper__section p:last-child { margin-bottom: 0; }
+.paper__section strong { color: var(--ink); font-weight: 600; }
+
+.paper__list { margin: 0 0 1.05rem; padding-left: 1.1rem; }
+.paper__list li {
+  margin-bottom: .55rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+.paper__list li::marker { color: var(--accent); }
+
+.paper__foot { margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+.paper__missing { font-size: 1rem; color: var(--ink-2); }
+
+@media (max-width: 30rem) {
+  .paper-shell { padding: 2.5rem 1rem 3.5rem; }
+  .paper__tldr { font-size: 1.05rem; }
+}
 .note { margin-top: 1rem; font-size: .92rem; line-height: 1.65; color: var(--ink-3); }
 
 /* ---------- footer ---------- */
@@ -920,4 +1041,23 @@ img { max-width: 100%; }
   .timeline { gap: 1rem; }
   .bullets li { font-size: 9.5pt; }
   .skill-group__items { font-size: 9.5pt; }
+
+  /* Backgrounds are dropped by most print paths, so the title's underline goes
+     with them; on paper a link is only useful if its URL is actually visible. */
+  .pub__link { background-image: none; color: var(--ink); }
+
+  /* A printed write-up is just the article: no back links, and the source
+     buttons lose their chrome and gain their URLs. */
+  .paper-shell { max-width: none; padding: 0; }
+  .paper__back, .paper__foot { display: none !important; }
+  .paper__head { margin: 0 0 6mm; padding-bottom: 4mm; }
+  .paper__title { font-size: 17pt; }
+  .paper__tldr { font-size: 11pt; break-inside: avoid; }
+  .paper__section { margin-bottom: 5mm; break-inside: auto; }
+  .paper__heading { break-after: avoid; }
+  .paper__section p, .paper__list li { font-size: 10pt; line-height: 1.5; }
+  .paper__links { gap: .35rem; }
+  .paper__links .paper__source { padding: 0; border: 0; color: var(--accent); }
+  .paper__links .paper__source::after { content: ' ' attr(href) '  '; opacity: 1; word-break: break-all; }
+  .paper__partial { margin-top: 0; break-inside: avoid; }
 }

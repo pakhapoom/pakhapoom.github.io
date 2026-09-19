@@ -220,26 +220,66 @@ export const resume = {
     },
   ],
 
+  // `summary` is the paper in three sentences for a reader who will not open
+  // it: what breaks, what the paper does about it, what came out. Keep the
+  // mechanism in plain words — the venue line already says where it landed.
   publications: [
     {
       title: 'Language-Aware Token Boosting: LLM Language Confusion Reduction Without Tuning',
       venue: 'Association for Computational Linguistics (ACL)',
+      slug: 'latb',
+      url: 'https://aclanthology.org/2026.acl-short.40/',
+      urlLabel: 'ACL Anthology',
       year: '2026',
+      summary:
+        'English-centric models drift into the wrong language halfway through a non-English ' +
+        'answer. LATB fixes that at decode time: add a constant boost to the logits of ' +
+        'target-language tokens, and the sampler stops jumping languages. A constant shift ' +
+        'leaves the relative probabilities among boosted tokens unchanged, so the method picks ' +
+        'which language to speak without touching what gets said — confusion falls below a ' +
+        'multilingual fine-tuned baseline across eight languages, at no training cost.',
     },
     {
       title: 'ThaiSafetyBench: Assessing Language Model Safety in Thai Cultural Contexts',
       venue: 'arXiv preprint',
+      slug: 'thaisafetybench',
+      url: 'https://arxiv.org/abs/2603.04992',
+      urlLabel: 'arXiv',
       year: '2026',
+      summary:
+        'Safety evaluation is still overwhelmingly English, so a model can look aligned and ' +
+        'still fail on the harms that matter locally. ThaiSafetyBench is 1,954 harmful Thai ' +
+        'prompts — general attacks alongside ones grounded in Thai culture — scored across 24 ' +
+        'models. The culturally grounded attacks succeed far more often than the generic Thai ' +
+        'ones, which is precisely the gap generic alignment leaves open. Released with a public ' +
+        'leaderboard and an open classifier for harmful responses.',
     },
     {
       title: 'Language Confusion and Multilingual Performance: A Case Study of Thai-Adapted Large Language Models',
       venue: 'CHOMPS Workshop at AACL-IJCNLP',
+      slug: 'language-confusion-thai',
+      url: 'https://aclanthology.org/2025.chomps-main.5/',
+      urlLabel: 'ACL Anthology',
       year: '2025',
+      summary:
+        'Does adapting a model to Thai actually make it better at Thai? Continual pre-training ' +
+        'helps in monolingual settings, most of all for models that started weak, but the gain ' +
+        'is heavily task-dependent. The sharper result is about prompts: when the context ' +
+        'language and the requested output language disagree, every model type degrades, and ' +
+        'only models pre-trained multilingually hold up.',
     },
     {
       title: 'A Preliminary Study of the Regional Climate Downscaling Using Machine Learning Techniques',
-      venue: 'ICBDAP',
+      venue: 'IBDAP',
+      slug: 'climate-downscaling',
+      url: 'https://ieeexplore.ieee.org/document/9907358',
+      urlLabel: 'IEEE Xplore',
       year: '2022',
+      summary:
+        'Global climate models are far too coarse to say anything useful about one province. ' +
+        'This early study learns the mapping the other way — from selected global climate ' +
+        'variables down to what Thai weather stations actually record — as a first pass at ' +
+        'statistical downscaling with machine learning.',
     },
   ],
 
@@ -297,7 +337,10 @@ export function resumeToText(r = resume) {
   push();
 
   push('## PUBLICATIONS');
-  for (const p of r.publications) push(`- ${p.title}. ${p.venue}, ${p.year}.`);
+  for (const p of r.publications) {
+    push(`- ${p.title}. ${p.venue}, ${p.year}.${p.url ? ` ${p.url}` : ''}`);
+    if (p.summary) push(`  ${p.summary}`);
+  }
   push(`- ${r.publicationsNote}`);
 
   return lines.join('\n');

@@ -333,12 +333,22 @@ function education(r) {
 }
 
 function publications(r) {
-  const items = r.publications.map((p) => `
+  // One destination per paper: the write-up. The link out to the publisher
+  // lives there, so the list stays a list and the reader goes summary first,
+  // paper second.
+  const items = r.publications.map((p) => {
+    const href = p.slug ? `papers/${esc(p.slug)}.html` : null;
+    const title = href
+      ? `<a class="pub__link" href="${href}">${esc(p.title)}</a>`
+      : esc(p.title);
+
+    return `
     <div class="pub">
       <span class="pub__year">${esc(p.year)}</span>
-      <span class="pub__title">${esc(p.title)}</span>
+      <span class="pub__title">${title}</span>
       <span class="pub__venue">${esc(p.venue)}</span>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
   return section('publications', 'Publications', `
     <div class="stack">${items}</div>
