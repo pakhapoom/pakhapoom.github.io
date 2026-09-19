@@ -47,9 +47,7 @@ export const resume = {
     "scale on OpenAI and open-source LLMs, and currently designs a group-wide recommendation " +
     "engine spanning the group's business units. Sets technical direction for data scientists " +
     'and engineers and acts as the interface between business and technology in fast-paced, ' +
-    'client-facing engagements. Delivers thought leadership through peer-reviewed LLM research ' +
-    'at ACL 2026, conference speaking on agentic AI and RAG, and 4th place of 75 teams worldwide ' +
-    'in the NeurIPS 2023 LLM Efficiency Challenge.',
+    'client-facing engagements.',
 
   skills: [
     {

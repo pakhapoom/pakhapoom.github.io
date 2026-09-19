@@ -14,7 +14,10 @@ it to the array in `renderResume()`, and add a `.rail__link` in `index.html`.
 
 The career timeline groups the CV by organisation and positions every bar by
 parsing the `period` strings, so a period must stay in `Month YYYY – Month
-YYYY` form (or `– Present`). `resume.decode` drives the hero; its `top` tokens
+YYYY` form (or `– Present`). It is also the only home for the work and study
+detail — opening an organisation shows every bullet of a role and the detail
+of a degree — so there is no Experience or Education section in the main
+column, and none of that prose prints (`.career` is hidden in `@media print`). `resume.decode` drives the hero; its `top` tokens
 must join back into `headline[0]` or the hero silently falls back to plain
 text.
 

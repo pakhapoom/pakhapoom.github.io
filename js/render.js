@@ -64,6 +64,14 @@ const spanLabel = (p) =>
     : yearOf(p.from) === yearOf(p.to) ? String(yearOf(p.from))
       : `${yearOf(p.from)} — ${yearOf(p.to)}`;
 
+/** The same span to the month: "Feb 2022 — now", with "now" marked up. */
+const monthLabel = (p) => {
+  const short = (d) => `${MONTHS[d.getMonth()].slice(0, 3).replace(/^./, (c) => c.toUpperCase())} ${d.getFullYear()}`;
+  return p.open
+    ? `${esc(short(p.from))} — <span class="now">now</span>`
+    : `${esc(short(p.from))} — ${esc(short(p.to))}`;
+};
+
 const initials = (name) =>
   name.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).map((w) => w[0]).join('').slice(0, 3);
 
@@ -122,39 +130,42 @@ function hero(r) {
  * Groups the CV into one entry per organisation, so a company where several
  * roles were held appears once, with the roles nested inside it. Without this
  * the same logo drew three times in a row for DataX and twice for Mahidol.
+ *
+ * The chart is the only home for this content, so a post carries its whole
+ * body: every bullet of a role, the one-line detail of a degree.
  */
 function organisations(r) {
   const orgs = [];
   const find = (name) => orgs.find((o) => o.org === name);
 
-  r.experience.forEach((job, i) => {
+  r.experience.forEach((job) => {
     const entry = find(job.company) || (orgs.push({
       kind: 'work',
       org: job.short || job.company,
       orgFull: job.company,
       logo: job.logo,
-      href: `#job-${i}`,
+      location: job.location,
       posts: [],
     }), orgs[orgs.length - 1]);
 
     job.roles.forEach((role) => {
       const period = parsePeriod(role.period || job.period);
-      if (period) entry.posts.push({ title: role.title, period, note: role.bullets[0], href: `#job-${i}` });
+      if (period) entry.posts.push({ title: role.title, period, body: role.bullets });
     });
   });
 
-  r.education.forEach((e, i) => {
+  r.education.forEach((e) => {
     const entry = find(e.institution) || (orgs.push({
       kind: 'study',
       org: e.institution,
       orgFull: e.institution,
       logo: e.logo,
-      href: `#edu-${i}`,
+      location: e.location,
       posts: [],
     }), orgs[orgs.length - 1]);
 
     const period = parsePeriod(e.period);
-    if (period) entry.posts.push({ title: e.short || e.degree, period, note: e.detail, href: `#edu-${i}` });
+    if (period) entry.posts.push({ title: e.degree, period, body: [e.detail] });
   });
 
   // Newest post first inside an organisation; organisations oldest first, so
@@ -182,7 +193,6 @@ function career(r) {
       ? `<img src="${esc(o.logo)}" alt="" loading="lazy" decoding="async">`
       : `<span class="org__initials">${esc(initials(o.org))}</span>`;
 
-    const open = i === orgs.length - 1;   // the current organisation starts open
     const count = o.posts.length > 1
       ? `<span class="org__count">${o.posts.length} ${o.kind === 'study' ? 'degrees' : 'roles'}</span>`
       : '';
@@ -191,20 +201,21 @@ function career(r) {
       <div class="role${p.period.open ? ' role--current' : ''}">
         <div class="role__head">
           <span class="role__title">${esc(p.title)}</span>
-          <span class="role__years">${esc(spanLabel(p.period))}</span>
+          <span class="role__years">${monthLabel(p.period)}</span>
         </div>
         <div class="track" aria-hidden="true">
           <span class="bar" style="${geom(p.period.from, p.period.to)}"></span>
         </div>
-        <p class="role__note">${esc(p.note)}</p>
+        <ul class="bullets">${p.body.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>
       </div>`).join('');
 
     return `
-      <li class="org" data-open="${open}">
-        <button class="org__btn" type="button" aria-expanded="${open}" aria-controls="org-${i}-posts">
+      <li class="org" data-open="false">
+        <button class="org__btn" type="button" aria-expanded="false" aria-controls="org-${i}-posts">
           <span class="org__disc" aria-hidden="true">${face}</span>
           <span class="org__label">
             <span class="org__name">${esc(o.orgFull)}</span>
+            <span class="org__place">${esc(o.location)}</span>
             <span class="org__span">${esc(spanLabel({ from: o.from, to: o.to, open: o.open }))}</span>
             ${count}
           </span>
@@ -212,10 +223,7 @@ function career(r) {
             <span class="bar bar--${o.kind}" style="${geom(o.from, o.to)}"></span>
           </span>
         </button>
-        <div class="roles" id="org-${i}-posts" ${open ? '' : 'hidden'}>
-          ${posts}
-          <a class="roles__more" href="${esc(o.href)}">Read the full entry</a>
-        </div>
+        <div class="roles" id="org-${i}-posts" hidden>${posts}</div>
       </li>`;
   }).join('');
 
@@ -236,13 +244,17 @@ function career(r) {
   return `
     <section class="career" id="journey" aria-labelledby="career-h">
       <div class="career__inner">
-        <h2 class="career__title" id="career-h">From mathematics to leading AI</h2>
-        <p class="career__note">Each bar is drawn to scale, so the gaps and the
-          short stays are the real ones. Open an organisation to see the roles.</p>
+        <div class="career__head">
+          <h2 class="career__title" id="career-h">From mathematics to leading AI</h2>
+          <ul class="legend">
+            <li class="legend__item"><span class="legend__key legend__key--study" aria-hidden="true"></span>Education</li>
+            <li class="legend__item"><span class="legend__key" aria-hidden="true"></span>Work</li>
+          </ul>
+        </div>
 
         <div class="chart is-pending">
-          <ul class="chart__rows">${rows}</ul>
           <div class="axis" aria-hidden="true">${ticks.join('')}</div>
+          <ul class="chart__rows">${rows}</ul>
         </div>
       </div>
     </section>`;
@@ -264,47 +276,6 @@ function skills(r) {
   return section('skills', 'Technical skills', `<div class="skills">${groups}</div>`);
 }
 
-/** "February 2022 – Present" → "Feb 2022 — now", with "now" marked up. */
-function periodLabel(period) {
-  const p = parsePeriod(period);
-  if (!p) return esc(period);
-  const short = (d) => `${MONTHS[d.getMonth()].slice(0, 3).replace(/^./, (c) => c.toUpperCase())} ${d.getFullYear()}`;
-  return p.open
-    ? `${esc(short(p.from))} — <span class="now">now</span>`
-    : `${esc(short(p.from))} — ${esc(short(p.to))}`;
-}
-
-function experience(r) {
-  const jobs = r.experience.map((job, i) => {
-    const posts = job.roles.map((role) => `
-      <article class="post">
-        <div class="post__head">
-          <h4 class="post__title">${esc(role.title)}</h4>
-          ${role.period ? `<span class="post__period">${periodLabel(role.period)}</span>` : ''}
-        </div>
-        <ul class="bullets">${role.bullets.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>
-      </article>`).join('');
-
-    return `
-      <article class="job" id="job-${i}">
-        <div class="job__head">
-          <h3 class="job__company">${esc(job.company)}
-            <span class="job__location">${esc(job.location)}</span>
-          </h3>
-          <span class="job__meta">${periodLabel(job.period)}</span>
-        </div>
-        <div>${posts}</div>
-      </article>`;
-  }).join('');
-
-  const spans = r.experience.map((j) => parsePeriod(j.period)).filter(Boolean);
-  const meta = spans.length
-    ? `${Math.min(...spans.map((p) => yearOf(p.from)))} — ${spans.some((p) => p.open) ? 'now' : Math.max(...spans.map((p) => yearOf(p.to)))}`
-    : '';
-
-  return section('experience', 'Professional experience', `<div class="timeline">${jobs}</div>`, meta);
-}
-
 function awards(r) {
   const items = r.awards.map((a) => `
     <div class="entry">
@@ -322,22 +293,6 @@ function awards(r) {
     <div class="stack">${items}</div>
     <h3 class="sub-title">Certifications</h3>
     <div class="stack">${certs}</div>`);
-}
-
-function education(r) {
-  const items = r.education.map((e, i) => `
-    <div class="entry" id="edu-${i}">
-      <div class="entry__title">${esc(e.degree)}</div>
-      <div class="entry__detail">${esc(e.institution)}, ${esc(e.location)}</div>
-      <div class="entry__meta">${periodLabel(e.period)} — ${esc(e.detail)}</div>
-    </div>`).join('');
-
-  const spans = r.education.map((e) => parsePeriod(e.period)).filter(Boolean);
-  const meta = spans.length
-    ? `${Math.min(...spans.map((p) => yearOf(p.from)))} — ${Math.max(...spans.map((p) => yearOf(p.to)))}`
-    : '';
-
-  return section('education', 'Education', `<div class="stack">${items}</div>`, meta);
 }
 
 function publications(r) {
@@ -406,9 +361,7 @@ export function renderResume({ hero: heroRoot, career: careerRoot, main }, r = r
   main.innerHTML = [
     summary(r),
     skills(r),
-    experience(r),
     awards(r),
-    education(r),
     publications(r),
     footer(r),
   ].join('');
