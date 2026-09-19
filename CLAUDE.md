@@ -18,6 +18,20 @@ YYYY` form (or `– Present`). `resume.decode` drives the hero; its `top` tokens
 must join back into `headline[0]` or the hero silently falls back to plain
 text.
 
+## Paper write-ups
+
+Each publication has a long-form page at `papers/<slug>.html`. The page is a
+thin shell that names its slug on `<body data-paper>`; the prose lives in
+`js/papers-data.js` and is rendered by `js/paper.js`. To add a paper: add the
+entry to `papers`, add a matching `slug` to the publication in `resume-data.js`
+(the two slug sets must agree), and copy an existing shell, changing the slug
+and meta tags.
+
+Write-up bodies are plain text — `**bold**` is the only markup, applied after
+escaping. Every claim must come from the paper. Where the full text could not
+be read, set `partial` so the page says so rather than implying results that
+were never checked.
+
 ## Conventions
 
 - **Escape everything rendered.** Use the local `esc()` in `render.js` /
