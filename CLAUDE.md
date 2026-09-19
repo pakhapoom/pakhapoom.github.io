@@ -32,6 +32,13 @@ escaping. Every claim must come from the paper. Where the full text could not
 be read, set `partial` so the page says so rather than implying results that
 were never checked.
 
+A section may carry one `figure`, taken from the paper itself and never
+redrawn: `{ src, width, height, alt, caption }`, with the file under
+`public/papers/<slug>/` and `src` written from the site root (`paper.js` adds
+the `../`). `width`/`height` are the file's real pixel size — they reserve the
+box so the prose below it does not jump. Figures are dark ink on white, so they
+render on `--logo-bg`, the plate that stays light in both themes.
+
 ## Conventions
 
 - **Escape everything rendered.** Use the local `esc()` in `render.js` /

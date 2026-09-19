@@ -799,6 +799,36 @@ img { max-width: 100%; }
 }
 .paper__list li::marker { color: var(--accent); }
 
+/* Figures are lifted straight from the papers: dark ink on white, drawn for a
+   printed page. They sit on the same permanently light plate the org logos use,
+   so a dark-mode reader gets a legible figure instead of an inverted one.
+   Breaking the measure by the shell's padding lets a wide chart breathe. */
+.paper__figure {
+  margin: 1.75rem calc(-1 * clamp(0rem, 3vw, 1.5rem)) 1.9rem;
+}
+.paper__figure a { display: block; cursor: zoom-in; }
+.paper__figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  padding: .85rem;
+  background: var(--logo-bg);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  transition: border-color .15s ease;
+}
+.paper__figure a:hover img,
+.paper__figure a:focus-visible img { border-color: var(--accent); }
+.paper__figure figcaption {
+  margin-top: .6rem;
+  padding: 0 clamp(0rem, 3vw, 1.5rem);
+  font-family: var(--font-mono);
+  font-size: .76rem;
+  line-height: 1.6;
+  color: var(--ink-3);
+}
+.paper__figure figcaption strong { color: var(--ink-2); font-weight: 500; }
+
 .paper__foot { margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
 .paper__missing { font-size: 1rem; color: var(--ink-2); }
 
@@ -1118,4 +1148,10 @@ img { max-width: 100%; }
   .paper__links .paper__source { padding: 0; border: 0; color: var(--accent); }
   .paper__links .paper__source::after { content: ' ' attr(href) '  '; opacity: 1; word-break: break-all; }
   .paper__partial { margin-top: 0; break-inside: avoid; }
+
+  /* Keep a figure and its caption on one page, and cap the height so a tall
+     chart cannot claim a whole sheet on its own. */
+  .paper__figure { margin: 4mm 0 5mm; break-inside: avoid; }
+  .paper__figure img { max-height: 95mm; width: auto; max-width: 100%; padding: 0; border: 0; }
+  .paper__figure figcaption { padding: 0; font-size: 8.5pt; }
 }

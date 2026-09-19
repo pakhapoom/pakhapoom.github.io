@@ -23,6 +23,7 @@ js/papers-data.js     long-form write-up for each publication
 js/paper.js           renders one write-up into papers/<slug>.html
 papers/<slug>.html    per-paper page shells (generated, then committed)
 public/               photo and organisation logos
+public/papers/<slug>/ figures taken from the papers themselves
 worker/index.js       Typhoon API proxy: key, system prompt, CORS, rate limit
 scripts/dev.sh        runs the Worker locally with the key from .env
 ```

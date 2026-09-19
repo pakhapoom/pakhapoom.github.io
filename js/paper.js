@@ -21,6 +21,27 @@ function authorList(p) {
     .join(', ');
 }
 
+/**
+ * A figure lifted from the paper itself. `src` is written from the site root,
+ * so it picks up the ../ that a page in papers/ needs. width and height are the
+ * file's real pixel size: they give the box an aspect ratio up front, so the
+ * prose below it does not jump once the image arrives.
+ */
+function figureBlock(f) {
+  if (!f) return '';
+
+  // These are paper figures: dense enough that on a phone the only way to read
+  // the axis labels is to open the file itself, so the image is its own link.
+  return `
+    <figure class="paper__figure">
+      <a href="../${esc(f.src)}" target="_blank" rel="noopener" aria-label="Open the full-size figure">
+        <img src="../${esc(f.src)}" alt="${esc(f.alt)}"
+             width="${esc(f.width)}" height="${esc(f.height)}" loading="lazy" decoding="async">
+      </a>
+      <figcaption>${emph(f.caption)}</figcaption>
+    </figure>`;
+}
+
 function sectionBlock(s, i) {
   const paras = (s.body || []).map((t) => `<p>${emph(t)}</p>`).join('');
   const bullets = s.bullets?.length
@@ -32,6 +53,7 @@ function sectionBlock(s, i) {
       <h2 class="paper__heading" id="s${i}">${esc(s.heading)}</h2>
       ${paras}
       ${bullets}
+      ${figureBlock(s.figure)}
     </section>`;
 }
 

@@ -56,6 +56,16 @@ export const papers = [
           'softmax. Every sampling decision tilts toward the target language. No gradients, no ' +
           'extra prompt, no retraining.',
         ],
+        figure: {
+          src: 'public/papers/latb/mechanism.png',
+          width: 1208,
+          height: 1020,
+          alt: 'Two decoding paths for the same Thai prompt. Without LATB the logits for Chinese, '
+            + 'Thai and English continuations are comparable and sampling picks the Chinese token; '
+            + 'with LATB the Thai tokens are boosted before the softmax and the Thai token is picked.',
+          caption: 'Figure 1. LATB boosts the logits of target-language tokens, so the same split '
+            + 'distribution resolves to the language that was asked for.',
+        },
         bullets: [
           'LATB applies the boost at every decoding step.',
           'Adaptive-LATB applies it only when the model is uncertain which language to emit — ' +
@@ -97,6 +107,16 @@ export const papers = [
           '0.77–0.94. **Language confusion was not just an aesthetic problem — it was directly ' +
           'costing measured task performance, and fixing it recovers that performance.**',
         ],
+        figure: {
+          src: 'public/papers/latb/confusion-vs-gain.png',
+          width: 1243,
+          height: 1293,
+          alt: 'Nine scatter plots pairing pre-LATB confusion at token, line and response level '
+            + 'against ROUGE-1, ROUGE-2 and ROUGE-L improvement. Every panel trends upward, with '
+            + 'Korean top right and French and Hindi near the origin.',
+          caption: 'Figure 7. The languages that were most confused before LATB gain the most '
+            + 'ROUGE after it — Pearson 0.77–0.94 across all nine pairings.',
+        },
       },
       {
         heading: 'Cost and limits',
@@ -116,6 +136,16 @@ export const papers = [
           'phonetics. Adaptive-LATB keeps the English forms, which is the case it exists for.',
           'Tested on one task (summarisation) and mostly one model family.',
         ],
+        figure: {
+          src: 'public/papers/latb/vanilla-vs-adaptive.png',
+          width: 1966,
+          height: 914,
+          alt: 'Two Thai summaries side by side. Vanilla LATB with too high an alpha spells the '
+            + 'acronyms UNODC and TIJ out in Thai phonetics; Adaptive LATB leaves them in Latin '
+            + 'script.',
+          caption: 'Figure 6. Push α too far and vanilla LATB transliterates English acronyms into '
+            + 'Thai. Adaptive-LATB is the case this failure exists for.',
+        },
       },
       {
         heading: 'Why it matters',
@@ -178,6 +208,17 @@ export const papers = [
           'Thai native annotators reviewed and revised everything for naturalness and semantic ' +
           'accuracy. The public release is 1,889 samples, filtering the monarchy category.',
         ],
+        figure: {
+          src: 'public/papers/thaisafetybench/distribution.png',
+          width: 1604,
+          height: 982,
+          alt: 'Nested ring chart of 1,954 samples. The outer ring splits 17 harm types inside six '
+            + 'risk areas: discrimination and toxicity 25.7%, information hazards 23.3%, malicious '
+            + 'uses 16.9%, misinformation 14.7%, Thai socio-cultural harm 13.4%, human-chatbot '
+            + 'interaction harms 6.0%.',
+          caption: 'Figure 2. The 1,954 prompts by risk area and harm type. Thai socio-cultural '
+            + 'harm — the five types no English benchmark carries — is 13.4% of the set.',
+        },
       },
       {
         heading: 'What the 24 models showed',
@@ -201,6 +242,16 @@ export const papers = [
           'pre-training showed no consistent effect either way — it depends on whether the ' +
           'training data was filtered for adversarial content.',
         ],
+        figure: {
+          src: 'public/papers/thaisafetybench/asr-thai-specific.png',
+          width: 1189,
+          height: 790,
+          alt: 'Paired horizontal bars for 24 models. The Thai-culture-related attack bar is '
+            + 'longer than the general prompt bar for every model but one, from GPT-5 at the low '
+            + 'end to llama3.2-typhoon2-1b-instruct near 50%.',
+          caption: 'Figure 4a. Thai-culture attacks beat general prompts on 23 of 24 models — the '
+            + 'gap generic alignment leaves open.',
+        },
       },
       {
         heading: 'The classifier',
