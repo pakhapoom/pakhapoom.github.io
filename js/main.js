@@ -77,6 +77,31 @@ function initScrollSpy() {
   mark(sections[0].id);
 }
 
+/* ----------------------------------------------------------- section rules */
+
+/**
+ * Draws each section's rule across once, the first time that section is
+ * reached. The rule under a heading is a real border and stays exactly as it
+ * was; this only runs an accent overlay along it and fades that out, so a
+ * browser that never gets here shows the finished heading rather than a
+ * missing one.
+ */
+function initRules() {
+  const sections = [...document.querySelectorAll('.section')];
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const seen = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      entry.target.classList.add('is-in');
+      seen.unobserve(entry.target);
+    }
+  }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
+
+  sections.forEach((s) => seen.observe(s));
+}
+
 /* -------------------------------------------------------------------- boot */
 
 renderResume({
@@ -86,6 +111,7 @@ renderResume({
 });
 initTheme();
 initScrollSpy();
+initRules();
 initDecode(document.querySelector('.hero'));
 initPath(document.querySelector('.path'));
 initChat();
