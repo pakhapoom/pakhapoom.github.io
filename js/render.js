@@ -46,7 +46,7 @@ function parseMonth(text) {
 
 /**
  * "February 2022 – Present" → { from, to, open }. `open` marks a period that
- * is still running, so it can be drawn to today and labelled "now".
+ * is still running, so it can be drawn to today and labeled "now".
  */
 function parsePeriod(period) {
   const [a = '', b = ''] = String(period).split('–').map((p) => p.trim());

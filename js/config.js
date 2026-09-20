@@ -24,6 +24,6 @@ export const CHAT_CONFIGURED = isLocal || !PRODUCTION_ENDPOINT.includes('YOUR-SU
 export const SUGGESTED_QUESTIONS = [
   'What does he do at DataX?',
   'Experience with RAG and agents?',
-  'Summarise his research',
+  'Summarize his research',
   'Is he a fit for an ML lead role?',
 ];

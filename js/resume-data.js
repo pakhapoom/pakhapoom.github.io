@@ -138,8 +138,8 @@ export const resume = {
       items: [
         'PyTorch', 'scikit-learn', 'XGBoost', 'deep learning',
         'natural language processing (NLP)', 'RL', 'LSTM', 'time series forecasting',
-        'clustering and segmentation', 'topic modelling (LDA)', 'transfer learning',
-        'predictive modelling',
+        'clustering and segmentation', 'topic modeling (LDA)', 'transfer learning',
+        'predictive modeling',
       ],
     },
     {

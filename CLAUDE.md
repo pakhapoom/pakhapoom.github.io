@@ -82,11 +82,11 @@ render on `--logo-bg`, the plate that stays light in both themes.
 
 - **Escape everything rendered.** Use the local `esc()` in `render.js` /
   `chat.js`. Model output goes through `miniMarkdown()`, which escapes first.
-- **Theme tokens:** define every colour on bare `:root` (light). Dark mode
+- **Theme tokens:** define every color on bare `:root` (light). Dark mode
   redefines tokens only, in both `@media (prefers-color-scheme: dark)` under
   `:root:not([data-theme='light'])` and `:root[data-theme='dark']`.
-- **Print is a feature.** Check `Cmd+P` output after layout changes to `.job`,
-  `.post`, or `.section` — and check it with the OS in *dark* mode. The print
+- **Print is a feature.** Check `Cmd+P` output after layout changes to `.path`
+  or `.section` — and check it with the OS in *dark* mode. The print
   block's token overrides use `:root:root:root` so they outrank the dark
   palette's `:root:not([data-theme='light'])`; drop that and a dark-mode
   visitor prints near-white ink onto white paper.

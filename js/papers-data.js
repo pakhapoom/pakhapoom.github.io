@@ -33,7 +33,7 @@ export const papers = [
       {
         heading: 'The problem',
         body: [
-          'Ask an English-centric model to summarise something in Thai and it will often start ' +
+          'Ask an English-centric model to summarize something in Thai and it will often start ' +
           'in Thai, then slide into English halfway through. This is **language confusion**: the ' +
           'model has the content right but cannot hold one language for the length of an answer. ' +
           'It is a routine experience for non-English users and a routine embarrassment for ' +
@@ -92,7 +92,7 @@ export const papers = [
       {
         heading: 'Results',
         body: [
-          'Evaluated on XLSUM summarisation across eight languages — Russian, Chinese, Japanese ' +
+          'Evaluated on XLSUM summarization across eight languages — Russian, Chinese, Japanese ' +
           'and French as high-resource, Korean, Thai, Hindi and Arabic as medium-resource — ' +
           'against Llama-3 8B Instruct with a normal prompt, the same model with a prompt that ' +
           'explicitly demands the target language, and Suzume 8B, a multilingual fine-tune of ' +
@@ -136,7 +136,7 @@ export const papers = [
           'French shows the weakest gains, and that is why.',
           'Push α too high and vanilla LATB starts transliterating English terms into Thai ' +
           'phonetics. Adaptive-LATB keeps the English forms, which is the case it exists for.',
-          'Tested on one task (summarisation) and mostly one model family.',
+          'Tested on one task (summarization) and mostly one model family.',
         ],
         figure: {
           src: 'public/papers/latb/vanilla-vs-adaptive.png',
@@ -195,7 +195,7 @@ export const papers = [
       {
         heading: 'Building the benchmark',
         body: [
-          'ThaiSafetyBench is 1,954 harmful Thai prompts organised into 6 risk areas covering 17 ' +
+          'ThaiSafetyBench is 1,954 harmful Thai prompts organized into 6 risk areas covering 17 ' +
           'harm types. Five of those types sit in a category that no English benchmark has: Thai ' +
           'socio-cultural harm — border issues, cultural destruction, COVID-19, monarchy, and ' +
           'misbehaviour against Thai social norms.',
@@ -233,7 +233,7 @@ export const papers = [
           'Lower is better.',
 
           '**Thai-specific attacks consistently achieve higher ASR than general prompts.** That ' +
-          'is the headline, and it is a direct indictment of how current alignment generalises: ' +
+          'is the headline, and it is a direct indictment of how current alignment generalizes: ' +
           'the safety training transfers to translated harms far better than to culturally ' +
           'native ones.',
 
@@ -319,11 +319,11 @@ export const papers = [
           'Sailor-7B, and Qwen-2.5-7B with OpenThaiGPT-1.5-7B. Llama-3.1-8B serves as the ' +
           'multilingual comparison and Gemma-2-9B as an approximate upper bound.',
 
-          'Tasks come from WangchanThaiInstruct (multiple-choice, closed QA, summarisation), ' +
+          'Tasks come from WangchanThaiInstruct (multiple-choice, closed QA, summarization), ' +
           'plus ThaiExam and MMLU, split into short-form and long-form generation. Each prompt ' +
           'is decomposed into task instruction, context input and output instruction, and the ' +
           'language of each part is varied independently between English and Thai — the ' +
-          'th_en_en style labelling used throughout. Ten responses per prompt.',
+          'th_en_en style labeling used throughout. Ten responses per prompt.',
 
           'Confusion is measured three ways: instruction-following hallucination rate, ' +
           'uncertainty via spectral clustering over the ten responses, and word-level entropy ' +
