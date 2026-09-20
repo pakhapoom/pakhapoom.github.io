@@ -18,11 +18,11 @@ js/chat.js            chat widget (SSE streaming, markdown)
 js/config.js          chat endpoint (dev vs production)
 js/main.js            boot, theme toggle, scroll-spy
 js/decode.js          hero: the job title emitted token by token
-js/timeline.js        career timeline: open one org, draw the bars in
+js/timeline.js        Experience timeline: pops the rings in, once
 js/papers-data.js     long-form write-up for each publication
 js/paper.js           renders one write-up into papers/<slug>.html
 papers/<slug>.html    per-paper page shells (generated, then committed)
-public/               photo and organisation logos
+public/               photo and organization logos (logos are unused today)
 public/papers/<slug>/ figures taken from the papers themselves
 worker/index.js       Typhoon API proxy: key, system prompt, CORS, rate limit
 scripts/dev.sh        runs the Worker locally with the key from .env

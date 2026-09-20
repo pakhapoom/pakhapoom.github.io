@@ -1,4 +1,4 @@
-// Renders the résumé object into the hero, career and main mount points.
+// Renders the résumé object into the hero, summary and main mount points.
 // Content is authored in resume-data.js, but everything still goes through
 // escapeHtml so a stray < or & in a future edit can't break the markup.
 
@@ -72,9 +72,6 @@ const monthLabel = (p) => {
     : `${esc(short(p.from))} — ${esc(short(p.to))}`;
 };
 
-const initials = (name) =>
-  name.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).map((w) => w[0]).join('').slice(0, 3);
-
 /* ------------------------------------------------------------------- hero */
 
 function hero(r) {
@@ -112,9 +109,8 @@ function hero(r) {
           <p class="hero__title" data-decode><span class="decode__out">${esc(r.headline[0])}</span><span
              class="decode__caret" aria-hidden="true"></span></p>
         </div>
-        <p class="hero__sub">${esc(r.headline[1])}</p>
-        <p class="hero__place">${esc(r.location)}</p>
         <div class="hero__foot">
+          <p class="hero__place">${esc(r.location)}</p>
           <div class="hero__links">${links}</div>
           <button class="hero__replay" type="button" data-decode-replay hidden>
             ${svg(ICON.replay)}Decode again
@@ -124,175 +120,120 @@ function hero(r) {
     </header>`;
 }
 
-/* ----------------------------------------------------------------- career */
+/* ---------------------------------------------------------------- summary */
 
 /**
- * Groups the CV into one entry per organisation, so a company where several
- * roles were held appears once, with the roles nested inside it. Without this
- * the same logo drew three times in a row for DataX and twice for Mahidol.
+ * The band under the hero: the CV in one paragraph, across the full width.
+ * It used to hold a proportional chart of every post, but the `.path`
+ * timeline in #experience carries the same two arrays in more detail and is
+ * the version that prints — so the band gives its width to the prose that
+ * introduces them instead.
  *
- * The chart is the only home for this content, so a post carries its whole
- * body: every bullet of a role, the one-line detail of a degree.
+ * The heading names the arc; the paragraph is `resume.summary`, the same one
+ * the chatbot is briefed with.
  */
-function organisations(r) {
-  const orgs = [];
-  const find = (name) => orgs.find((o) => o.org === name);
-
-  r.experience.forEach((job) => {
-    const entry = find(job.company) || (orgs.push({
-      kind: 'work',
-      org: job.short || job.company,
-      orgFull: job.company,
-      logo: job.logo,
-      location: job.location,
-      posts: [],
-    }), orgs[orgs.length - 1]);
-
-    job.roles.forEach((role) => {
-      const period = parsePeriod(role.period || job.period);
-      if (period) entry.posts.push({ title: role.title, period, body: role.bullets });
-    });
-  });
-
-  r.education.forEach((e) => {
-    const entry = find(e.institution) || (orgs.push({
-      kind: 'study',
-      org: e.institution,
-      orgFull: e.institution,
-      logo: e.logo,
-      location: e.location,
-      posts: [],
-    }), orgs[orgs.length - 1]);
-
-    const period = parsePeriod(e.period);
-    if (period) entry.posts.push({ title: e.degree, period, body: [e.detail] });
-  });
-
-  // Newest post first inside an organisation; organisations oldest first, so
-  // the chart reads left to right as a staircase.
-  for (const o of orgs) {
-    o.posts.sort((a, b) => b.period.from - a.period.from);
-    o.from = new Date(Math.min(...o.posts.map((p) => p.period.from)));
-    o.to = new Date(Math.max(...o.posts.map((p) => p.period.to)));
-    o.open = o.posts.some((p) => p.period.open);
-  }
-  return orgs.filter((o) => o.posts.length).sort((a, b) => a.from - b.from);
-}
-
-function career(r) {
-  const orgs = organisations(r);
-  if (!orgs.length) return '';
-
-  const min = Math.min(...orgs.map((o) => o.from));
-  const max = Math.max(...orgs.map((o) => o.to));
-  const pct = (d) => ((d - min) / (max - min)) * 100;
-  const geom = (from, to) => `--from:${pct(from).toFixed(2)}%;--w:${(pct(to) - pct(from)).toFixed(2)}%`;
-
-  const rows = orgs.map((o, i) => {
-    const face = o.logo
-      ? `<img src="${esc(o.logo)}" alt="" loading="lazy" decoding="async">`
-      : `<span class="org__initials">${esc(initials(o.org))}</span>`;
-
-    const count = o.posts.length > 1
-      ? `<span class="org__count">${o.posts.length} ${o.kind === 'study' ? 'degrees' : 'roles'}</span>`
-      : '';
-
-    const posts = o.posts.map((p) => `
-      <div class="role${p.period.open ? ' role--current' : ''}">
-        <div class="role__head">
-          <span class="role__title">${esc(p.title)}</span>
-          <span class="role__years">${monthLabel(p.period)}</span>
-        </div>
-        <div class="track" aria-hidden="true">
-          <span class="bar" style="${geom(p.period.from, p.period.to)}"></span>
-        </div>
-        <ul class="bullets">${p.body.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>
-      </div>`).join('');
-
-    return `
-      <li class="org" data-open="false">
-        <button class="org__btn" type="button" aria-expanded="false" aria-controls="org-${i}-posts">
-          <span class="org__disc" aria-hidden="true">${face}</span>
-          <span class="org__label">
-            <span class="org__name">${esc(o.orgFull)}</span>
-            <span class="org__place">${esc(o.location)}</span>
-            <span class="org__span">${esc(spanLabel({ from: o.from, to: o.to, open: o.open }))}</span>
-            ${count}
-          </span>
-          <span class="track" aria-hidden="true">
-            <span class="bar bar--${o.kind}" style="${geom(o.from, o.to)}"></span>
-          </span>
-        </button>
-        <div class="roles" id="org-${i}-posts" hidden>${posts}</div>
-      </li>`;
-  }).join('');
-
-  // A tick a year; the year is written on the ones that divide by four, plus
-  // both ends, so the axis stays readable when the band is narrow.
-  const first = new Date(min).getFullYear();
-  const lastYear = new Date(max).getFullYear();
-  const ticks = [`<span class="tick tick--major" style="--at:0%"><b>${first}</b></span>`];
-  for (let y = first + 1; y <= lastYear; y++) {
-    const at = pct(new Date(y, 0, 1));
-    if (at <= 0 || at >= 100) continue;
-    const major = y % 4 === 0;
-    ticks.push(`<span class="tick${major ? ' tick--major' : ''}" style="--at:${at.toFixed(2)}%">${
-      major ? `<b>${y}</b>` : ''}</span>`);
-  }
-  ticks.push('<span class="tick tick--major" style="--at:100%"><b>now</b></span>');
-
+function summary(r) {
   return `
-    <section class="career" id="journey" aria-labelledby="career-h">
-      <div class="career__inner">
-        <div class="career__head">
-          <h2 class="career__title" id="career-h">From mathematics to leading AI</h2>
-          <ul class="legend">
-            <li class="legend__item"><span class="legend__key legend__key--study" aria-hidden="true"></span>Education</li>
-            <li class="legend__item"><span class="legend__key" aria-hidden="true"></span>Work</li>
-          </ul>
+    <section class="summary" id="summary" aria-labelledby="summary-h">
+      <div class="summary__inner">
+        <div class="summary__head">
+          <span class="summary__eyebrow">Summary</span>
+          <h2 class="summary__title" id="summary-h">From mathematics to leading AI</h2>
         </div>
-
-        <div class="chart is-pending">
-          <div class="axis" aria-hidden="true">${ticks.join('')}</div>
-          <ul class="chart__rows">${rows}</ul>
-        </div>
+        <p class="summary__text">${esc(r.summary)}</p>
       </div>
     </section>`;
 }
 
 /* --------------------------------------------------------------- sections */
 
-function summary(r) {
-  return section('summary', 'Summary', `<p class="lede">${esc(r.summary)}</p>`);
+/**
+ * Every post of the CV flattened onto one line: each role and each degree is a
+ * point, newest first, so the two records read as a single career rather than
+ * as work and study kept in separate columns. It is the only drawing of the
+ * CV and the version that prints, so it carries the whole body of every
+ * post.
+ */
+function milestones(r) {
+  const posts = [];
+
+  r.experience.forEach((job) => {
+    job.roles.forEach((role) => {
+      // A role that names no period of its own ran for the whole job.
+      const period = parsePeriod(role.period || job.period);
+      if (period) {
+        posts.push({
+          kind: 'work',
+          title: role.title,
+          // The pill wants one line, and "DataX (SCB DataX Co., Ltd.)" is
+          // three at this width.
+          org: job.short || job.company,
+          location: job.location,
+          period,
+          blurb: role.blurb,
+          body: role.bullets,
+        });
+      }
+    });
+  });
+
+  r.education.forEach((e) => {
+    const period = parsePeriod(e.period);
+    if (period) {
+      posts.push({
+        kind: 'study',
+        title: e.degree,
+        org: e.institution,
+        location: e.location,
+        period,
+        // A degree's one-line detail is already the blurb a role needs one for.
+        blurb: e.detail,
+        body: [e.detail],
+      });
+    }
+  });
+
+  // Newest start first; when two start in the same month the longer one sits
+  // above, so the order never falls back to the order they were authored in.
+  return posts.sort((a, b) => b.period.from - a.period.from || b.period.to - a.period.to);
 }
 
-function skills(r) {
-  const groups = r.skills.map((g) => `
-    <div class="skill-group">
-      <h3 class="skill-group__name">${esc(g.group)}</h3>
-      <p class="skill-group__items">${esc(g.items.join(', '))}</p>
-    </div>`).join('');
+/**
+ * One spine down the left, a ring on it per post, and every post reading off
+ * to its right: organization, span, role, and the role in one sentence. Work
+ * and study run on the same line rather than in two lanes, so a degree is
+ * just another point on it.
+ */
+function path(r) {
+  const posts = milestones(r);
+  if (!posts.length) return '';
 
-  return section('skills', 'Technical skills', `<div class="skills">${groups}</div>`);
-}
+  // Both the blurb and the bullets are written out. The screen shows the
+  // blurb and the print block swaps them, so the page stays a scannable
+  // timeline without the printed CV losing what every role actually did.
+  const items = posts.map((p) => `
+    <li class="path__post path__post--${p.kind}${p.period.open ? ' path__post--current' : ''}">
+      <span class="path__mark" aria-hidden="true"></span>
+      <div class="path__card">
+        <p class="path__lead">
+          <span class="path__pill">${esc(p.org)}</span>
+          <span class="path__years">${esc(spanLabel(p.period))}</span>
+        </p>
+        <h3 class="path__title">${esc(p.title)}</h3>
+        <p class="path__place">${esc(p.location)} · ${monthLabel(p.period)}</p>
+        ${p.blurb ? `<p class="path__blurb">${esc(p.blurb)}</p>` : ''}
+        <ul class="bullets">${p.body.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>
+      </div>
+    </li>`).join('');
 
-function awards(r) {
-  const items = r.awards.map((a) => `
-    <div class="entry">
-      <div class="entry__title">${esc(a.title)}</div>
-      <div class="entry__detail">${esc(a.detail)}</div>
-    </div>`).join('');
+  const meta = spanLabel({
+    from: new Date(Math.min(...posts.map((p) => p.period.from))),
+    to: new Date(Math.max(...posts.map((p) => p.period.to))),
+    open: posts.some((p) => p.period.open),
+  });
 
-  const certs = r.certifications.map((c) => `
-    <div class="entry">
-      <div class="entry__title">${esc(c.title)}</div>
-      <div class="entry__meta">${esc(c.issuer)}, ${esc(c.date)}</div>
-    </div>`).join('');
-
-  return section('awards', 'Awards', `
-    <div class="stack">${items}</div>
-    <h3 class="sub-title">Certifications</h3>
-    <div class="stack">${certs}</div>`);
+  return section('experience', 'Experience', `
+    <ol class="path is-pending">${items}</ol>`, meta);
 }
 
 function publications(r) {
@@ -351,17 +292,15 @@ function structuredData(r) {
 }
 
 /**
- * Renders into three mount points: the hero and the career band sit full width
- * above the rail layout, the detailed sections inside the main column.
+ * Renders into three mount points: the hero and the summary band sit full
+ * width above the rail layout, the detailed sections inside the main column.
  */
-export function renderResume({ hero: heroRoot, career: careerRoot, main }, r = resume) {
+export function renderResume({ hero: heroRoot, summary: summaryRoot, main }, r = resume) {
   heroRoot.innerHTML = hero(r);
-  careerRoot.innerHTML = career(r);
+  summaryRoot.innerHTML = summary(r);
   main.innerHTML = [
-    summary(r),
-    skills(r),
-    awards(r),
     publications(r),
+    path(r),
     footer(r),
   ].join('');
 

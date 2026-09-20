@@ -25,6 +25,7 @@
   --rule-2:      #c6c5bc;
   --logo-bg:     #ffffff;   /* logo plate: the marks are dark ink, so it stays light in both themes */
   --shadow:      0 1px 2px rgba(30, 28, 20, .05), 0 12px 32px rgba(30, 28, 20, .10);
+  --shadow-pill: 0 1px 2px rgba(30, 28, 20, .07), 0 3px 8px rgba(30, 28, 20, .06);
 
   --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-text: 'Newsreader', Georgia, 'Times New Roman', serif;
@@ -51,6 +52,7 @@
     --rule-2:      #45443c;
     --logo-bg:     #f1f0ea;
     --shadow:      0 1px 2px rgba(0, 0, 0, .5), 0 12px 32px rgba(0, 0, 0, .45);
+    --shadow-pill: 0 1px 2px rgba(0, 0, 0, .4), 0 3px 8px rgba(0, 0, 0, .35);
     color-scheme: dark;
   }
 }
@@ -69,6 +71,7 @@
   --rule-2:      #45443c;
   --logo-bg:     #f1f0ea;
   --shadow:      0 1px 2px rgba(0, 0, 0, .5), 0 12px 32px rgba(0, 0, 0, .45);
+  --shadow-pill: 0 1px 2px rgba(0, 0, 0, .4), 0 3px 8px rgba(0, 0, 0, .35);
   color-scheme: dark;
 }
 
@@ -226,11 +229,9 @@ img { max-width: 100%; }
   align-items: start;
   column-gap: clamp(1.75rem, 5vw, 3.25rem);
 }
-.hero__photo { grid-column: 1; grid-row: 1 / span 5; }
+.hero__photo { grid-column: 1; grid-row: 1 / span 3; }
 .hero__name,
 .hero__lede,
-.hero__sub,
-.hero__place,
 .hero__foot { grid-column: 2; }
 /* Only the narrow layout has room beside the photo to spare for the popover. */
 .hero__slot { display: none; }
@@ -313,16 +314,12 @@ img { max-width: 100%; }
 .decode__tok { white-space: pre; }
 .decode__p { text-align: right; font-variant-numeric: tabular-nums; }
 
-.hero__sub {
-  margin-top: 1.1rem;
-  font-size: 1.05rem;
-  line-height: 1.5;
-  color: var(--ink-2);
-}
-.hero__place { margin-top: .1rem; font-size: 1.05rem; color: var(--ink-3); }
+/* The location shares the foot's row with the contact icons and the replay
+   button, so all three sit on one line under the decoding headline. */
+.hero__place { font-size: 1.05rem; color: var(--ink-3); }
 
 .hero__foot {
-  margin-top: 1.75rem;
+  margin-top: 1.4rem;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -385,225 +382,52 @@ img { max-width: 100%; }
 .icon-link:focus-visible::after { opacity: 1; }
 
 /* ============================================================
-   Career — a proportional timeline. Bar length is tenure; the gaps
-   and the four-month stint are true to scale.
+   Summary — the band under the hero: the whole CV in one paragraph.
+   It stands on the plate the career chart used to, and gives the
+   width the chart claimed to the prose instead.
    ============================================================ */
-.career {
+.summary {
   padding: clamp(3rem, 7vw, 4.5rem) 0;
   background: var(--paper-2);
   border-top: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
 }
-.career__inner { width: min(100% - 2 * var(--gutter), 60rem); margin: 0 auto; }
 
-.career__title {
+/* Heading column, then prose — the label and the arc on the left, the
+   paragraph set to a readable measure on the right. */
+.summary__inner {
+  width: min(100% - 2 * var(--gutter), 60rem);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 17rem) minmax(0, 1fr);
+  gap: clamp(1.1rem, 3vw, 2.75rem);
+  align-items: start;
+}
+
+/* The word the rail link promises; the headline below it says what the
+   timeline further down then walks through. */
+.summary__eyebrow {
+  display: block;
+  margin-bottom: .6rem;
+  font-family: var(--font-mono);
+  font-size: .75rem;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.summary__title {
   font-family: var(--font-mono);
   font-size: clamp(1.15rem, 2.6vw, 1.5rem);
   font-weight: 500;
+  line-height: 1.3;
   letter-spacing: -.035em;
   color: var(--ink);
 }
-
-/* Title and legend share a line while there is room, and stack when there
-   is not — the legend is the key to the two bar treatments below. */
-.career__head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: .5rem 1.5rem;
+.summary__text {
+  font-size: clamp(1rem, 1.4vw, 1.08rem);
+  line-height: 1.8;
+  color: var(--ink-2);
 }
-.legend { display: flex; flex-wrap: wrap; gap: .3rem 1.1rem; }
-.legend__item {
-  display: flex;
-  align-items: center;
-  gap: .45rem;
-  font-family: var(--font-mono);
-  font-size: .75rem;
-  color: var(--ink-3);
-}
-.legend__key {
-  width: 1.6rem;
-  height: 8px;
-  background: var(--ink-3);
-}
-.legend__key--study {
-  background: repeating-linear-gradient(
-    -45deg, var(--ink-3) 0 2px, transparent 2px 5px);
-}
-
-/* --logo is the only knob for the mark's size; --lane is the column it claims,
-   the logo plus its gutter. Everything else in the chart — the label, the axis,
-   every bar rail — starts where the lane ends, so the plot area is one column
-   and a role bar lands exactly under its organisation's bar and under the year
-   it belongs to. Grow --logo and the whole chart re-indents around it. */
-.chart {
-  --logo: 3.5rem;
-  --logo-gap: .95rem;
-  --lane: calc(var(--logo) + var(--logo-gap));
-  margin-top: clamp(1.75rem, 4vw, 2.5rem);
-}
-.chart__rows { display: grid; }
-
-/* --- one row per organisation --- */
-.org { border-top: 1px solid var(--rule); }
-.org:last-child { border-bottom: 1px solid var(--rule); }
-
-/* Two columns — the lane and the plot area — rather than an absolute disc, so
-   the logo can grow without the label and the rail having to be told about it. */
-.org__btn {
-  display: grid;
-  grid-template-columns: var(--logo) minmax(0, 1fr);
-  /* named explicitly so the disc's `grid-row: 1 / -1` has a real end line */
-  grid-template-rows: auto auto;
-  column-gap: var(--logo-gap);
-  width: 100%;
-  padding: 1rem 0 1.5rem;
-  text-align: left;
-}
-.org__label {
-  grid-column: 2;
-  grid-row: 1;
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: .3rem .6rem;
-}
-.org__name {
-  font-family: var(--font-mono);
-  font-size: .9rem;
-  font-weight: 500;
-  color: var(--ink);
-}
-.org__place { font-size: .9rem; color: var(--ink-3); }
-.org__span {
-  font-family: var(--font-mono);
-  font-size: .75rem;
-  font-variant-numeric: tabular-nums;
-  color: var(--ink-3);
-}
-.org__count { font-size: .85rem; color: var(--ink-3); }
-
-/* Spans both rows of the button and centres against them, so the mark stays
-   balanced on the label-and-rail block at any size and however the label wraps. */
-.org__disc {
-  grid-column: 1;
-  grid-row: 1 / -1;
-  align-self: center;
-  display: grid;
-  place-items: center;
-  width: var(--logo); height: var(--logo);
-  padding: 6px;
-  background: var(--logo-bg);
-  border: 1px solid var(--rule-2);
-  overflow: hidden;
-}
-.org__disc img { width: 100%; height: 100%; object-fit: contain; }
-.org__initials { font-family: var(--font-mono); font-size: .95rem; font-weight: 600; color: var(--ink-3); }
-
-/* The bar sits on a rail spanning the whole domain, so a short stay reads as
-   short *against something* rather than as a mark floating in white space.
-   display:block matters: the org row's track is a <span> inside a button. */
-.track {
-  display: block;
-  position: relative;
-  height: 10px;
-  margin-top: .55rem;
-  background: linear-gradient(var(--rule), var(--rule)) 0 50% / 100% 1px no-repeat;
-}
-/* the org's rail is a grid item: second row, plot column, clear of the logo */
-.org__btn .track { grid-column: 2; grid-row: 2; }
-.bar {
-  position: absolute;
-  top: 0;
-  left: var(--from);
-  width: var(--w);
-  min-width: 5px;
-  height: 100%;
-  background: var(--rule-2);
-  transform-origin: left center;
-  transition: background .2s ease;
-}
-/* Study is hatched rather than outlined: an outline reads as an unfilled
-   progress bar, a hatch reads as a second series. */
-.bar--study {
-  background: repeating-linear-gradient(
-    -45deg, var(--rule-2) 0 2px, transparent 2px 5px);
-}
-
-.org__btn:hover .bar { background: var(--ink-3); }
-.org__btn:hover .bar--study {
-  background: repeating-linear-gradient(-45deg, var(--ink-3) 0 2px, transparent 2px 5px);
-}
-.org[data-open='true'] .bar { background: var(--accent); }
-.org[data-open='true'] .bar--study {
-  background: repeating-linear-gradient(-45deg, var(--accent) 0 2px, transparent 2px 5px);
-}
-.org[data-open='true'] .org__name { color: var(--accent); }
-
-/* first scroll into view draws the bars left to right, once. timeline.js drops
-   is-pending the moment it decides not to animate, so a bar is never stranded. */
-.chart.is-pending .bar { transform: scaleX(0); }
-.chart.is-drawing .bar { animation: draw .9s cubic-bezier(.2, .75, .25, 1) both; }
-.chart.is-drawing .org:nth-child(2) .bar { animation-delay: .1s; }
-.chart.is-drawing .org:nth-child(3) .bar { animation-delay: .2s; }
-.chart.is-drawing .org:nth-child(4) .bar { animation-delay: .3s; }
-.chart.is-drawing .org:nth-child(5) .bar { animation-delay: .4s; }
-@keyframes draw { from { transform: scaleX(0); } }
-
-/* --- roles revealed inside the open row --- */
-/* Indented by the lane, which is what keeps a role's rail in the same column as
-   the organisation's — the role tracks reset their own left margin below. */
-.roles { display: grid; gap: 1.6rem; padding: .2rem 0 1.75rem var(--lane); }
-.roles[hidden] { display: none; }
-
-.role { display: grid; gap: .25rem; }
-.role__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: .2rem .7rem; }
-.role__title { font-size: .98rem; font-weight: 600; color: var(--ink); }
-.role__years {
-  font-family: var(--font-mono);
-  font-size: .72rem;
-  font-variant-numeric: tabular-nums;
-  color: var(--ink-3);
-}
-.role .bullets { max-width: 44rem; margin-top: .15rem; }
-/* keeps the rail, so a bar way out to the right stays tied to its label */
-.role .track { height: 6px; margin: .1rem 0 .4rem; }
-.role .bar { background: var(--accent); opacity: .45; }
-.role--current .bar { opacity: 1; }
-
-
-/* --- year axis ---
-   It heads the chart, so the scale is read before the bars are. Ticks hang
-   from the axis line and the years sit under them, right above the first row. */
-.axis {
-  position: relative;
-  height: 2.2rem;
-  margin: 0 0 .2rem var(--lane);
-  border-top: 1px solid var(--accent);
-}
-.tick {
-  position: absolute;
-  top: 0;
-  left: var(--at);
-  width: 1px; height: 4px;
-  background: var(--accent);
-  opacity: .5;
-}
-.tick--major { height: 7px; opacity: 1; }
-.tick b {
-  position: absolute;
-  top: .7rem;
-  left: 0;
-  transform: translateX(-50%);
-  font-family: var(--font-mono);
-  font-size: .7rem;
-  font-weight: 400;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  color: var(--accent);
-}
-.tick:last-child b { transform: translateX(-100%); }
 
 /* ============================================================
    Sections
@@ -635,26 +459,113 @@ img { max-width: 100%; }
   color: var(--ink-3);
 }
 
-.lede { font-size: 1.05rem; line-height: 1.75; }
-
-/* ---------- skills: set as running text, the way a printed CV does ---------- */
-.skills { display: grid; gap: .8rem; }
-.skill-group {
+/* ---------- experience: one spine down the left ----------
+   A ring per post on a cinnabar line, every post reading off to its
+   right: organization, span, role, and the role in one sentence. --lane is
+   the column the spine and its heads claim; the card takes the rest. Colour
+   is the page's own — accent for the line and the heads, paper-2 for the pill
+   — so the whole thing follows the theme into dark mode with no extra rules. */
+.path {
+  --lane: 2.6rem;
+  --head-size: 1.05rem;
+  --head-edge: 3px;
+  --lead-h: 2.3rem;        /* the pill's row: the head centres against it */
+  position: relative;
   display: grid;
-  grid-template-columns: 8.5rem minmax(0, 1fr);
-  gap: .15rem 1.25rem;
-  align-items: baseline;
+  gap: 1.9rem;
+  list-style: none;
 }
-.skill-group__name {
-  font-family: var(--font-mono);
-  font-size: .76rem;
-  font-weight: 400;
-  line-height: 1.9;
-  color: var(--ink-3);
+/* The spine, fading out at both ends rather than stopping dead. It is a
+   background, so print drops it — and print flattens this layout anyway. */
+.path::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--lane) / 2);
+  width: 3px;
+  margin-left: -1.5px;
+  border-radius: 2px;
+  background: linear-gradient(
+    var(--paper), var(--accent) 2.5rem, var(--accent) calc(100% - 2.5rem), var(--paper));
 }
-.skill-group__items { font-size: .95rem; line-height: 1.65; color: var(--ink-2); }
 
-/* ---------- bullets: the body of a role or a degree in the chart ---------- */
+.path__post {
+  display: grid;
+  grid-template-columns: var(--lane) minmax(0, 1fr);
+  align-items: start;
+}
+/* The head sits centred on the spine: an accent ring with a paper middle, so
+   it interrupts the line rather than letting it show through. */
+.path__mark {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: center;
+  width: var(--head-size);
+  height: var(--head-size);
+  /* centred against the pill, not against the top of the card */
+  margin-top: calc((var(--lead-h) - var(--head-size)) / 2);
+  border: var(--head-edge) solid var(--accent);
+  border-radius: 50%;
+  background: var(--paper);
+}
+/* The post still running is the solid one. */
+.path__post--current .path__mark { background: var(--accent); }
+
+.path__card { grid-column: 2; grid-row: 1; display: grid; gap: .1rem; }
+
+/* Organization first, its span trailing it, both on one line against the head. */
+.path__lead {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .2rem .6rem;
+  min-height: var(--lead-h);
+}
+.path__pill {
+  padding: .32rem .7rem;
+  border-radius: .4rem;
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  box-shadow: var(--shadow-pill);
+  font-family: var(--font-mono);
+  font-size: .82rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--ink);
+}
+.path__years {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.path__title { margin-top: .3rem; font-size: 1rem; font-weight: 600; color: var(--ink); }
+.path__place { font-family: var(--font-mono); font-size: .7rem; color: var(--ink-3); }
+.path__blurb { margin-top: .3rem; font-size: .95rem; line-height: 1.6; color: var(--ink-2); }
+
+/* The bullets are carried for print only: on screen the blurb is the whole
+   body of a post, so the timeline stays scannable. */
+.path__card .bullets { display: none; }
+
+/* First scroll into view pops the heads, once. Only the heads: the card is
+   never hidden behind a class, so a failed script cannot swallow the CV. */
+.path.is-pending .path__mark { transform: scale(.2); opacity: 0; }
+.path.is-drawing .path__mark { animation: pop .45s cubic-bezier(.2, .9, .3, 1.2) both; }
+.path.is-drawing .path__post:nth-child(2) .path__mark { animation-delay: .07s; }
+.path.is-drawing .path__post:nth-child(3) .path__mark { animation-delay: .14s; }
+.path.is-drawing .path__post:nth-child(4) .path__mark { animation-delay: .21s; }
+.path.is-drawing .path__post:nth-child(5) .path__mark { animation-delay: .28s; }
+.path.is-drawing .path__post:nth-child(6) .path__mark { animation-delay: .35s; }
+.path.is-drawing .path__post:nth-child(7) .path__mark { animation-delay: .42s; }
+@keyframes pop {
+  from { transform: scale(.2); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* ---------- bullets: the body of a post, printed under Experience ---------- */
 .now { color: var(--accent); }
 
 .bullets { display: grid; gap: .45rem; }
@@ -667,22 +578,13 @@ img { max-width: 100%; }
   background: var(--rule-2);
 }
 
-/* ---------- awards / education / publications ---------- */
+/* ---------- publications ---------- */
 .stack { display: grid; gap: .9rem; }
-.sub-title {
-  margin: 1.9rem 0 .9rem;
-  font-family: var(--font-mono);
-  font-size: .78rem;
-  font-weight: 400;
-  color: var(--ink-3);
-}
 
-.entry { display: grid; gap: .05rem; padding-left: .9rem; border-left: 1px solid var(--rule-2); }
-.entry__title { font-size: .98rem; font-weight: 600; color: var(--ink); }
-.entry__detail { font-size: .95rem; color: var(--ink-2); }
-.entry__meta { font-size: .88rem; color: var(--ink-3); }
-
-.pub { display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: .05rem .9rem; align-items: baseline; }
+/* The year column is wide enough for a range ("2016–2020"), not just a year:
+   the collection row spans five years, and a wrapped range in a 3rem column
+   reads as two separate years. */
+.pub { display: grid; grid-template-columns: 4.35rem minmax(0, 1fr); gap: .05rem .9rem; align-items: baseline; }
 .pub__year {
   font-family: var(--font-mono);
   font-size: .74rem;
@@ -1059,9 +961,7 @@ img { max-width: 100%; }
   }
   .hero__name { grid-column: 1 / -1; grid-row: 2; margin-top: 1.4rem; }
   .hero__lede { grid-column: 1 / -1; grid-row: 3; }
-  .hero__sub { grid-column: 1 / -1; grid-row: 4; }
-  .hero__place { grid-column: 1 / -1; grid-row: 5; }
-  .hero__foot { grid-column: 1 / -1; grid-row: 6; }
+  .hero__foot { grid-column: 1 / -1; grid-row: 4; }
 
   /* Docked in the slot: still absolute, so appearing and vanishing between
      tokens can never resize the row the portrait sits in. */
@@ -1073,14 +973,14 @@ img { max-width: 100%; }
   }
   .hero__title { font-size: clamp(1.05rem, 5vw, 1.45rem); }
   .hero__name { font-size: clamp(1.35rem, 6.5vw, 1.8rem); }
-  .hero__sub { margin-top: .9rem; font-size: 1rem; }
   .hero__place { font-size: 1rem; }
-  .skill-group { grid-template-columns: minmax(0, 1fr); gap: .1rem; }
-  .skill-group__name { line-height: 1.6; }
-  /* Shrink the mark rather than dropping the lane: a plot area that starts in a
-     different place per row costs more than the width it buys back. */
-  .chart { --logo: 2.9rem; --logo-gap: .75rem; }
-  .org__name { font-size: .82rem; }
+  /* No room for a heading column beside the paragraph: the label and the
+     headline stack above it, which is also how the band prints. */
+  .summary__inner { grid-template-columns: minmax(0, 1fr); }
+
+  /* The lane is already as narrow as the head allows; only the gap between
+     posts needs to come in at this width. */
+  .path { --lane: 2.3rem; gap: 1.6rem; }
 }
 
 @media (max-width: 30rem) {
@@ -1114,7 +1014,7 @@ img { max-width: 100%; }
 
   body { font-size: 10pt; line-height: 1.45; background: #fff; }
   .rail, .theme-btn, .chat-launcher, .chat-panel, .skip-link, .foot,
-  .career, .hero__replay, .decode__pop, .decode__caret,
+  .hero__replay, .decode__pop, .decode__caret,
   .hero__slot { display: none !important; }
 
   .shell { display: block; max-width: none; padding: 0; }
@@ -1127,19 +1027,59 @@ img { max-width: 100%; }
   .hero__photo { width: 22mm; }
   .hero__name { font-size: 20pt; }
   .hero__title { margin-top: .2rem; font-size: 12pt; }
-  .hero__sub, .hero__place { font-size: 10.5pt; }
+  .hero__place { font-size: 10.5pt; }
   .hero__foot { margin-top: .5rem; gap: .1rem .9rem; }
   .icon-link { display: inline; width: auto; height: auto; border: 0; font-size: 9pt; color: var(--accent); }
   .icon-link svg, .icon-link::after { display: none; }
   .icon-link__text { position: static; width: auto; height: auto; clip: auto; }
 
+  /* The band is the CV's summary, so it prints — as the first section, with
+     its label set like every other section title. The headline is the page's
+     own framing and goes; the paragraph is what a CV carries here. */
+  .summary { padding: 0 0 1.2rem; background: none; border: 0; }
+  .summary__inner { width: auto; display: block; }
+  .summary__title { display: none; }
+  .summary__eyebrow {
+    margin-bottom: .55rem;
+    padding-bottom: .2rem;
+    font-size: 10pt;
+    letter-spacing: -.02em;
+    text-transform: none;
+    color: var(--ink);
+    border-bottom: 1px solid var(--ink);
+    break-after: avoid;
+  }
+  .summary__text { font-size: 10pt; line-height: 1.45; color: var(--ink-2); }
+
   .section + .section { margin-top: 1.2rem; }
   .section__head { margin-bottom: .55rem; padding-bottom: .2rem; break-after: avoid; }
   .section__title { font-size: 10pt; }
 
-  .entry, .pub { break-inside: avoid; }
+  /* A single post is short enough to keep whole, and its title must never be
+     the last thing on a sheet. The timeline itself is allowed to split: it is
+     the whole CV, so pinning it would push it all to a fresh page. */
+  .path__post, .pub { break-inside: avoid; }
+  .path__lead, .path__title { break-after: avoid; }
+  /* On paper the spine is dead weight — it is a background, which most print
+     paths drop, and the lane only eats margin. Flatten to one column, and
+     swap the body: the screen's one-line blurb gives way to the full bullets,
+     so the printed CV still says what each role actually did. */
+  .path { display: grid; gap: 1rem; }
+  .path::before, .path__mark, .path__blurb { display: none; }
+  .path__post { display: block; }
+  .path__card .bullets { display: grid; }
+  .path__lead { display: block; min-height: 0; }
+  /* A run-in company name and its years, which is how a CV writes that line. */
+  .path__pill {
+    display: inline;
+    padding: 0;
+    background: none;
+    border: 0;
+    box-shadow: none;
+    font-size: 10pt;
+  }
+  .path__years { color: var(--ink-3); }
   .bullets li { font-size: 9.5pt; }
-  .skill-group__items { font-size: 9.5pt; }
 
   /* Backgrounds are dropped by most print paths, so the title's underline goes
      with them; on paper a link is only useful if its URL is actually visible. */

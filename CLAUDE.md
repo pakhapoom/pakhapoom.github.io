@@ -12,14 +12,43 @@ from `resume`; `worker/index.js` builds the chatbot's system prompt from
 To add a section: extend `resume`, add a render function in `render.js`, append
 it to the array in `renderResume()`, and add a `.rail__link` in `index.html`.
 
-The career timeline groups the CV by organisation and positions every bar by
-parsing the `period` strings, so a period must stay in `Month YYYY – Month
-YYYY` form (or `– Present`). It is also the only home for the work and study
-detail — opening an organisation shows every bullet of a role and the detail
-of a degree — so there is no Experience or Education section in the main
-column, and none of that prose prints (`.career` is hidden in `@media print`). `resume.decode` drives the hero; its `top` tokens
-must join back into `headline[0]` or the hero silently falls back to plain
-text.
+The CV is drawn once. The **`#experience` timeline** (`.path`) flattens
+`r.experience` and `r.education` into one reverse-chronological spine down the
+left, a ring per post on it, every post reading off to its right.
+Despite the name
+it holds the degrees too: there is no Education section, and `path()` reads
+both arrays together. It parses the `period` strings, so a period must stay in
+`Month YYYY – Month YYYY` form (or `– Present`).
+
+The band under the hero (`.summary`, `#summary`) is prose, not a drawing: one
+paragraph, `resume.summary`, on the full-width plate. A proportional career
+chart stood there until it said the same thing the timeline says; if a second
+drawing of the CV ever comes back, it goes there, not into the main column.
+
+**The screen shows blurbs; only paper shows bullets.** Each role carries a
+one-sentence `blurb` next to its `bullets`: `.path` renders both and hides
+`.bullets` in screen CSS, and the print block flips it — `.path__blurb` off,
+`.bullets` on — so `Cmd+P` still yields a full CV. Change one of those rules
+and you silently gut the other view. A `blurb` must be a condensation of that
+role's own bullets and may claim nothing they do not; education needs none,
+since `detail` already plays that part. `resumeToText()` feeds the chatbot the
+bullets, not the blurbs, so it can still answer in detail about work the page
+only summarises.
+
+The pill takes `job.short` (`DataX`, not `SCB DataX Co., Ltd.`) so it stays
+one line. Colour is the page's own — the spine and the heads' edge are
+`--accent`, a head's fill `--paper` until the post is the current one, the
+pill `--paper-2` — so dark mode needs no rules of its own. On paper the spine
+and heads go and the pill becomes a run-in company name, which is how a CV
+writes that line anyway; the summary band prints too, as the first section,
+with its eyebrow set like every other section title and the headline dropped.
+
+Only the heads hide behind `is-pending` (`drawOnce()` in `timeline.js`). Never
+put the card behind that class — a script that fails to run would swallow the
+whole CV.
+
+`resume.decode` drives the hero; its `top` tokens must join back into
+`headline[0]` or the hero silently falls back to plain text.
 
 ## Paper write-ups
 

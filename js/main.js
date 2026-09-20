@@ -3,7 +3,7 @@
 import { renderResume } from './render.js';
 import { initChat } from './chat.js';
 import { initDecode } from './decode.js';
-import { initTimeline } from './timeline.js';
+import { initPath } from './timeline.js';
 
 /* ------------------------------------------------------------------ theme */
 
@@ -81,11 +81,11 @@ function initScrollSpy() {
 
 renderResume({
   hero: document.getElementById('hero-root'),
-  career: document.getElementById('career-root'),
+  summary: document.getElementById('summary-root'),
   main: document.getElementById('resume-root'),
 });
 initTheme();
 initScrollSpy();
 initDecode(document.querySelector('.hero'));
-initTimeline(document.getElementById('journey'));
+initPath(document.querySelector('.path'));
 initChat();

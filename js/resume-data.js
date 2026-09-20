@@ -112,13 +112,13 @@ export const resume = {
   },
 
   summary:
-    'Lead AI Scientist with a PhD and 6+ years owning AI delivery end to end: framing the ' +
-    'business problem with the client, designing the algorithm, and deploying maintainable ' +
-    'systems into production. Architects generative AI and agentic AI solutions at enterprise ' +
-    "scale on OpenAI and open-source LLMs, and currently designs a group-wide recommendation " +
-    "engine spanning the group's business units. Sets technical direction for data scientists " +
-    'and engineers and acts as the interface between business and technology in fast-paced, ' +
-    'client-facing engagements.',
+    'I started in applied mathematics, modelling carbon nanostructures with ' +
+    'Lennard-Jones potentials \u2014 years spent on the elegance of the equations that ' +
+    'describe how atoms interact. The same pull toward mathematical structure drew ' +
+    'me into data science, where machine learning turned out to have the same ' +
+    'delicate architecture. Today, as a Lead AI Scientist, I bring that rigour to ' +
+    'bold \u201cwhat-if\u201d ideas and turn them into working systems across traditional ' +
+    'and generative AI.',
 
   skills: [
     {
@@ -161,6 +161,11 @@ export const resume = {
     },
   ],
 
+  // `blurb` is the role in one sentence: it is what the Experience timeline
+  // shows on screen, with `bullets` kept for the printed CV and for the
+  // chatbot. Every blurb must be a condensation of that role's own bullets —
+  // nothing may appear in it that the bullets do not support.
+  // Education needs no blurb; `detail` already plays that part.
   experience: [
     {
       company: 'DataX (SCB DataX Co., Ltd.)',
@@ -173,10 +178,13 @@ export const resume = {
         {
           title: 'Lead AI Scientist',
           period: 'January 2026 – Present',
+          blurb:
+            'Owns the analytics behind a group-wide recommendation engine and runs an ' +
+            'independent research track on role-playing in reasoning models.',
           bullets: [
             "Define and drive the organization's AI strategy, shifting the team from execution-focused delivery to setting technical direction for large language model and agentic AI initiatives.",
-            "Own the design of a group-wide recommendation engine, setting the architecture and modelling approach for personalization across the group's business units.",
-            'Lead applied research on LLMs and translate emerging techniques into deployable, client-facing products.',
+            "Own the design of a group-wide recommendation engine, setting the architecture and modeling approach for personalization across the group's business units.",
+            'Run an independent research track on LLMs, currently on role-playing behavior in reasoning models, and translate emerging techniques into deployable, client-facing products.',
             "Serve as an organizer of the DataX Hackathon, running the company's internal AI innovation event.",
             'Represent the company as a technical speaker on agentic workflows, generative AI, RAG, and machine learning at industry conferences and client events.',
           ],
@@ -184,6 +192,8 @@ export const resume = {
         {
           title: 'Senior Data Scientist',
           period: 'September 2023 – December 2025',
+          blurb:
+            "Shipped generative AI products on OpenAI and open-source LLMs, and set the team's model evaluation standards.",
           bullets: [
             'Designed and shipped a portfolio of generative AI proofs of concept on OpenAI and open-source LLMs, including an intent identifier, sentiment detector, text summarizer, and automated result explainer, converting exploratory business requests into working prototypes.',
             'Built Chat with Your Data, a conversational analytics product that turns plain-English questions into queries over internal datasets, giving both delivery teams and management self-service access to insights.',
@@ -197,6 +207,8 @@ export const resume = {
         {
           title: 'Data Scientist',
           period: 'February 2022 – August 2023',
+          blurb:
+            "Built a PySpark model predicting customers' monthly income, improving MAPE by about 6%.",
           bullets: [
             "Developed a PySpark model to predict customers' monthly income, using MLflow for experiment tracking and Hyperopt for hyperparameter optimization to improve MAPE by about 6%.",
             'Engineered features from daily inflow and outflow transaction data, aggregating high-volume records monthly.',
@@ -215,6 +227,8 @@ export const resume = {
         {
           title: 'Data Analyst',
           period: '',
+          blurb:
+            'Introduced time series demand forecasting and cut model development cost by 67%.',
           bullets: [
             'Introduced a time series forecasting model using GluonTS to predict demand per material, and designed a re-training strategy that reduced model development cost by 67% versus the existing process.',
             'Managed delivery of a recommendation engine for labeling harmonized system codes (HS codes) on inbound shipments, working directly with logistics stakeholders to define requirements.',
@@ -232,6 +246,8 @@ export const resume = {
         {
           title: 'Data Scientist',
           period: '',
+          blurb:
+            'Built credit risk, complaint classification and climate downscaling models for government data programs.',
           bullets: [
             'Developed a credit risk model with XGBoost and deployed a web interface for end users to score default propensity.',
             'Analyzed web logs and call center data to classify complaints using Latent Dirichlet Allocation (LDA), and built a segmentation model identifying key audience groups for the website.',
