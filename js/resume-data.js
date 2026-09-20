@@ -179,8 +179,8 @@ export const resume = {
           title: 'Lead AI Scientist',
           period: 'January 2026 – Present',
           blurb:
-            'Owns the analytics behind a group-wide recommendation engine and runs an ' +
-            'independent research track on role-playing in reasoning models.',
+            'Owns the analytics behind a group-wide recommendation engine and works on ' +
+            'role-playing LLM research.',
           bullets: [
             "Define and drive the organization's AI strategy, shifting the team from execution-focused delivery to setting technical direction for large language model and agentic AI initiatives.",
             "Own the design of a group-wide recommendation engine, setting the architecture and modeling approach for personalization across the group's business units.",
@@ -292,7 +292,9 @@ export const resume = {
       period: 'August 2016 – January 2020',
       degree: 'Doctor of Philosophy (PhD) in Applied Mathematics',
       short: 'PhD, Applied Mathematics',
-      detail: 'By dissertation.',
+      detail:
+        'Reviewed the geometry, construction, and math modeling of carbon nanotori for their ' +
+        'interaction with other nanostructures.',
     },
     {
       institution: 'Mahidol University',
@@ -301,7 +303,9 @@ export const resume = {
       period: 'May 2012 – June 2016',
       degree: 'Bachelor of Science (BSc) in Mathematics',
       short: 'BSc, Mathematics',
-      detail: 'First-Class Honors, GPA 3.86, highest score in the Mathematics major.',
+      detail:
+        'Graduated with First-Class Honors, GPA 3.86, and the highest score in the ' +
+        'Mathematics major.',
     },
   ],
 
