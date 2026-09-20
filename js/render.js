@@ -314,8 +314,7 @@ function publications(r) {
   }).join('');
 
   return section('publications', 'Publications', `
-    <div class="stack">${items}</div>
-    <p class="note">${esc(r.publicationsNote)}</p>`, '81 citations');
+    <div class="stack">${items}</div>`);
 }
 
 function footer(r) {

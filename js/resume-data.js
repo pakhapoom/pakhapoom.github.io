@@ -2,12 +2,83 @@
 // Both the rendered page and the chatbot's system prompt are built from this
 // object, so the bot can never describe a version of the CV that isn't on screen.
 
+/**
+ * The applied-mathematics work that preceded the AI career: eight papers on
+ * nanoscale geometry and mechanics, 2016–2020. They are one line in the
+ * publications list rather than eight, and the write-up page at
+ * papers/applied-mathematics.html lists them in full — papers-data.js reads
+ * this array so the bibliography is written down once.
+ *
+ * `url` is the DOI, resolved through doi.org rather than a publisher domain so
+ * the link survives a journal changing hosts. Each one is verified against
+ * Crossref — title, journal, volume and pages all matching.
+ */
+export const earlierPapers = [
+  {
+    title: 'A review of geometry, construction and modelling for carbon nanotori',
+    authors: 'P. Sarapat, J. M. Hill, D. Baowan',
+    venue: 'Applied Sciences 9(11), 2301',
+    year: '2019',
+    url: 'https://doi.org/10.3390/app9112301',
+  },
+  {
+    title: 'Modelling carbon nanocones for selective filter',
+    authors: 'P. Sarapat, N. Thamwattana, B. J. Cox, D. Baowan',
+    venue: 'Journal of Mathematical Chemistry 58(8), 1650–1662',
+    year: '2020',
+    url: 'https://doi.org/10.1007/s10910-020-01153-y',
+  },
+  {
+    title: 'Mechanics and dynamics of lysozyme immobilisation inside nanotubes',
+    authors: 'N. Thamwattana, P. Sarapat, Y. Chan',
+    venue: 'Journal of Physics: Condensed Matter 31(26), 265901',
+    year: '2019',
+    url: 'https://doi.org/10.1088/1361-648x/ab13c9',
+  },
+  {
+    title: 'Interaction energy for a fullerene encapsulated in a carbon nanotorus',
+    authors: 'P. Sarapat, D. Baowan, J. M. Hill',
+    venue: 'Zeitschrift für angewandte Mathematik und Physik 69, 1–14',
+    year: '2018',
+    url: 'https://doi.org/10.1007/s00033-018-0972-3',
+  },
+  {
+    title:
+      'Mechanics of atoms interacting with a carbon nanotorus: optimal configuration ' +
+      'and oscillation behaviour',
+    authors: 'P. Sarapat, J. M. Hill, D. Baowan',
+    venue: 'Philosophical Magazine 99(11), 1386–1399',
+    year: '2019',
+    url: 'https://doi.org/10.1080/14786435.2019.1582849',
+  },
+  {
+    title: 'Continuum modelling for adhesion between paint surfaces',
+    authors: 'P. Sarapat, N. Thamwattana, D. Baowan',
+    venue: 'International Journal of Adhesion and Adhesives 70, 234–238',
+    year: '2016',
+    url: 'https://doi.org/10.1016/j.ijadhadh.2016.07.003',
+  },
+  {
+    title: 'Equilibrium location for spherical DNA and toroidal cyclodextrin',
+    authors: 'P. Sarapat, D. Baowan, J. M. Hill',
+    venue: 'Applied Nanoscience 8, 537–544',
+    year: '2018',
+    url: 'https://doi.org/10.1007/s13204-018-0799-4',
+  },
+  {
+    title: 'Optimal configurations for interacting carbon nanotori',
+    authors: 'P. Sarapat, D. Baowan, J. M. Hill',
+    venue: 'Applied Nanoscience 9, 225–232',
+    year: '2019',
+    url: 'https://doi.org/10.1007/s13204-018-0930-6',
+  },
+];
+
 export const resume = {
   name: 'Pakhapoom Sarapat',
   credential: 'PhD',
   headline: [
     'Lead AI Scientist',
-    'Generative AI & Machine Learning Solutions',
   ],
   location: 'Bangkok, Thailand',
 
@@ -279,11 +350,22 @@ export const resume = {
         'variables down to what Thai weather stations actually record — as a first pass at ' +
         'statistical downscaling with machine learning.',
     },
+    {
+      title: 'Eight papers on nanoscale geometry and mechanics',
+      venue: 'Applied Sciences, J. Math. Chem., Philosophical Magazine, and others',
+      slug: 'applied-mathematics',
+      url: 'https://scholar.google.com/citations?user=zPq8sxwAAAAJ',
+      urlLabel: 'Google Scholar',
+      year: '2016–2020',
+      summary:
+        'The applied mathematics career that came first: continuum models of how molecules ' +
+        'sit against curved carbon surfaces — nanotori, nanocones, nanotubes — solved as ' +
+        'geometry rather than simulated atom by atom. Eight papers in Q1 and Q2 journals, ' +
+        '78 citations between them, led by a review of carbon nanotori that remains the ' +
+        'most-cited thing on the list. The habit it built — reach for the closed form before ' +
+        'the compute — is the one that carried into AI.',
+    },
   ],
-
-  publicationsNote:
-    'Earlier: eight Q1 and Q2 applied mathematics papers, 81 citations, h-index 6; that ' +
-    'quantitative foundation now carries into AI.',
 };
 
 /**
@@ -339,7 +421,14 @@ export function resumeToText(r = resume) {
     push(`- ${p.title}. ${p.venue}, ${p.year}.${p.url ? ` ${p.url}` : ''}`);
     if (p.summary) push(`  ${p.summary}`);
   }
-  push(`- ${r.publicationsNote}`);
+  push();
+
+  // The eight earlier papers are one line above; spelled out here so the bot
+  // can answer "what did you publish before AI?" with the actual titles.
+  push('## EARLIER APPLIED MATHEMATICS PAPERS (2016–2020)');
+  for (const p of earlierPapers) {
+    push(`- ${p.title}. ${p.authors}. ${p.venue}, ${p.year}. ${p.url}`);
+  }
 
   return lines.join('\n');
 }

@@ -715,7 +715,9 @@ img { max-width: 100%; }
   padding: 3.5rem 1.5rem 5rem;
 }
 
-.paper__back, .paper__foot a {
+/* The page's one way back to the publications list — top of the article only,
+   so it is there on arrival rather than repeated at the end. */
+.paper__back {
   display: inline-block;
   font-family: var(--font-mono);
   font-size: .78rem;
@@ -725,8 +727,7 @@ img { max-width: 100%; }
   text-decoration: none;
 }
 .paper__back::before { content: '← '; }
-.paper__back:hover, .paper__foot a:hover,
-.paper__back:focus-visible, .paper__foot a:focus-visible { color: var(--accent); }
+.paper__back:hover, .paper__back:focus-visible { color: var(--accent); }
 
 .paper__head { margin: 2rem 0 2.5rem; padding-bottom: 1.75rem; border-bottom: 1px solid var(--rule); }
 .paper__title {
@@ -806,6 +807,12 @@ img { max-width: 100%; }
 }
 .paper__list li::marker { color: var(--accent); }
 
+/* A bibliography inside a write-up — a collection page's list of its papers.
+   The rows are the .pub rows from the publications list; this only spaces them
+   out and keeps the citation count quiet. */
+.paper__entries { display: grid; gap: 1.15rem; margin: 0 0 1.6rem; }
+.paper__entries .pub__title { font-weight: 500; }
+
 /* Figures are lifted straight from the papers: dark ink on white, drawn for a
    printed page. They sit on the same permanently light plate the org logos use,
    so a dark-mode reader gets a legible figure instead of an inverted one.
@@ -836,7 +843,6 @@ img { max-width: 100%; }
 }
 .paper__figure figcaption strong { color: var(--ink-2); font-weight: 500; }
 
-.paper__foot { margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
 .paper__missing { font-size: 1rem; color: var(--ink-2); }
 
 @media (max-width: 30rem) {
@@ -1142,7 +1148,7 @@ img { max-width: 100%; }
   /* A printed write-up is just the article: no back links, and the source
      buttons lose their chrome and gain their URLs. */
   .paper-shell { max-width: none; padding: 0; }
-  .paper__back, .paper__foot { display: none !important; }
+  .paper__back { display: none !important; }
   .paper__head { margin: 0 0 6mm; padding-bottom: 4mm; }
   .paper__title { font-size: 17pt; }
   .paper__tldr { font-size: 11pt; break-inside: avoid; }

@@ -1,6 +1,6 @@
 // Renders one paper write-up. Each papers/<slug>.html is a thin shell that
 // names its slug on <body data-paper="…">; everything else lives in
-// papers-data.js so the four pages can never drift apart in structure.
+// papers-data.js so the pages can never drift apart in structure.
 
 import { bySlug } from './papers-data.js';
 
@@ -42,6 +42,25 @@ function figureBlock(f) {
     </figure>`;
 }
 
+/**
+ * A bibliography inside a write-up — the shape a collection page needs, where
+ * the subject is several papers rather than one. Reuses the .pub row from the
+ * publications list so the two read as the same list in two places.
+ */
+function entryList(entries) {
+  if (!entries?.length) return '';
+
+  const rows = entries.map((e) => `
+    <div class="pub">
+      <span class="pub__year">${esc(e.year)}</span>
+      <span class="pub__title"><a class="pub__link" href="${esc(e.url)}"
+        target="_blank" rel="noopener">${esc(e.title)}</a></span>
+      <span class="pub__venue">${esc(e.authors)}. ${esc(e.venue)}.</span>
+    </div>`).join('');
+
+  return `<div class="paper__entries">${rows}</div>`;
+}
+
 function sectionBlock(s, i) {
   const paras = (s.body || []).map((t) => `<p>${emph(t)}</p>`).join('');
   const bullets = s.bullets?.length
@@ -51,6 +70,7 @@ function sectionBlock(s, i) {
   return `
     <section class="paper__section" aria-labelledby="s${i}">
       <h2 class="paper__heading" id="s${i}">${esc(s.heading)}</h2>
+      ${entryList(s.entries)}
       ${paras}
       ${bullets}
       ${figureBlock(s.figure)}
@@ -79,7 +99,7 @@ export function renderPaper(root, slug) {
       <header class="paper__head">
         <h1 class="paper__title">${esc(p.title)}</h1>
         <p class="paper__meta">${esc(p.venue)}, ${esc(p.year)}</p>
-        <p class="paper__authors">${authorList(p)}</p>
+        ${p.authors ? `<p class="paper__authors">${authorList(p)}</p>` : ''}
         <div class="paper__links">${links}</div>
       </header>
 
@@ -87,9 +107,5 @@ export function renderPaper(root, slug) {
       ${p.partial ? `<p class="paper__partial">${emph(p.partial)}</p>` : ''}
 
       ${p.sections.map(sectionBlock).join('')}
-
-      <footer class="paper__foot">
-        <a href="../index.html#publications">← All publications</a>
-      </footer>
     </article>`;
 }

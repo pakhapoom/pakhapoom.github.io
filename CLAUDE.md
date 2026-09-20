@@ -35,6 +35,13 @@ escaping. Every claim must come from the paper. Where the full text could not
 be read, set `partial` so the page says so rather than implying results that
 were never checked.
 
+One entry is a *collection* rather than a paper: `applied-mathematics` stands
+for the eight earlier applied-mathematics papers, which are one row in the
+publications list instead of eight. It sets `collection: true` and omits
+`authors` (the header drops the author line), and one of its sections carries
+`entries` instead of prose — the bibliography, which lives in `earlierPapers`
+in `resume-data.js` so the chatbot lists the same eight titles the page does.
+
 A section may carry one `figure`, taken from the paper itself and never
 redrawn: `{ src, width, height, alt, caption }`, with the file under
 `public/papers/<slug>/` and `src` written from the site root (`paper.js` adds

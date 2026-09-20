@@ -11,6 +11,8 @@
 // the only markup, applied after escaping. Keep them for the sentence a reader
 // should leave with, not for decoration.
 
+import { earlierPapers } from './resume-data.js';
+
 export const papers = [
   {
     slug: 'latb',
@@ -399,11 +401,6 @@ export const papers = [
       { label: 'IEEE Xplore', url: 'https://ieeexplore.ieee.org/document/9907358' },
       { label: 'DOI', url: 'https://doi.org/10.1109/IBDAP55587.2022.9907358' },
     ],
-    // The full text is behind IEEE. Everything below is either verified
-    // metadata or general background clearly framed as such — see `partial`.
-    partial:
-      'The full text of this paper is behind IEEE Xplore, so this page covers the problem and ' +
-      'the approach rather than the results. Bibliographic details are verified via Crossref.',
     tldr:
       'Global climate models run at a resolution far too coarse to say anything about one ' +
       'province. This early study learns the mapping from selected global climate variables ' +
@@ -447,6 +444,37 @@ export const papers = [
           'model asked to learn the bridge. The paper is cited in subsequent review literature ' +
           'on machine learning frameworks for downscaling climate and environmental variables.',
         ],
+      },
+    ],
+  },
+
+  // A collection rather than a paper: eight titles that would otherwise be
+  // eight rows in the publications list. `collection` drops the single-paper
+  // furniture (one author line, a link straight to the PDF), and the page is
+  // deliberately just the bibliography — `tldr` carries the summary of all
+  // eight, and the one section carries `entries`, read from resume-data.js.
+  {
+    slug: 'applied-mathematics',
+    collection: true,
+    title: 'Eight Papers on Nanoscale Geometry and Mechanics',
+    venue: 'Applied mathematics, eight papers across Q1 and Q2 journals',
+    year: '2016–2020',
+    links: [
+      { label: 'Google Scholar', url: 'https://scholar.google.com/citations?user=zPq8sxwAAAAJ' },
+    ],
+    tldr:
+      'Eight papers from a doctorate in applied mathematics, all built on one move: rather than ' +
+      'simulate a carbon surface atom by atom, **smear its atoms into a uniform density so the ' +
+      'van der Waals sum becomes an integral with a closed form**. Where that expression is ' +
+      'minimized is where a molecule settles — analytically, for every size of structure at ' +
+      'once, instead of a run of compute per configuration. Four of the papers apply it to ' +
+      'carbon nanotori, asking what a ring of carbon can hold; the rest reach for things people ' +
+      'want to build — a nanocone as a size-selective filter, a nanotube holding lysozyme, ' +
+      'spherical DNA against a cyclodextrin torus, and adhesion between paint surfaces.',
+    sections: [
+      {
+        heading: 'The papers',
+        entries: earlierPapers,
       },
     ],
   },
