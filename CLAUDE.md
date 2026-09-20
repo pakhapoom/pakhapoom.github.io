@@ -1,73 +1,56 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Overview, dev, and deployment are in `README.md`. Rules only below.
 
-## Project Overview
+## Résumé data
 
-**Literature Vault** is a static GitHub Pages site for storing, searching, and exploring academic paper summaries. No build step, no backend — pure HTML5, vanilla CSS, and vanilla JS (ES modules) with CDN libraries.
+`js/resume-data.js` is the single source of truth: `render.js` builds the page,
+`worker/index.js` builds the bot prompt from `resumeToText()`. Never hard-code
+résumé content elsewhere.
 
-Deployed at: `https://pakhapoom.github.io/`
+New section: extend `resume`, add a render function in `render.js`, append it in
+`renderResume()`, add a `.rail__link` in `index.html`.
 
-## Running Locally
+- `path()` flattens `experience` **and** `education` into one timeline — there
+  is no Education section. It parses `period`, so keep `Month YYYY – Month YYYY`
+  (or `– Present`).
+- **Screen shows `blurb`, print shows `bullets`.** `.path` renders both; screen
+  CSS hides `.bullets`, print flips it. Break one rule and the other view dies
+  silently. A `blurb` may claim nothing its own bullets don't. `resumeToText()`
+  sends bullets, not blurbs.
+- `is-pending` (`drawOnce()`) may hide only the marks — never the card, or a
+  failed script swallows the CV.
+- `resume.decode`'s `top` tokens must join back into `headline[0]`.
+- The pill uses `job.short` so it stays one line.
 
-```bash
-python3 -m http.server 8000
-# Visit http://localhost:8000
-```
+## Paper write-ups
 
-No install, no build. Deploying means pushing to the `main` branch.
+`papers/<slug>.html` is a thin shell naming its slug on `<body data-paper>`;
+prose lives in `js/papers-data.js`, rendered by `js/paper.js`. To add one: add
+the `papers` entry, add a matching `slug` in `resume-data.js` (the slug sets
+must agree), copy a shell.
 
-## Git Hooks
+- Bodies are plain text; `**bold**` is the only markup, applied after escaping.
+- Every claim must come from the paper. If the full text was unreadable, set
+  `partial`.
+- `applied-mathematics` is a collection: `collection: true`, no `authors`, one
+  section with `entries` from `earlierPapers` in `resume-data.js`.
+- One `figure` per section, never redrawn. `width`/`height` must be the file's
+  real pixels. Figures sit on `--logo-bg` (light in both themes).
 
-A pre-commit hook at `.git/hooks/pre-commit` auto-regenerates `data/index.json` on every commit — scanning `papers/*.md` and sorting by `dateAdded` descending. Since `.git/` is not tracked, reinstall it after a fresh clone:
+## Conventions
 
-```bash
-cp scripts/pre-commit .git/hooks/pre-commit
-chmod +x .git/hooks/pre-commit
-```
+- **Escape everything rendered** via the local `esc()`; model output via
+  `miniMarkdown()`.
+- Define colors on bare `:root`; dark mode redefines tokens only, in both
+  `@media (prefers-color-scheme: dark)` under `:root:not([data-theme='light'])`
+  and `:root[data-theme='dark']`.
+- **Print is a feature.** Check `Cmd+P` after `.path` / `.section` changes, with
+  the OS in *dark* mode. Print token overrides need `:root:root:root` to outrank
+  the dark palette.
+- No build step; no CDN beyond Google Fonts. American spelling.
 
-## Adding a Paper
+## Secrets
 
-1. Create `papers/<slug>.md` with YAML frontmatter:
-   ```yaml
-   ---
-   title: "Paper Title"
-   authors: ["Author One", "Author Two"]
-   year: 2025
-   tags: ["tag1", "tag2"]
-   url: https://arxiv.org/abs/...
-   dateAdded: "2025-01-01"
-   ---
-   ```
-2. Place any images in `assets/<slug>/` (site-level imagery lives in `assets/site/`)
-
-## Architecture
-
-### Routing
-`js/app.js` handles hash-based routing (`#home`, `#papers`, `#paper/:id`, `#graph`, `#tags`, `#about`). Each route calls a render function from the corresponding module that clears and repopulates `#content-body`.
-
-### Data Flow
-`js/data.js` fetches `data/index.json`, then lazily loads each `.md` file and parses YAML frontmatter. Papers are cached in a module-level singleton after first load. All other modules import from `data.js`.
-
-### Search (`js/search.js`)
-Three-mode search merged by priority: **exact match** > **fuzzy (Fuse.js)** > **TF-IDF**. Title is weighted 3×, authors/tags 2×, content 1×. Results deduplicated with mode annotations.
-
-### Page Modules
-| Module | Responsibility |
-|--------|---------------|
-| `landing.js` | Landing page with animated canvas background (`background.js`) |
-| `papers.js` | Paper card grid and full paper detail view |
-| `markdown.js` | marked.js configuration and custom extensions (images, video embeds, KaTeX) |
-| `graph.js` | Knowledge graph of papers connected by shared tags (D3 force layout) |
-| `tags.js` | Statistics dashboard with Chart.js (timeline, tag distribution) |
-| `about.js` | About page with hardcoded publications list |
-| `utils.js` | Shared helpers: `escapeHtml`, `safeUrl`, `showLoading`, `MOBILE_BREAKPOINT` |
-
-### Markdown Papers
-Papers use marked.js with custom extensions defined in `js/markdown.js`:
-- Images with captions and sizing: `![alt](url)(Figure: caption){: .img-half width="80%"}` — `Figure:`/`Table:` captions are auto-numbered
-- YouTube embeds via `[video](youtube-url)`
-- KaTeX math rendering via `$...$` and `$$...$$`
-
-### External Libraries (CDN only)
-Fuse.js, Chart.js, marked.js, D3.js, KaTeX, Google Fonts (Inter, Outfit). No package.json, no node_modules.
+`TYPHOON_API_KEY` must never appear in `js/`, `index.html`, or `wrangler.toml` —
+Pages serves them publicly. It lives in `.env` and as a Wrangler secret.
