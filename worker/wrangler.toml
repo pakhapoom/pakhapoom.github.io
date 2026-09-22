@@ -7,3 +7,8 @@ compatibility_date = "2025-01-01"
 #
 # The résumé data is imported from ../js/resume-data.js, so wrangler needs to
 # bundle from the repository root rather than from worker/ alone.
+
+# Keeps the one-line-per-turn chat log queryable in the dashboard instead of
+# only visible to a `wrangler tail` that happens to be running at the time.
+[observability]
+enabled = true
