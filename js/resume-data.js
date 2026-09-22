@@ -81,6 +81,10 @@ export const resume = {
     'Lead AI Scientist',
   ],
   location: 'Bangkok, Thailand',
+  // Read only by resumeToText(). The chatbot has to refer to Pakhapoom somehow,
+  // and inferring pronouns from a name is a guess that misgenders him when it
+  // misses. Stated here, it stops being a guess. Not rendered on the page.
+  pronouns: 'he/him',
 
   // The hero decodes headline[0] the way a language model would emit it: one
   // token at a time, with the runners-up visible before each one commits.
@@ -399,13 +403,18 @@ export function resumeToText(r = resume) {
   push(`${r.name}, ${r.credential}`);
   push(r.headline.join(' | '));
   push(`Location: ${r.location}`);
+  push(`Pronouns: ${r.pronouns}`);
   push(`Email: ${r.contact.email} | Phone: ${r.contact.phone}`);
   push(`LinkedIn: ${r.contact.linkedin.url}`);
   push(`Google Scholar: ${r.contact.scholar.url}`);
   push();
 
+  // The summary is written in the first person because that is how it reads on
+  // the page. Handed to the bot unlabelled, the "I" gets mistaken for the bot's
+  // own voice and it starts answering as Pakhapoom — so quote it explicitly.
   push('## PROFESSIONAL SUMMARY');
-  push(r.summary);
+  push(`Pakhapoom wrote this about himself, in his own first-person voice:`);
+  push(`"${r.summary}"`);
   push();
 
   push('## TECHNICAL SKILLS');
