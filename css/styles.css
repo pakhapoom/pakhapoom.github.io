@@ -436,6 +436,7 @@ img { max-width: 100%; }
 .section { scroll-margin-top: 1.5rem; }
 
 .section__head {
+  position: relative;
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -443,6 +444,28 @@ img { max-width: 100%; }
   padding-bottom: .5rem;
   margin-bottom: 1.4rem;
   border-bottom: 1px solid var(--ink);
+}
+/* The rule above is the real one and never moves. This is an accent overlay
+   that runs along it the first time the section is reached and then fades,
+   leaving the heading exactly as it was drawn — so a browser that never adds
+   `is-in` is showing the finished state, not a missing line. */
+.section__head::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  opacity: 0;
+}
+.section.is-in .section__head::after { animation: rule-wipe .8s ease-out both; }
+@keyframes rule-wipe {
+  0%   { transform: scaleX(0); opacity: 1; }
+  55%  { transform: scaleX(1); opacity: 1; }
+  100% { transform: scaleX(1); opacity: 0; }
 }
 .section__title {
   font-family: var(--font-mono);
@@ -470,6 +493,7 @@ img { max-width: 100%; }
   --head-size: 1.05rem;
   --head-edge: 3px;
   --lead-h: 2.3rem;        /* the pill's row: the head centres against it */
+  --draw: 100%;            /* how much of the spine is up; timeline.js lowers it */
   position: relative;
   display: grid;
   gap: 1.9rem;
@@ -488,6 +512,12 @@ img { max-width: 100%; }
   border-radius: 2px;
   background: linear-gradient(
     var(--paper), var(--accent) 2.5rem, var(--accent) calc(100% - 2.5rem), var(--paper));
+  /* Drawn down as the reader scrolls. --draw is how far they have got, and it
+     defaults to 100%, so a browser that never runs timeline.js — or one that
+     ignores masks — gets the whole line exactly as before. The mask softens
+     the last 1.75rem so the end of the line tapers instead of being cut. */
+  -webkit-mask-image: linear-gradient(#000 0 calc(var(--draw) - 1.75rem), transparent var(--draw));
+  mask-image: linear-gradient(#000 0 calc(var(--draw) - 1.75rem), transparent var(--draw));
 }
 
 .path__post {
@@ -501,6 +531,7 @@ img { max-width: 100%; }
   grid-column: 1;
   grid-row: 1;
   justify-self: center;
+  position: relative;   /* containing block for the current post's halo */
   width: var(--head-size);
   height: var(--head-size);
   /* centred against the pill, not against the top of the card */
@@ -509,8 +540,22 @@ img { max-width: 100%; }
   border-radius: 50%;
   background: var(--paper);
 }
-/* The post still running is the solid one. */
+/* The post still running is the solid one, and it breathes: a slow ring
+   leaving the head every few seconds, which is the only thing on the page that
+   keeps moving after it has been read. It says the same as the "now" on the
+   card below it. */
 .path__post--current .path__mark { background: var(--accent); }
+.path__post--current .path__mark::after {
+  content: '';
+  position: absolute;
+  inset: calc(-1 * var(--head-edge));
+  border-radius: 50%;
+  animation: halo 3.4s ease-out infinite;
+}
+@keyframes halo {
+  0%        { opacity: .4; box-shadow: 0 0 0 0 var(--accent); }
+  65%, 100% { opacity: 0;  box-shadow: 0 0 0 .8rem var(--accent); }
+}
 
 .path__card { grid-column: 2; grid-row: 1; display: grid; gap: .1rem; }
 
@@ -550,16 +595,16 @@ img { max-width: 100%; }
    body of a post, so the timeline stays scannable. */
 .path__card .bullets { display: none; }
 
-/* First scroll into view pops the heads, once. Only the heads: the card is
-   never hidden behind a class, so a failed script cannot swallow the CV. */
-.path.is-pending .path__mark { transform: scale(.2); opacity: 0; }
-.path.is-drawing .path__mark { animation: pop .45s cubic-bezier(.2, .9, .3, 1.2) both; }
-.path.is-drawing .path__post:nth-child(2) .path__mark { animation-delay: .07s; }
-.path.is-drawing .path__post:nth-child(3) .path__mark { animation-delay: .14s; }
-.path.is-drawing .path__post:nth-child(4) .path__mark { animation-delay: .21s; }
-.path.is-drawing .path__post:nth-child(5) .path__mark { animation-delay: .28s; }
-.path.is-drawing .path__post:nth-child(6) .path__mark { animation-delay: .35s; }
-.path.is-drawing .path__post:nth-child(7) .path__mark { animation-delay: .42s; }
+/* Each head pops as its own post is reached, once. Only the heads: the card is
+   never hidden behind a class, so a failed script cannot swallow the CV.
+   `is-pending` holds the whole column before the script has run; `is-drawing`
+   hands that hold to the posts, each of which releases on `is-in`. --pop-delay
+   is set by timeline.js so a batch that lands together still cascades. */
+.path.is-pending .path__mark,
+.path.is-drawing .path__mark { transform: scale(.2); opacity: 0; }
+.path.is-drawing .path__post.is-in .path__mark {
+  animation: pop .45s cubic-bezier(.2, .9, .3, 1.2) var(--pop-delay, 0ms) both;
+}
 @keyframes pop {
   from { transform: scale(.2); opacity: 0; }
   to   { transform: scale(1); opacity: 1; }
@@ -1053,6 +1098,9 @@ img { max-width: 100%; }
 
   .section + .section { margin-top: 1.2rem; }
   .section__head { margin-bottom: .55rem; padding-bottom: .2rem; break-after: avoid; }
+  /* The wipe overlay ends invisible anyway, but paper should never depend on
+     an animation having reached its last frame. */
+  .section__head::after { display: none !important; }
   .section__title { font-size: 10pt; }
 
   /* A single post is short enough to keep whole, and its title must never be

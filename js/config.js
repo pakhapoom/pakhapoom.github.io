@@ -9,7 +9,7 @@
 // After `wrangler deploy`, paste the Worker URL below.
 // ---------------------------------------------------------------------------
 
-const PRODUCTION_ENDPOINT = 'https://resume-chat.YOUR-SUBDOMAIN.workers.dev/chat';
+const PRODUCTION_ENDPOINT = 'https://resume-chat.pakhapoom.workers.dev/chat';
 
 // `./scripts/dev.sh` runs the real Worker locally via `wrangler dev` on this port.
 const DEV_ENDPOINT = 'http://localhost:8787/chat';

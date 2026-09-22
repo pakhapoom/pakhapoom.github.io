@@ -18,8 +18,11 @@ New section: extend `resume`, add a render function in `render.js`, append it in
   CSS hides `.bullets`, print flips it. Break one rule and the other view dies
   silently. A `blurb` may claim nothing its own bullets don't. `resumeToText()`
   sends bullets, not blurbs.
-- `is-pending` (`drawOnce()`) may hide only the marks — never the card, or a
-  failed script swallows the CV.
+- `is-pending` and `is-drawing` (`timeline.js`) may hide only the marks — never
+  the card, or a failed script swallows the CV. The spine's `--draw` and the
+  `.section__head::after` wipe default to their *finished* state for the same
+  reason: no script, no observer, or no mask support must still render the
+  drawn line.
 - `resume.decode`'s `top` tokens must join back into `headline[0]`.
 - The pill uses `job.short` so it stays one line.
 
