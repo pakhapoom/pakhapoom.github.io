@@ -315,7 +315,7 @@ export const resume = {
   publications: [
     {
       title: 'Language-Aware Token Boosting: LLM Language Confusion Reduction Without Tuning',
-      venue: 'Association for Computational Linguistics (ACL)',
+      venue: 'ACL',
       slug: 'latb',
       url: 'https://aclanthology.org/2026.acl-short.40/',
       urlLabel: 'ACL Anthology',
