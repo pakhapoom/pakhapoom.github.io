@@ -24,7 +24,8 @@ js/paper.js           renders one write-up into papers/<slug>.html
 papers/<slug>.html    per-paper page shells (generated, then committed)
 public/               photo and organization logos (logos are unused today)
 public/papers/<slug>/ figures taken from the papers themselves
-worker/index.js       Typhoon API proxy: key, system prompt, CORS, rate limit
+worker/index.js       Typhoon proxy: key, system prompt, CORS, rate limit,
+                      output guard, per-turn logging
 scripts/dev.sh        runs the Worker locally with the key from .env
 ```
 
@@ -65,3 +66,45 @@ prompt and API key and streams the reply from Typhoon
 Worker limits: CORS restricted to `pakhapoom.github.io` and localhost, 20
 requests/min per IP, 24 messages and 1000 chars per message, `user`/`assistant`
 roles only.
+
+The Worker also cuts the stream if the model opens a fenced code block. The
+assistant never legitimately emits one, so it is enforced outside the prompt,
+where visitor input can't argue with it.
+
+## Chat logs
+
+Every answered turn is written to the Worker's log as one JSON line:
+
+```json
+{"kind":"chat","at":"2026-09-22T15:42:01.003Z","session":"11111111-2222-…",
+ "question":"how long has he been there?",
+ "reply":"Pakhapoom has been with DataX since February 2022…",
+ "chars":140,"cut":false}
+```
+
+`session` is a random UUID in `sessionStorage`: per tab, discarded when the tab
+closes, derived from nothing about the visitor. It groups the turns of one
+conversation, so a follow-up can be read next to what it was following up on.
+No IP, user agent, or location is recorded — this is a record of what was
+asked, not of who asked it.
+
+`cut: true` marks a reply the output guard truncated. Those are the ones worth
+reading: they are where the model was talked into starting something it
+shouldn't have.
+
+**Live** — only shows traffic while it runs:
+
+```bash
+cd worker
+npx wrangler tail --format pretty              # every request
+npx wrangler tail --search '"kind":"chat"'     # just the turns
+```
+
+**Retrospectively** — Cloudflare dashboard → Workers & Pages → `resume-chat` →
+Logs. Retained because `[observability]` is enabled in `worker/wrangler.toml`;
+the dashboard shows the retention window that applies to the account's plan.
+The lines are structured, so they can be filtered by field — `cut = true` for
+near-misses, or grouped by `question` to see what visitors actually ask.
+
+Enabling or changing `[observability]` only takes effect on the next
+`wrangler deploy`.

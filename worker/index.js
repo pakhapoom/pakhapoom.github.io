@@ -168,7 +168,32 @@ const FENCE = '```';
 const SCOPE_NOTICE =
   '\n\n[Writing code is outside what I do here — ask me about Pakhapoom’s background instead.]';
 
-function codeBlockGuard() {
+const MAX_LOGGED_REPLY = 2000;
+
+/**
+ * One line per answered turn, so the questions visitors actually ask can be
+ * read back — and read next to the answer they got, which is the only way to
+ * tell whether the bot is doing its job.
+ *
+ * What is deliberately absent: IP, user agent, country, anything that outlives
+ * the tab. `session` groups the turns of one conversation and is random. This
+ * is a record of what was asked, not of who asked it.
+ *
+ * `cut` marks a reply the guard truncated — the interesting ones to review.
+ */
+function logTurn({ session, question, reply, cut }) {
+  console.log(JSON.stringify({
+    kind: 'chat',
+    at: new Date().toISOString(),
+    session,
+    question,
+    reply: reply.slice(0, MAX_LOGGED_REPLY),
+    chars: reply.length,
+    cut,
+  }));
+}
+
+function codeBlockGuard({ session, question }) {
   const decoder = new TextDecoder();
   const encoder = new TextEncoder();
 
@@ -176,8 +201,20 @@ function codeBlockGuard() {
   let held = '';    // trailing backticks: possibly the start of a fence
   let cut = false;
 
-  const emit = (content, ctrl) =>
+  let reply = '';   // what the visitor ends up seeing, for the log
+  let logged = false;
+
+  // terminate() skips flush(), so a cut reply has to log on its own way out.
+  const log = () => {
+    if (logged) return;
+    logged = true;
+    logTurn({ session, question, reply, cut });
+  };
+
+  const emit = (content, ctrl) => {
+    reply += content;
     ctrl.enqueue(encoder.encode(`data: ${JSON.stringify({ choices: [{ delta: { content } }] })}\n\n`));
+  };
 
   const done = (ctrl) => ctrl.enqueue(encoder.encode('data: [DONE]\n\n'));
 
@@ -217,6 +254,7 @@ function codeBlockGuard() {
           emit(SCOPE_NOTICE, ctrl);
           done(ctrl);
           cut = true;
+          log();
           ctrl.terminate();   // drops the rest of the upstream reply
           return;
         }
@@ -234,6 +272,7 @@ function codeBlockGuard() {
 
     flush(ctrl) {
       if (!cut && held) emit(held, ctrl);
+      log();
     },
   });
 }
@@ -269,6 +308,11 @@ export default {
     const messages = sanitize(body.messages);
     if (!messages) return errorResponse(400, 'No valid messages supplied.', origin);
 
+    // The session id reaches the log, so it is whitelisted rather than trusted:
+    // a visitor controls this string and nothing shaped otherwise gets through.
+    const session = /^[A-Za-z0-9-]{1,64}$/.test(body.session || '') ? body.session : 'unknown';
+    const question = messages[messages.length - 1]?.content ?? '';
+
     let upstream;
     try {
       upstream = await fetch(TYPHOON_URL, {
@@ -302,7 +346,7 @@ export default {
       return errorResponse(502, `Typhoon API returned ${upstream.status}.`, origin);
     }
 
-    return new Response(upstream.body.pipeThrough(codeBlockGuard()), {
+    return new Response(upstream.body.pipeThrough(codeBlockGuard({ session, question })), {
       headers: {
         'Content-Type': 'text/event-stream; charset=utf-8',
         'Cache-Control': 'no-cache, no-transform',

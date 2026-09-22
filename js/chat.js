@@ -9,6 +9,7 @@ import { CHAT_ENDPOINT, CHAT_CONFIGURED, SUGGESTED_QUESTIONS } from './config.js
 const MAX_TURNS = 12;        // conversation turns sent upstream
 const MAX_CHARS = 1000;      // per message
 const STORE_KEY = 'resume-chat';
+const SESSION_KEY = 'resume-chat-session';
 
 const el = {};
 let history = [];            // [{ role: 'user' | 'assistant', content }]
@@ -87,6 +88,28 @@ function save() {
   } catch (e) { /* private mode: the transcript just won't survive a reload */ }
 }
 
+/**
+ * A random id that ties the turns of one conversation together in the Worker's
+ * logs, so a question can be read next to the answer it got.
+ *
+ * Deliberately thin: random per tab, thrown away when the tab closes, and
+ * derived from nothing about the visitor. It says "these messages belong to one
+ * conversation" and nothing else — it is not a visitor id and cannot be used to
+ * recognize anyone returning later.
+ */
+function sessionId() {
+  try {
+    let id = sessionStorage.getItem(SESSION_KEY);
+    if (!id) {
+      id = (crypto.randomUUID?.() ?? `${Date.now()}-${Math.random()}`).slice(0, 36);
+      sessionStorage.setItem(SESSION_KEY, id);
+    }
+    return id;
+  } catch (e) {
+    return 'no-storage';   // private mode: the turns just won't group
+  }
+}
+
 function restore() {
   try {
     const saved = JSON.parse(sessionStorage.getItem(STORE_KEY) || '[]');
@@ -106,7 +129,10 @@ async function streamReply(bubble) {
   const res = await fetch(CHAT_ENDPOINT, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages: history.slice(-MAX_TURNS * 2) }),
+    body: JSON.stringify({
+      messages: history.slice(-MAX_TURNS * 2),
+      session: sessionId(),
+    }),
     signal: controller.signal,
   });
 
