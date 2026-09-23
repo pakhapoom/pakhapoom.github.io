@@ -362,24 +362,32 @@ img { max-width: 100%; }
   position: absolute; width: 1px; height: 1px;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
 }
-.icon-link::after {
-  content: attr(data-tip);
-  position: absolute;
-  bottom: calc(100% + .4rem);
-  left: 0;
-  z-index: 3;
-  padding: .2rem .45rem;
-  font-family: var(--font-mono);
-  font-size: .68rem;
-  white-space: nowrap;
-  color: var(--paper);
-  background: var(--ink);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .15s ease;
+/* Only drawn where a cursor can reveal it. The tip is a nowrap box anchored to
+   the icon's left edge, and an `opacity: 0` box still claims its width: on a
+   phone the widest address ran past the right edge and gave the whole page a
+   sideways scroll. A finger can never hover it open anyway, so on touch it is
+   not laid out at all. The address stays in .icon-link__text for screen
+   readers either way. */
+@media (hover: hover) {
+  .icon-link::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + .4rem);
+    left: 0;
+    z-index: 3;
+    padding: .2rem .45rem;
+    font-family: var(--font-mono);
+    font-size: .68rem;
+    white-space: nowrap;
+    color: var(--paper);
+    background: var(--ink);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .15s ease;
+  }
+  .icon-link:hover::after,
+  .icon-link:focus-visible::after { opacity: 1; }
 }
-.icon-link:hover::after,
-.icon-link:focus-visible::after { opacity: 1; }
 
 /* ============================================================
    Summary — the band under the hero: the whole CV in one paragraph.
@@ -1039,6 +1047,39 @@ img { max-width: 100%; }
   .chat-launcher { padding: .75rem; }
   .theme-btn { top: .75rem; right: .75rem; padding: .4rem; }
   .theme-btn [data-label] { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+  /* The panel fills the screen here, so the page behind it must stop moving:
+     without this, a drag on the header scrolls the résumé underneath and the
+     reader closes the chat somewhere they never navigated to. */
+  html.chat-open, html.chat-open body { overflow: hidden; }
+}
+
+/* ============================================================
+   Touch — the same page under a finger instead of a cursor.
+
+   Keyed on the pointer rather than the width, because the two do not
+   agree: a narrow window on a laptop still deserves cursor-sized
+   controls, and a tablet held in two hands deserves finger-sized ones
+   at a width the media queries above call roomy.
+   ============================================================ */
+@media (pointer: coarse) {
+  /* ~44px is the smallest square a fingertip hits reliably. Only the box
+     grows — every icon inside keeps the size it is drawn at. */
+  .icon-link { width: 2.75rem; height: 2.75rem; }
+  .chat-head__close,
+  .chat-send { width: 2.75rem; height: 2.75rem; }
+  .theme-btn { min-width: 2.75rem; min-height: 2.75rem; justify-content: center; }
+  .suggest-btn { padding: .62rem .75rem; }
+  /* An inline run of type, so it takes its hit area in padding. */
+  .hero__replay { padding: .7rem 0; }
+
+  /* The height matches the send button beside it now that the button is
+     finger-sized; chat.js still grows it line by line from there.
+
+     The size is the load-bearing part: under 16px, iOS Safari zooms the page
+     in when the field takes focus and never zooms back out, leaving the
+     reader with the résumé scaled up and shifted sideways after one question. */
+  .chat-input { min-height: 2.75rem; font-size: 1rem; }
 }
 
 /* ============================================================
