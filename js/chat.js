@@ -232,6 +232,9 @@ function open() {
   el.panel.hidden = false;
   el.launcher.hidden = true;
   el.launcher.setAttribute('aria-expanded', 'true');
+  // Only the narrowest layout acts on this: there the panel covers the screen,
+  // and the page behind it should hold still until the panel closes.
+  document.documentElement.classList.add('chat-open');
 
   if (!el.log.childElementCount) {
     const restored = restore();
@@ -257,6 +260,7 @@ function close() {
   el.panel.hidden = true;
   el.launcher.hidden = false;
   el.launcher.setAttribute('aria-expanded', 'false');
+  document.documentElement.classList.remove('chat-open');
   setBusy(false);
   lastOpener?.focus?.();
 }
