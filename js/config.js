@@ -18,6 +18,9 @@ const isLocal = ['localhost', '127.0.0.1', '[::1]', ''].includes(location.hostna
 
 export const CHAT_ENDPOINT = isLocal ? DEV_ENDPOINT : PRODUCTION_ENDPOINT;
 
+/** Same Worker, page-view route (views.js). */
+export const VIEW_ENDPOINT = CHAT_ENDPOINT.replace(/\/chat$/, '/view');
+
 /** True until the Worker URL above is filled in — lets the UI explain itself. */
 export const CHAT_CONFIGURED = isLocal || !PRODUCTION_ENDPOINT.includes('YOUR-SUBDOMAIN');
 

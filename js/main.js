@@ -4,6 +4,7 @@ import { renderResume } from './render.js';
 import { initChat } from './chat.js';
 import { initDecode } from './decode.js';
 import { initPath } from './timeline.js';
+import { countView } from './views.js';
 
 /* ------------------------------------------------------------------ theme */
 
@@ -115,3 +116,4 @@ initRules();
 initDecode(document.querySelector('.hero'));
 initPath(document.querySelector('.path'));
 initChat();
+countView();
