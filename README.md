@@ -15,6 +15,8 @@ css/styles.css        light / dark / print styles
 js/resume-data.js     the résumé — single source of truth
 js/render.js          builds the page from resume-data.js
 js/chat.js            chat widget (SSE streaming, markdown)
+js/views.js           page-view beacon to the Worker's /view route
+js/session.js         the per-tab id shared by chat and view logs
 js/config.js          chat endpoint (dev vs production)
 js/main.js            boot, theme toggle, scroll-spy
 js/decode.js          hero: the job title emitted token by token
@@ -25,7 +27,7 @@ papers/<slug>.html    per-paper page shells (generated, then committed)
 public/               photo and organization logos (logos are unused today)
 public/papers/<slug>/ figures taken from the papers themselves
 worker/index.js       Typhoon proxy: key, system prompt, CORS, rate limit,
-                      output guard, per-turn logging
+                      output guard, per-turn logging; /view page counts
 scripts/dev.sh        runs the Worker locally with the key from .env
 scripts/og-card.html  the link-preview image's source, read from resume-data.js
 scripts/og-card.sh    renders it to public/og-card.png (needs Chrome)
@@ -110,3 +112,33 @@ near-misses, or grouped by `question` to see what visitors actually ask.
 
 Enabling or changing `[observability]` only takes effect on the next
 `wrangler deploy`.
+
+## Page views
+
+Every page (home and each `papers/<slug>.html`) sends one beacon on load to
+the same Worker's `/view` route, which logs one line next to the chat turns:
+
+```json
+{"kind":"view","at":"2026-11-22T03:51:01.608Z","session":"16cbd514-…",
+ "path":"/papers/latb.html","ref":"www.linkedin.com","src":"linkedin"}
+```
+
+- `path` — the page viewed.
+- `ref` — the referring site's hostname only, empty when the browser sends
+  none (typed URLs, most mobile apps).
+- `src` — the link's `utm_source`, if any. Tag links you post yourself
+  (`?utm_source=linkedin`) to tell them apart when `ref` is empty.
+- `session` — the same per-tab id chat sends, so a visit's views and its chat
+  turns line up.
+
+Same privacy rule as chat: no IP, user agent or location. Visitors sending
+Global Privacy Control or Do Not Track are not counted. Beacons from any origin
+other than the site are dropped, and `/view` has its own 30/min per-IP limit so
+it never spends a visitor's chat allowance.
+
+Read them like the chat logs — `wrangler tail --search '"kind":"view"'`, or
+filter `kind = view` in the dashboard and group by `path`, `ref` or `src`. The
+free plan keeps logs for about 3 days; export them if you want longer trends.
+
+The route ships with the Worker, so it starts counting after the next
+`wrangler deploy`. Until then the beacons fail silently.

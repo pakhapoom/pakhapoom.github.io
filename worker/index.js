@@ -23,6 +23,7 @@ const MAX_TURNS = 24;        // messages accepted per request
 const MAX_CHARS = 1000;      // per message
 const RATE_LIMIT = 20;       // requests per IP …
 const RATE_WINDOW = 60_000;  // … per minute
+const VIEW_LIMIT = 30;       // page-view beacons per IP per minute, counted apart from chat
 
 const ALLOWED_ORIGINS = [
   'https://pakhapoom.github.io',
@@ -115,16 +116,17 @@ const errorResponse = (status, message, origin) =>
  * casual script, and it costs nothing. Swap in KV or the Rate Limiting binding
  * if the endpoint ever needs a hard guarantee.
  */
-const hits = new Map();
+const chatHits = new Map();
+const viewHits = new Map();   // separate, so page views never spend a visitor's chat allowance
 
-function rateLimited(ip) {
+function rateLimited(ip, hits = chatHits, limit = RATE_LIMIT) {
   const now = Date.now();
   const recent = (hits.get(ip) || []).filter((t) => now - t < RATE_WINDOW);
   recent.push(now);
   hits.set(ip, recent);
 
   if (hits.size > 5000) hits.clear();   // bound memory in a long-lived isolate
-  return recent.length > RATE_LIMIT;
+  return recent.length > limit;
 }
 
 /** Accepts only well-formed visitor turns; anything else is dropped. */
@@ -277,6 +279,50 @@ function codeBlockGuard({ session, question }) {
   });
 }
 
+/* ------------------------------------------------------------ page views */
+
+const SESSION_RE = /^[A-Za-z0-9-]{1,64}$/;
+
+// Every field reaches the log and every field is visitor-controlled, so each
+// one is whitelisted by shape; anything else is logged as an empty string.
+const pick = (v, re) => (typeof v === 'string' && re.test(v) ? v : '');
+
+/**
+ * One line per page load, written next to the chat turns so the two can be
+ * read together: `session` is the same per-tab id chat sends.
+ *
+ * Same rule as logTurn: nothing about who the visitor is. The referrer is a
+ * hostname only (the browser trims it before sending), and the Worker reads no
+ * IP, user agent or country into the line.
+ *
+ * Always answers 204: sendBeacon never reads the reply, and a rejected beacon
+ * should not show up as an error in a visitor's console.
+ */
+async function handleView(request, origin, ip) {
+  const empty = new Response(null, { status: 204, headers: corsHeaders(origin) });
+
+  // A beacon from anywhere but the site itself is noise in the count.
+  if (!ALLOWED_ORIGINS.includes(origin)) return empty;
+  if (rateLimited(ip, viewHits, VIEW_LIMIT)) return empty;
+
+  let body;
+  try {
+    body = JSON.parse((await request.text()).slice(0, 1000));
+  } catch {
+    return empty;
+  }
+
+  console.log(JSON.stringify({
+    kind: 'view',
+    at: new Date().toISOString(),
+    session: pick(body.session, SESSION_RE) || 'unknown',
+    path: pick(body.path, /^\/[A-Za-z0-9._\/-]{0,120}$/),
+    ref: pick(body.ref, /^[A-Za-z0-9.-]{1,253}$/),
+    src: pick(body.src, /^[A-Za-z0-9._-]{1,40}$/),
+  }));
+  return empty;
+}
+
 /* ----------------------------------------------------------------- entry */
 
 export default {
@@ -289,11 +335,17 @@ export default {
     if (request.method !== 'POST') {
       return errorResponse(405, 'Use POST.', origin);
     }
+
+    const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+
+    if (new URL(request.url).pathname === '/view') {
+      return handleView(request, origin, ip);
+    }
+
     if (!env.TYPHOON_API_KEY) {
       return errorResponse(500, 'Server is missing TYPHOON_API_KEY.', origin);
     }
 
-    const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
     if (rateLimited(ip)) {
       return errorResponse(429, 'Rate limit reached. Try again in a minute.', origin);
     }
@@ -310,7 +362,7 @@ export default {
 
     // The session id reaches the log, so it is whitelisted rather than trusted:
     // a visitor controls this string and nothing shaped otherwise gets through.
-    const session = /^[A-Za-z0-9-]{1,64}$/.test(body.session || '') ? body.session : 'unknown';
+    const session = SESSION_RE.test(body.session || '') ? body.session : 'unknown';
     const question = messages[messages.length - 1]?.content ?? '';
 
     let upstream;
