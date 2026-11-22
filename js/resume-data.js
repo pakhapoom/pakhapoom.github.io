@@ -98,6 +98,9 @@ export const resume = {
     { top: [' Scient', 0.94], alt: [[' Research', 0.04], [' Engine', 0.01]] },
     { top: ['ist', 0.97], alt: [['ists', 0.02], ['ific', 0.01]] },
   ],
+  // Read only by scripts/og-card.html, the link-preview image. Not rendered on
+  // the page, not sent to the chatbot.
+  tagline: 'From mathematics to leading AI',
   photo: {
     src: 'public/me_v2_sq-480.jpg',
     alt: 'Portrait of Pakhapoom Sarapat',

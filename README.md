@@ -27,6 +27,8 @@ public/papers/<slug>/ figures taken from the papers themselves
 worker/index.js       Typhoon proxy: key, system prompt, CORS, rate limit,
                       output guard, per-turn logging
 scripts/dev.sh        runs the Worker locally with the key from .env
+scripts/og-card.html  the link-preview image's source, read from resume-data.js
+scripts/og-card.sh    renders it to public/og-card.png (needs Chrome)
 ```
 
 To update the résumé, edit `js/resume-data.js`. The page and the chatbot both
